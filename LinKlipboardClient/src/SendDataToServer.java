@@ -1,4 +1,3 @@
-import java.awt.datatransfer.Clipboard;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,15 +9,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 
+import contents.Contents;
 
-public class SendDataToServer {
+
+public class SendDataToServer extends Thread{
 	private Socket socket;
 	private String ipAddr = "";
 	private int portNum = 20;
-	private int dataType;
 	private ObjectOutputStream out;
-	private ObjectInputStream in;
-	private Clipboard systemClipboard; // 자신의 시스템 클립보드
+	//private ObjectInputStream in;
 
 	
 	public void requestReceiveData() {
@@ -60,7 +59,7 @@ public class SendDataToServer {
 
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new ObjectInputStream(socket.getInputStream());
+			//in = new ObjectInputStream(socket.getInputStream());
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -69,8 +68,18 @@ public class SendDataToServer {
 		}
 	}
 
-	public void sendData() {
+	@Override
+	public void run() {
 		setConnection();
+		try {
+			Contents sendContents = ClipboardManager.readClipboard();
+			out.writeObject(sendContents);
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }

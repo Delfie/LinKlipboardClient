@@ -16,13 +16,13 @@ import server_manager.LinKlipboard;
 
 public class ClipboardManager {
 	private static Clipboard systemClipboard;
-	private int type;
+	private static int type;
 
 	public ClipboardManager() {
 		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	}
 	
-	public Contents readClipboard() {
+	public static Contents readClipboard() {
 		Transferable contents = getSystmeClipboardContets();
 		setDataFlavor(contents);
 		Contents settingdObject = extractDataFromContents(contents);
@@ -34,7 +34,7 @@ public class ClipboardManager {
 		return systemClipboard.getContents(null);
 	}
 	
-	public DataFlavor setDataFlavor(Transferable t) {
+	public static DataFlavor setDataFlavor(Transferable t) {
 		DataFlavor[] flavors = t.getTransferDataFlavors();
 		for (int i = 0; i < flavors.length; i++) {
 
@@ -56,7 +56,7 @@ public class ClipboardManager {
 		return null;
 	}
 	
-	private Contents extractDataFromContents(Transferable contents) {
+	private static Contents extractDataFromContents(Transferable contents) {
 		try {
 			String extractString = null;
 			//Image extractImage = null;
@@ -66,13 +66,13 @@ public class ClipboardManager {
 			// 클립보드의의 내용을 추출
 			if (type == LinKlipboard.STRING_TYPE) {
 				extractString = (String) contents.getTransferData(DataFlavor.stringFlavor);
-				sendObject = new StringContents("", extractString);
+				sendObject = new StringContents(extractString);
 
 			}
 			else if (type == LinKlipboard.IMAGE_TYPE) {
 				extractImageIcon = (ImageIcon) contents.getTransferData(DataFlavor.imageFlavor);
 				//extractImageIcon = new ImageIcon(extractImage);
-				sendObject = new ImageContents("", extractImageIcon);
+				sendObject = new ImageContents(extractImageIcon);
 			}
 			else {
 

@@ -12,9 +12,15 @@ public class StringContents extends Contents {
 		super("");
 	}
 
-	public StringContents(String sharer) {
-		super(sharer);
+//	public StringContents(String sharer) {
+//		super(sharer);
+//		type = LinKlipboard.STRING_TYPE;
+//	}
+	
+	public StringContents(String data) {
+		super("");
 		type = LinKlipboard.STRING_TYPE;
+		this.stringData = data;
 	}
 
 	public StringContents(String sharer, String data) {

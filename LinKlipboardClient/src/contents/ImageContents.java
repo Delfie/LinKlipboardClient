@@ -14,6 +14,13 @@ public class ImageContents extends Contents {
 		super("");
 	}
 	
+	public ImageContents(ImageIcon data) {
+		super("");
+		type = LinKlipboard.IMAGE_TYPE;
+		this.imageData = data;
+		
+	}
+	
 	public ImageContents(String sharer) {
 		super(sharer);
 		type = LinKlipboard.IMAGE_TYPE;

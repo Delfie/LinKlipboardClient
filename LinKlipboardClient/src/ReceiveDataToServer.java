@@ -16,8 +16,7 @@ public class ReceiveDataToServer extends Thread {
 	private Socket socket;
 	private String ipAddr = "";
 	private int portNum = 20;
-	private int dataType;
-	private ObjectOutputStream out;
+	//private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private Clipboard systemClipboard; // 자신의 시스템 클립보드
 
@@ -59,7 +58,7 @@ public class ReceiveDataToServer extends Thread {
 			socket = new Socket(ipAddr, portNum);
 
 			// 스트림 설정
-			out = new ObjectOutputStream(socket.getOutputStream());
+			//out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 
 		} catch (UnknownHostException e) {
@@ -72,15 +71,15 @@ public class ReceiveDataToServer extends Thread {
 	@Override
 	public void run() {
 		setConnection();
-		while(true) {
-				try {
-					Contents receiveContents = (Contents)in.readObject();
-					ClipboardManager.writeClipboard(receiveContents, systemClipboard, receiveContents.getType());
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		try {
+			Contents receiveContents = (Contents) in.readObject();
+			ClipboardManager.writeClipboard(receiveContents, systemClipboard, receiveContents.getType());
+			in.close();
+			socket.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
