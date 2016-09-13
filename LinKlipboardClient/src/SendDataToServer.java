@@ -33,6 +33,7 @@ public class SendDataToServer extends Thread{
 			// 서버에 보낼 데이터(그룹정보)
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n");
+			out.write("type=" + ClipboardManager.setDataFlavor(ClipboardManager.getSystmeClipboardContets()) + "\r\n");
 			out.flush();
 			out.close();
 
