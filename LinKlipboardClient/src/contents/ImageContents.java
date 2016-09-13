@@ -9,7 +9,7 @@ import server_manager.LinKlipboard;
 
 public class ImageContents extends Contents {
 	private ImageIcon imageData;
-
+// 히정이 또한 갓이다.
 	public ImageContents() {
 		super("");
 	}
