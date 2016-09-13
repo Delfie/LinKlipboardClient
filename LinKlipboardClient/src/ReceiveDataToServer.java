@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-
 import contents.Contents;
 
 public class ReceiveDataToServer extends Thread {

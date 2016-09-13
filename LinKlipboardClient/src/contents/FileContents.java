@@ -6,19 +6,19 @@ import java.io.ObjectInputStream;
 import server_manager.LinKlipboard;
 
 public class FileContents extends Contents {
-	private String filePath;
+	private String fileName;
 
 	public FileContents() {
 		super("");
 	}
-	public FileContents(String sharer, String path) {
+	public FileContents(String sharer, String name) {
 		super(sharer);
 		type = LinKlipboard.FILE_TYPE;
-		this.filePath = path;
+		this.fileName = name;
 	}
 
 	public String getfilePath() {
-		return filePath;
+		return fileName;
 	}
 
 	@Override

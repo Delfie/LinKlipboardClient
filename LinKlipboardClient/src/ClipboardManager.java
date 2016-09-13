@@ -6,9 +6,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-
 import javax.swing.ImageIcon;
-
 import contents.Contents;
 import contents.ImageContents;
 import contents.StringContents;

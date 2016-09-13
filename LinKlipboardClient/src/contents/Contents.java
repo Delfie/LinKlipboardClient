@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 
 import server_manager.LinKlipboard;
 
-// 도연이는 갓이다
 public abstract class Contents {
 
 	protected Date date;
