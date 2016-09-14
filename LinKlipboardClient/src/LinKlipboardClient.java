@@ -1,4 +1,3 @@
-import java.awt.datatransfer.Clipboard;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,26 +6,25 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Scanner;
 
 import server_manager.LinKlipboard;
 
 public class LinKlipboardClient {
-	
 	private static String groupName; // 그룹이름
 	private String groupPassword; // 패스워드
-	private String nickName; //닉네임
-	private int response; //서버로부터 받은 오류 정보
-	private String errorMessage; //오류 정보 메세지
-	
-	UserInterface screen; //사용자 인터페이스(for 오류 정보 표시)
-	
+	private String nickName; // 닉네임
+	private String response; // 서버로부터 받은 오류 정보
+	private String errorMessage; // 오류 정보 메세지
+
+	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
+	ResponseHandler responseHandler; //응답에 대한 처리
+
 	/** LinKlipboardClient 생성자 */
 	public LinKlipboardClient(String groupName, String groupPassword, UserInterface screen) {
 		this.groupName = groupName;
 		this.groupPassword = groupPassword;
 		this.screen = screen;
-		this.response = LinKlipboard.NULL;
+		this.response = null;
 		this.errorMessage = null;
 	}
 
@@ -34,7 +32,7 @@ public class LinKlipboardClient {
 	/** 그룹생성 메소드 */
 	public void createGroup() {
 		// 1. 서버에 그룹정보 전송 후 response set하기
-		sendGroupInfoToServer();
+		sendGroupInfoToServer("/CreateGroup");
 		// 2. response에 대한 error처리
 		exceptionHandling(response);
 		// 3. 사용자 인터페이스에 에러상태 표시
@@ -44,41 +42,42 @@ public class LinKlipboardClient {
 	// 접속버튼을 누르면 이 메소드가 실행
 	/** 그룹접속 메소드 */
 	public void joinGroup() {
-		// 1. 서버에 그룹정보 전송 후 response set하기
-		sendGroupInfoToServer();
-		// 2. response에 대한 error처리
+		sendGroupInfoToServer("/JoinGroup");
 		exceptionHandling(response);
-		// 3. 사용자 인터페이스에 에러상태 표시
 		screen.updateErrorState(errorMessage);
 	}
 
 	/** 그룹 정보를 set하는 메소드 -> 생성자에서 처리가능? */
-	public void setGroupInfo(String groupName, String groupPassword) {
-		this.groupName = groupName;
-		this.groupPassword = groupPassword;
-	}
+	// public void setGroupInfo(String groupName, String groupPassword) {
+	// this.groupName = groupName;
+	// this.groupPassword = groupPassword;
+	// }
+
 	
-	/** 그룹 정보를 초기화하는 메소드 */
-	public void initGroupInfo(){
+	
+	/** 그룹 정보를 초기화 */
+	public void initGroupInfo() {
 		this.groupName = null;
 		this.groupPassword = null;
 	}
-	
-	/** 서버에서 보낸 오류정보 초기화 */
-	public void initResponse(){
-		this.response = LinKlipboard.NULL;
+
+	/** 서버에서 보낸 오류정보를 초기화 */
+	public void initResponse() {
+		this.response = null;
 		this.errorMessage = null;
 	}
+	
 
-	/** 그룹 정보를 서버에 보내는 메소드 */
-	public void sendGroupInfoToServer() {
+	/** 그룹 정보를 서버에 보내고 응답(response)받는 메소드 */
+	public void sendGroupInfoToServer(String servletName) {
+		String response = Integer.toString(LinKlipboard.ERROR_TRYCATCH);
+		
 		try {
-			// 호출할 서블릿의 주소
-			// URL("http://localhost:8080/LinKlipboardServerProJect/Servlet/CreateGroup");
-			// URL url = new URL("http://113.198.84.51:8080/godhj/DoLogin");
-			URL url = new URL("http://localhost:8080/Doooy/servlet/JoinGroup");
+			// 호출할 서블릿의 URL
+			URL url = new URL(LinKlipboard.URL_To_CALL + servletName);
 			URLConnection conn = url.openConnection();
 
+			//servlet의 doPost호출
 			conn.setDoOutput(true);
 
 			// 서버에 보낼 데이터(그룹정보)
@@ -90,104 +89,31 @@ public class LinKlipboardClient {
 
 			// 서버로부터 받을 데이터(오류정보)
 			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String response;
-
-			while ((response = in.readLine()) != null) {
-				System.out.println(response);
-				// response로 오류정보 확인
+			
+			if ((response = in.readLine()) != null) {
+				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
+				this.response = response;
 			}
 			in.close();
-
-			System.out.println("this.response: " + this.response);
-			System.out.println("response: " + response);
-			// 서버에서 확인 후 클라이언트가 받은 결과 메세지
-			this.response = Integer.parseInt(response);
-			
 
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-
-		// try catch에 대한 오류
-		this.response =  LinKlipboard.ERROR_TRYCATCH;
+		this.response = response;
 	}
 
 	/**
 	 * 예외 처리
-	 * @param response 그룹생성 및 접속에 대한 예외종류
+	 * 
+	 * @param response 클라이언트 요청에 대한 서버의 응답
 	 */
-	public void exceptionHandling(int response) {
-		switch (response) {
-		// 1. response==ok (다음으로 넘어감)
-		case LinKlipboard.ACCESS_PERMIT:
-			errorMessage = "접속 허용";
-			//접속 페이지로 넘어감
-			break;
-
-		// 2. response==그룹명중복
-		case LinKlipboard.ERROR_DUPLICATED_GROUPNAME:
-			errorMessage = "그룹명 중복";
-			break;
-
-		// 3. response==그룹명존재안함
-		case LinKlipboard.ERROR_NO_MATCHED_GROUPNAME:
-			errorMessage = "그룹명 존재 안함";
-			break;
-
-		// 4. response==password불일치
-		case LinKlipboard.ERROR_PASSWORD_INCORRECT:
-			errorMessage = "password 불일치";
-			break;
-
-		// 6. response==소켓 연결 오류
-		case LinKlipboard.ERROR_SOCKET_CONNECTION:
-			errorMessage = "소켓 연결 오류";
-			break;
-
-		// 7. response==데이터 송수신 오류
-		case LinKlipboard.ERROR_DATA_TRANSFER:
-			errorMessage = "데이터 송수신 오류";
-			break;
-
-//		// 8. response==그룹인원초과
-//		case LinKlipboard.ACCESS_PERMIT:
-//			errorMessage = "그룹 인원초과";
-//			break;
-			
-		// 9. response==try catch에 대한 오류
-		case LinKlipboard.ERROR_TRYCATCH:
-			errorMessage = "try catch 오류";
-			break;
-		}
+	public void exceptionHandling(String response) {
+		responseHandler = new ResponseHandler(response, this);
+		responseHandler.responseHandler();
 	}
 
-	
-	
-	/** 서버에 데이터 전송 */
-	public void sendDateToServer(){
-		
-	}
-	
-	
-	/** 서버에서 데이터 수신 */
-	public void receiveDataToServer(){
-		
-	}
-	
-	
-	/** 히스토리에서 원하는 데이터 요청해서 받기 */
-	public void receivePreviousData(){
-		
-	}
-	
-
-	/** 히스토리 전체 보기 요청 */
-	public void receiveHistoryList(){
-		
-	}
-	
 	
 	
 	/** 클라이언트가 입력한 그룹이름 반환 */
@@ -200,11 +126,20 @@ public class LinKlipboardClient {
 		return groupPassword;
 	}
 
-	// public String getNickName(){
-	// return nickName;
-	// }
+	/** 클라이언트가 입력한 닉네임 반환 */
+	public String getNickName() {
+		return nickName;
+	}
 
-	// public void setNickName(String nickName){
-	// this.nickName = nickName;
-	// }
+	
+	
+	/** 클라이언트의 닉네임을 세팅*/
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	
+	/** 오류 정보 메세지를 세팅 */
+	public void setErrorMessage(String errorMessage){
+		this.errorMessage = errorMessage;
+	}
 }
