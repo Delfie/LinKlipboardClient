@@ -14,10 +14,12 @@ public class ResponseHandler {
 	private String fileNeme = null;
 
 	private LinKlipboardClient client;
+	private UserInterface screen;
 
-	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client) {
+	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client, UserInterface screen) {
 		this.responseWholeMsg = responseWholeMsg;
 		this.client = client;
+		this.screen = screen;
 	}
 
 	/** 넘겨받은 스트링 에러 코드를 분리하는 메소드 */
@@ -78,7 +80,9 @@ public class ResponseHandler {
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		if(errorCodeNum >= LinKlipboard.ERROR_DUPLICATED_GROUPNAME && errorCodeNum <= LinKlipboard.ERROR_TRYCATCH){
-			System.out.println(errorMsg);
+			//System.out.println(errorMsg);
+			//사용자 인터페이스에 에러상태 표시
+			screen.updateErrorState(errorMsg);
 		}
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
 	}

@@ -83,7 +83,7 @@ public class UserInterface extends JFrame {
 		createGroupBtn.setBounds(X1, 400, 100, 40);
 		add(createGroupBtn);
 
-		// CREATE 버튼에 대한 처리 
+		// CREATE 버튼에 대한 처리
 		createGroupBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -103,7 +103,7 @@ public class UserInterface extends JFrame {
 		joinGroupBtn.setBounds(X1 + 150, 400, 100, 40);
 		add(joinGroupBtn);
 
-		// JOIN 버튼에 대한 처리 
+		// JOIN 버튼에 대한 처리
 		joinGroupBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -122,11 +122,14 @@ public class UserInterface extends JFrame {
 
 	/** 클라이언트 생성 */
 	private void createClient(String groupName, String groupPassword) {
+		System.out.println(groupName + ", " + groupPassword);
 		client = new LinKlipboardClient(groupName, groupPassword, this);
 	}
 
 	/** 오류 정보 표시 */
 	public void updateErrorState(String response) {
+		// TEST
+		System.out.println("updateErrorState: " + response);
 		responseState.setText(response);
 	}
 
