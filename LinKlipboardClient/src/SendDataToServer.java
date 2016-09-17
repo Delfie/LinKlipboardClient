@@ -68,7 +68,7 @@ public class SendDataToServer extends Thread{
 			else {
 				// 오류 처리
 				System.out.println("오류: " + this.getClass());
-				// respond의 처리를 하나의 클래스에서 하는 것도 나쁘지 않을듯
+				// response의 처리를 하나의 클래스에서 하는 것도 나쁘지 않을듯
 			}
 
 			System.out.println("while pass: " + tmp);

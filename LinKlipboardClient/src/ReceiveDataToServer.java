@@ -17,7 +17,7 @@ public class ReceiveDataToServer extends Thread {
 	private Socket socket;
 	private String ipAddr = "";
 	private int portNum = 20;
-	//private ObjectOutputStream out;
+	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private Clipboard systemClipboard; // 자신의 시스템 클립보드
 

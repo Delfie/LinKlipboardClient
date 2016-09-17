@@ -35,7 +35,7 @@ public class ClipboardManager {
 		return systemClipboard.getContents(null);
 	}
 
-	// delf
+	// delf µ¥¸£ÇÁ
 	public static int getClipboardDataTypeNow() {
 		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
 
