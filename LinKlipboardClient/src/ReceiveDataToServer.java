@@ -1,6 +1,8 @@
 import java.awt.datatransfer.Clipboard;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
@@ -29,20 +31,26 @@ public class ReceiveDataToServer extends Thread {
 
 			conn.setDoOutput(true);
 
+			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			
 			// 서버에 보낼 데이터(그룹정보)
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n"); // 그룹이름 보내기
-			out.flush();
-			out.close();
+			String header = "groupName=" + LinKlipboardClient.getGroupName(); 
+			System.out.println("보낸 데이터 확인" + header);
 
-//			// 서버로부터 받을 데이터(오류정보)
-//			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//			String response;
-//
-//			while ((response = in.readLine()) != null) {
-//				dataType = Integer.parseInt(response);
-//			}
-//			in.close();
+			bout.write(header);
+			bout.flush();
+			bout.close();
+
+			String tmp = null;
+			String response = null;
+			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			while ((tmp = bin.readLine()) != null) {
+				response = tmp;
+			}
+			System.out.println("서버로부터의 응답: " + response);
+
+			bin.close();
 
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();

@@ -31,10 +31,26 @@ public class ClipboardManager {
 	
 	/** 시스템 클립보드의 Transferable객체 리턴*/
 	public static Transferable getSystmeClipboardContets() {
+		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // delf
 		return systemClipboard.getContents(null);
 	}
-	
-	/** 클립보드의 Transferable객체가 어떤 타입인지 리턴*/
+
+	// delf
+	public static int getClipboardDataTypeNow() {
+		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
+
+		if (type.equals(DataFlavor.stringFlavor)) {
+			return LinKlipboard.STRING_TYPE;
+		} else if (type.equals(DataFlavor.imageFlavor)) {
+			return LinKlipboard.IMAGE_TYPE;
+		} else if (type.equals(DataFlavor.javaFileListFlavor)) {
+			return LinKlipboard.FILE_TYPE;
+		} else {
+			return -1;
+		}
+	}
+
+	/** 클립보드의 Transferable객체가 어떤 타입인지 리턴 */
 	public static DataFlavor setDataFlavor(Transferable t) {
 		DataFlavor[] flavors = t.getTransferDataFlavors();
 		for (int i = 0; i < flavors.length; i++) {
