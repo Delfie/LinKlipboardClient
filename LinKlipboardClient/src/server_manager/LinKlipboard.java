@@ -27,5 +27,5 @@ public class LinKlipboard {
 	public final static String SERVER_HTTP_PORT = "8080";
 	public final static String SERVER_PROJECT_NAME = "LinKlipboardServerProject";
 	public final static String URL_To_CALL = "http://localhost:8080/LinKlipboardServerProject";
-	//public final static String URL_To_CALL = "http://113.198.84.51:8080/LinKlipboardServerProject";
+	///public final static String URL_To_CALL = "http://113.198.84.51:8080/LinKlipboardServerProject";
 }

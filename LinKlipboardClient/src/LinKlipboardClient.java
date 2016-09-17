@@ -19,6 +19,15 @@ public class LinKlipboardClient {
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	ResponseHandler responseHandler; // 응답에 대한 처리
 
+	// delf
+	/** LinKlipboardClient 생성자 */
+	public LinKlipboardClient(String groupName, String groupPassword) {
+		this.groupName = groupName;
+		this.password = groupPassword;
+		this.response = null;
+		this.errorMessage = null;
+	}
+		
 	/** LinKlipboardClient 생성자 */
 	public LinKlipboardClient(String groupName, String groupPassword, UserInterface screen) {
 		this.groupName = groupName;
@@ -76,9 +85,12 @@ public class LinKlipboardClient {
 
 			// 서버에 보낼 데이터(그룹정보)
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			String info = "info=" + groupName + ":" + password;
-			out.write(info);
-			// out.write(tmp2);
+			
+			// String info = "info=" + groupName + ":" + password;
+			// out.write(info);
+
+			// delf
+			out.write("groupName=" + groupName + "&password=" + password);
 			out.flush();
 			out.close();
 

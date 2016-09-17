@@ -65,23 +65,32 @@ public class ResponseHandler {
 		case LinKlipboard.ERROR_TRYCATCH:
 			errorMsg = "try catch 오류";
 			break;
+		case LinKlipboard.ERROR_DUPLICATED_IP: // delf
+			errorMsg = "중복된 ip 주소";
+			break;
+		default: // delf
+			errorMsg = "알수 없는 오류";
+			break;
 		}
 	}
 
 	/** 응답핸들러 */
 	public void responseHandler() {
-		//받은 response를 먼저 분리하여 저장한다.
+		// 받은 response를 먼저 분리하여 저장한다.
 		seperateErrorCode();
-		
+
 		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
-		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
+		if (errorCodeNum == LinKlipboard.NULL) {
+			System.out.println("여기 널"); // delf
+		}
+		else if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setNickName(nickName);
 			System.out.println(client.getGroupName() + "의 " + nickName + "가  접속");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
-		if(errorCodeNum >= LinKlipboard.ERROR_DUPLICATED_GROUPNAME && errorCodeNum <= LinKlipboard.ERROR_TRYCATCH){
-			//System.out.println(errorMsg);
-			//사용자 인터페이스에 에러상태 표시
+		else { // delf
+			// System.out.println(errorMsg);
+			// 사용자 인터페이스에 에러상태 표시
 			screen.updateErrorState(errorMsg);
 		}
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
