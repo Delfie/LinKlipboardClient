@@ -1,3 +1,5 @@
+package client_manager;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,41 +10,52 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import server_manager.LinKlipboard;
+import transfer_manager.ResponseHandler;
+import user_interface.UserInterface;
 
 public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName; // 닉네임
 	private String response; // 서버로부터 받은 오류 정보
-	private String errorMessage; // 오류 정보 메세지
 
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	ResponseHandler responseHandler; // 응답에 대한 처리
 
-	// delf
-	/** LinKlipboardClient 생성자 */
+	/**
+	 * LinKlipboardClient 생성자
+	 * 
+	 * @param groupName
+	 * @param groupPassword
+	 */
 	public LinKlipboardClient(String groupName, String groupPassword) {
+		System.out.println("<클라이언트 생성> groupName: " + groupName + " groupPassword: " + groupPassword);
+		
 		this.groupName = groupName;
 		this.password = groupPassword;
 		this.response = null;
-		this.errorMessage = null;
 	}
-		
-	/** LinKlipboardClient 생성자 */
+
+	/**
+	 * LinKlipboardClient 생성자
+	 * 
+	 * @param groupName
+	 * @param groupPassword
+	 * @param screen
+	 */
 	public LinKlipboardClient(String groupName, String groupPassword, UserInterface screen) {
+		System.out.println("<클라이언트 생성> groupName: " + groupName + " groupPassword: " + groupPassword);
+
 		this.groupName = groupName;
 		this.password = groupPassword;
 		this.screen = screen;
 		this.response = null;
-		this.errorMessage = null;
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
 	/** 그룹생성 메소드 */
 	public void createGroup() {
-		// 1. 서버에 그룹정보 전송 후 response set하기
 		sendGroupInfoToServer("/CreateGroup");
-		// 2. response에 대한 error처리
 		exceptionHandling(response);
 	}
 
@@ -68,7 +81,6 @@ public class LinKlipboardClient {
 	/** 서버에서 보낸 오류정보를 초기화 */
 	public void initResponse() {
 		this.response = null;
-		this.errorMessage = null;
 	}
 
 	/** 그룹 정보를 서버에 보내고 응답(response)받는 메소드 */
@@ -85,11 +97,8 @@ public class LinKlipboardClient {
 
 			// 서버에 보낼 데이터(그룹정보)
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			
-			// String info = "info=" + groupName + ":" + password;
-			// out.write(info);
 
-			// delf
+			// server에 그룹이름과 패스워드 전송(servlet이 받는 구분자: &)
 			out.write("groupName=" + groupName + "&password=" + password);
 			out.flush();
 			out.close();
@@ -140,10 +149,5 @@ public class LinKlipboardClient {
 	/** 클라이언트의 닉네임을 세팅 */
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
-	}
-
-	/** 오류 정보 메세지를 세팅 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
 	}
 }

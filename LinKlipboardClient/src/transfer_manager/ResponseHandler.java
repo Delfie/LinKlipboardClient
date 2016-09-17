@@ -1,6 +1,9 @@
+package transfer_manager;
 import java.util.StringTokenizer;
 
+import client_manager.LinKlipboardClient;
 import server_manager.LinKlipboard;
+import user_interface.UserInterface;
 
 public class ResponseHandler {
 
@@ -11,7 +14,7 @@ public class ResponseHandler {
 
 	// 두개를 합칠까...말까...
 	private String nickName = null; //사용자의 디폴트 닉네임
-	private String fileNeme = null;
+	private String fileNeme = null; //전송할 파일이름
 
 	private LinKlipboardClient client;
 	private UserInterface screen;
@@ -24,7 +27,7 @@ public class ResponseHandler {
 
 	/** 넘겨받은 스트링 에러 코드를 분리하는 메소드 */
 	public void seperateErrorCode() {
-		StringTokenizer tokens = new StringTokenizer(responseWholeMsg, ";");
+		StringTokenizer tokens = new StringTokenizer(responseWholeMsg, LinKlipboard.RESPONSE_DELIMITER);
 
 		errorCodeNum = Integer.parseInt(tokens.nextToken());
 		setErrorMsg(errorCodeNum);
@@ -65,10 +68,10 @@ public class ResponseHandler {
 		case LinKlipboard.ERROR_TRYCATCH:
 			errorMsg = "try catch 오류";
 			break;
-		case LinKlipboard.ERROR_DUPLICATED_IP: // delf
+		case LinKlipboard.ERROR_DUPLICATED_IP:
 			errorMsg = "중복된 ip 주소";
 			break;
-		default: // delf
+		default: 
 			errorMsg = "알수 없는 오류";
 			break;
 		}
@@ -80,16 +83,12 @@ public class ResponseHandler {
 		seperateErrorCode();
 
 		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
-		if (errorCodeNum == LinKlipboard.NULL) {
-			System.out.println("여기 널"); // delf
-		}
-		else if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
+		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setNickName(nickName);
 			System.out.println(client.getGroupName() + "의 " + nickName + "가  접속");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
-		else { // delf
-			// System.out.println(errorMsg);
+		else {
 			// 사용자 인터페이스에 에러상태 표시
 			screen.updateErrorState(errorMsg);
 		}

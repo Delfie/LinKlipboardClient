@@ -2,12 +2,13 @@ package contents;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
 import server_manager.LinKlipboard;
 
-public class ImageContents extends Contents {
+public class ImageContents extends Contents implements Serializable {
 	private ImageIcon imageData;
 
 	public ImageContents() {

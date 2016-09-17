@@ -1,3 +1,4 @@
+package transfer_manager;
 import java.awt.datatransfer.Clipboard;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +12,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+
+import client_manager.ClipboardManager;
+import client_manager.LinKlipboardClient;
 import contents.Contents;
 
 public class ReceiveDataToServer extends Thread {

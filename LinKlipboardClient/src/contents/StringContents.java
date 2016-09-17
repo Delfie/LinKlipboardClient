@@ -2,10 +2,11 @@ package contents;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 import server_manager.LinKlipboard;
 
-public class StringContents extends Contents {
+public class StringContents extends Contents implements Serializable {
 	private String stringData;
 	
 	public StringContents() {

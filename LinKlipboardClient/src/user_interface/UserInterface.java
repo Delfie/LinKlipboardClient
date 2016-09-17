@@ -1,3 +1,4 @@
+package user_interface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import client_manager.LinKlipboardClient;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
@@ -21,7 +23,7 @@ public class UserInterface extends JFrame {
 	JTextField groupNameField = new JTextField();
 	JTextField groupPassWordField = new JTextField();
 
-	JLabel responseState = new JLabel("ERROR STATE"); // 오류확인Lable
+	JLabel responseState = new JLabel("ERROR STATE"); // 오류확인 Label
 
 	JButton createGroupBtn = new JButton("CREATE");
 	JButton joinGroupBtn = new JButton("JOIN");
@@ -122,14 +124,11 @@ public class UserInterface extends JFrame {
 
 	/** 클라이언트 생성 */
 	private void createClient(String groupName, String groupPassword) {
-		System.out.println(groupName + ", " + groupPassword);
 		client = new LinKlipboardClient(groupName, groupPassword, this);
 	}
 
-	/** 오류 정보 표시 */
+	/** 인터페이스에 오류 정보 표시 */
 	public void updateErrorState(String response) {
-		// TEST
-		System.out.println("updateErrorState: " + response);
 		responseState.setText(response);
 	}
 

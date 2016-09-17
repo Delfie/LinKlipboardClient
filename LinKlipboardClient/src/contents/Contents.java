@@ -2,13 +2,10 @@ package contents;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
-
-import server_manager.LinKlipboard;
-
-public abstract class Contents {
+public abstract class Contents implements Serializable {
 
 	protected Date date;
 	protected String sharer;

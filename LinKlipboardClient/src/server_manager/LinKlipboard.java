@@ -17,15 +17,22 @@ public class LinKlipboard {
 	public final static int ERROR_FULL_GROUP = 405; // 생성 가능 그룹 초과
 	public final static int ERROR_FULL_CLIENT = 406; //접속 가능 클라이언트 초과
 	public final static int ERROR_TRYCATCH = 407;
-	public final static int ERROR_DUPLICATED_IP = 408;
+	public final static int ERROR_DUPLICATED_IP = 408; //중복된 IP로 접속
 	
 	public final static int STRING_TYPE = 10;
 	public final static int IMAGE_TYPE = 11;
 	public final static int FILE_TYPE = 12;
+
 	
-	public final static String SERVER_IP = "113.198.84.52";
-	public final static String SERVER_HTTP_PORT = "8080";
+	public final static String RESPONSE_DELIMITER = ";"; // 응답 구분자
+	
+	public final static String SERVER_IP = "113.198.84.51";
+	public final static int HTTP_PORT = 8080;
+	public final static int FTP_PORT = 20;
 	public final static String SERVER_PROJECT_NAME = "LinKlipboardServerProject";
-	public final static String URL_To_CALL = "http://localhost:8080/LinKlipboardServerProject";
-	///public final static String URL_To_CALL = "http://113.198.84.51:8080/LinKlipboardServerProject";
+	//public final static String URL_To_CALL = "http://localhost:8080/LinKlipboardServerProject";
+	public final static String URL_To_CALL = "http://" + SERVER_IP + ":8080/LinKlipboardServerProject";
+	
+	
+
 }

@@ -1,3 +1,4 @@
+package client_manager;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -14,13 +15,15 @@ import server_manager.LinKlipboard;
 
 public class ClipboardManager {
 	private static Clipboard systemClipboard;
-	private static int type;
+	private static int type; // 데이터 타입
 
+	/** ClipboardManager 생성자 */
 	public ClipboardManager() {
 		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	}
 	
-	/** 시스템 클립보드에서 Transferable객체를 읽어와 데이터 타입을 알아내고 Contents객체로 변환*/
+	/** 시스템 클립보드에서 Transferable 객체를 읽어와 데이터 타입을 알아내고 Contents객체로 변환
+	 * @return setting*/
 	public static Contents readClipboard() {
 		Transferable contents = getSystmeClipboardContets();
 		setDataFlavor(contents);
@@ -50,9 +53,10 @@ public class ClipboardManager {
 		}
 	}
 
-	/** 클립보드의 Transferable객체가 어떤 타입인지 리턴 */
+	/** 클립보드의 Transferable객체가 어떤 타입인지 set하고 리턴 */
 	public static DataFlavor setDataFlavor(Transferable t) {
 		DataFlavor[] flavors = t.getTransferDataFlavors();
+		
 		for (int i = 0; i < flavors.length; i++) {
 
 			if (flavors[i].equals(DataFlavor.stringFlavor)) {
@@ -73,7 +77,7 @@ public class ClipboardManager {
 		return null;
 	}
 	
-	/** 클립보드의 Transferable객체를 전송객체로 바꿈*/
+	/** 클립보드의 Transferable객체를 전송객체로 바꿈 */
 	private static Contents extractDataFromContents(Transferable contents) {
 		try {
 			String extractString = null;
