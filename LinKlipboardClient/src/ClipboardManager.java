@@ -31,7 +31,7 @@ public class ClipboardManager {
 	
 	/** 시스템 클립보드의 Transferable객체 리턴*/
 	public static Transferable getSystmeClipboardContets() {
-		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // delf
+		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // delf 데데르프
 		return systemClipboard.getContents(null);
 	}
 

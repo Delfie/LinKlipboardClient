@@ -65,7 +65,7 @@ public class ReceiveDataToServer extends Thread {
 			socket = new Socket(ipAddr, portNum);
 
 			// 스트림 설정
-			//out = new ObjectOutputStream(socket.getOutputStream());
+			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 
 		} catch (UnknownHostException e) {

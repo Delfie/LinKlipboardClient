@@ -20,7 +20,7 @@ public class SendDataToServer extends Thread{
 	private String ipAddr = "";
 	private int portNum = 20;
 	private ObjectOutputStream out;
-	// private ObjectInputStream in;
+	private ObjectInputStream in;
 	private int sendDataType;
 
 	// delf
@@ -90,7 +90,7 @@ public class SendDataToServer extends Thread{
 
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
-			//in = new ObjectInputStream(socket.getInputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
