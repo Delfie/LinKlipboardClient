@@ -10,18 +10,13 @@ public class StringContents extends Contents implements Serializable {
 	private String stringData;
 	
 	public StringContents() {
-		super("");
+		super();
 	}
 
-//	public StringContents(String sharer) {
-//		super(sharer);
-//		type = LinKlipboard.STRING_TYPE;
-//	}
-	
 	public StringContents(String data) {
-		super("");
+		super();
+		stringData = data;
 		type = LinKlipboard.STRING_TYPE;
-		this.stringData = data;
 	}
 
 	public StringContents(String sharer, String data) {
@@ -33,11 +28,10 @@ public class StringContents extends Contents implements Serializable {
 	public String getString() {
 		return stringData;
 	}
-
+	
 	@Override
 	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		stringData = (String) in.readObject();
 		return this;
 	}
 }
-

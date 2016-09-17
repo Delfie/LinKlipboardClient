@@ -1,5 +1,6 @@
 package contents;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -12,19 +13,22 @@ public class ImageContents extends Contents implements Serializable {
 	private ImageIcon imageData;
 
 	public ImageContents() {
-		super("");
-	}
-	
-	public ImageContents(ImageIcon data) {
-		super("");
+		super();
 		type = LinKlipboard.IMAGE_TYPE;
-		this.imageData = data;
-		
 	}
 	
 	public ImageContents(String sharer) {
-		super(sharer);
-		type = LinKlipboard.IMAGE_TYPE;
+		this();
+	}
+	
+	public ImageContents(ImageIcon image) {
+		this();
+		this.imageData = image;
+	}
+	
+	public ImageContents(Image image) {
+		this();
+		this.imageData = new ImageIcon(image);
 	}
 
 	public ImageContents(String sharer, ImageIcon data) {

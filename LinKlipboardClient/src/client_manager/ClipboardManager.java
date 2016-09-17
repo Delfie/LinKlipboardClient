@@ -81,7 +81,7 @@ public class ClipboardManager {
 	private static Contents extractDataFromContents(Transferable contents) {
 		try {
 			String extractString = null;
-			ImageIcon extractImage = null;
+			Image extractImage = null;
 			Contents sendObject = null; // 실제 전송 데이터
 
 			// 클립보드의의 내용을 추출
@@ -91,7 +91,8 @@ public class ClipboardManager {
 
 			}
 			else if (type == LinKlipboard.IMAGE_TYPE) {
-				extractImage = (ImageIcon) contents.getTransferData(DataFlavor.imageFlavor); // Transferable객체를 ImageIcon으로 변환
+				System.out.println("이건 이미지야");
+				extractImage = (Image) contents.getTransferData(DataFlavor.imageFlavor); // Transferable객체를 ImageIcon으로 변환
 				sendObject = new ImageContents(extractImage); // 클립보드로 부터 추출한 ImageIcon으로 전송객체 생성
 			}
 			else {

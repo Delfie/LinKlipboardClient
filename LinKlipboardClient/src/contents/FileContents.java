@@ -7,19 +7,20 @@ import java.io.Serializable;
 import server_manager.LinKlipboard;
 
 public class FileContents extends Contents implements Serializable {
-	private String fileName;
+	private String filePath;
 
 	public FileContents() {
-		super("");
+		super();
 	}
-	public FileContents(String sharer, String name) {
+	
+	public FileContents(String sharer, String path) {
 		super(sharer);
 		type = LinKlipboard.FILE_TYPE;
-		this.fileName = name;
+		this.filePath = path;
 	}
 
 	public String getfilePath() {
-		return fileName;
+		return filePath;
 	}
 
 	@Override
