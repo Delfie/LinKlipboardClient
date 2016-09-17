@@ -31,7 +31,7 @@ public class ReceiveDataToServer extends Thread {
 
 			// 서버에 보낼 데이터(그룹정보)
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n");
+			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n"); // 그룹이름 보내기
 			out.flush();
 			out.close();
 
@@ -71,8 +71,8 @@ public class ReceiveDataToServer extends Thread {
 	public void run() {
 		setConnection();
 		try {
-			Contents receiveContents = (Contents) in.readObject();
-			ClipboardManager.writeClipboard(receiveContents, systemClipboard, receiveContents.getType());
+			Contents receiveContents =  (Contents) in.readObject(); // 전송객체 수신
+			ClipboardManager.writeClipboard(receiveContents, systemClipboard, receiveContents.getType()); // 수신한 시스템 클립보드에 삽입
 			in.close();
 			socket.close();
 		} catch (ClassNotFoundException e) {

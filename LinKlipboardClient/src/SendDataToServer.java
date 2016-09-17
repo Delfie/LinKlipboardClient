@@ -32,8 +32,8 @@ public class SendDataToServer extends Thread{
 
 			// 서버에 보낼 데이터(그룹정보)
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n");
-			out.write("type=" + ClipboardManager.setDataFlavor(ClipboardManager.getSystmeClipboardContets()) + "\r\n");
+			out.write("groupName=" + LinKlipboardClient.getGroupName() + "\r\n"); // 그룹이름 보내기
+			out.write("type=" + ClipboardManager.setDataFlavor(ClipboardManager.getSystmeClipboardContets()) + "\r\n"); // 클립보드의 데이터 타입 보내기
 			out.flush();
 			out.close();
 
@@ -73,8 +73,8 @@ public class SendDataToServer extends Thread{
 	public void run() {
 		setConnection();
 		try {
-			Contents sendContents = ClipboardManager.readClipboard();
-			out.writeObject(sendContents);
+			Contents sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 SystemClipboard로부터 가져옴
+			out.writeObject(sendContents); // 객체 전송
 			out.close();
 			socket.close();
 		} catch (IOException e) {
