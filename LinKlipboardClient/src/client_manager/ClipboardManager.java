@@ -14,46 +14,49 @@ import contents.StringContents;
 import server_manager.LinKlipboard;
 
 public class ClipboardManager {
-	private static Clipboard systemClipboard;
+	private static Clipboard systemClipboard; // 자신의 시스템 클립보드
 	private static int type; // 데이터 타입
 
 	/** ClipboardManager 생성자 */
 	public ClipboardManager() {
-		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	}
 	
-	/** 시스템 클립보드에서 Transferable 객체를 읽어와 데이터 타입을 알아내고 Contents객체로 변환
-	 * @return setting*/
+	/** 시스템 클립보드에서 Transferable 객체를 읽어와 데이터 타입을 알아내고 Contents 객체로 변환
+	 * @return settingObject 서버에 전송할 Contents 객체 */
 	public static Contents readClipboard() {
 		Transferable contents = getSystmeClipboardContets();
 		setDataFlavor(contents);
-		Contents settingdObject = extractDataFromContents(contents);
+		Contents settingObject = extractDataFromContents(contents);
 		
-		return settingdObject;
+		return settingObject;
 	}
 	
-	/** 시스템 클립보드의 Transferable객체 리턴*/
+	/** 시스템 클립보드의 Transferable 객체 리턴
+	 * @return 시스템 클립보드에 존재하는 Transferable 객체 */
 	public static Transferable getSystmeClipboardContets() {
-		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // delf 데데르프
+		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
 		return systemClipboard.getContents(null);
 	}
 
-	// delf 데르프
-	public static int getClipboardDataTypeNow() {
-		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
+	/**  */
+//	public static int getClipboardDataTypeNow() {
+//		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
+//
+//		if (type.equals(DataFlavor.stringFlavor)) {
+//			return LinKlipboard.STRING_TYPE;
+//		} else if (type.equals(DataFlavor.imageFlavor)) {
+//			return LinKlipboard.IMAGE_TYPE;
+//		} else if (type.equals(DataFlavor.javaFileListFlavor)) {
+//			return LinKlipboard.FILE_TYPE;
+//		} else {
+//			return -1;
+//		}
+//	}
 
-		if (type.equals(DataFlavor.stringFlavor)) {
-			return LinKlipboard.STRING_TYPE;
-		} else if (type.equals(DataFlavor.imageFlavor)) {
-			return LinKlipboard.IMAGE_TYPE;
-		} else if (type.equals(DataFlavor.javaFileListFlavor)) {
-			return LinKlipboard.FILE_TYPE;
-		} else {
-			return -1;
-		}
-	}
-
-	/** 클립보드의 Transferable객체가 어떤 타입인지 set하고 리턴 */
+	/** 클립보드의 Transferable 객체가 어떤 타입인지 set하고 리턴 
+	 * @param t 클립보드의 Transferable 객체
+	 * @return t의 DataFlavor의 종류 */
 	public static DataFlavor setDataFlavor(Transferable t) {
 		DataFlavor[] flavors = t.getTransferDataFlavors();
 		
@@ -77,24 +80,27 @@ public class ClipboardManager {
 		return null;
 	}
 	
-	/** 클립보드의 Transferable객체를 전송객체로 바꿈 */
+	/** 클립보드의 Transferable 객체를 전송객체로 바꿈 
+	 * @param contents 클립보드의 Transferable 객체
+	 * @return sendObject 실제 전송 객체(Contents 타입) 리턴 */
 	private static Contents extractDataFromContents(Transferable contents) {
 		try {
 			String extractString = null;
 			Image extractImage = null;
 			Contents sendObject = null; // 실제 전송 데이터
 
-			// 클립보드의의 내용을 추출
+			// 클립보드의 내용을 추출
 			if (type == LinKlipboard.STRING_TYPE) {
+				System.out.println("문자열이에여"); //heee
 				extractString = (String) contents.getTransferData(DataFlavor.stringFlavor); // Transferable객체를 String으로 변환
 				sendObject = new StringContents(extractString); // 클립보드로 부터 추출한 String으로 전송객체 생성
 
 			}
 			else if (type == LinKlipboard.IMAGE_TYPE) {
-				System.out.println("이건 이미지야");
-				extractImage = (Image) contents.getTransferData(DataFlavor.imageFlavor); // Transferable객체를 ImageIcon으로 변환
-				sendObject = new ImageContents(extractImage); // 클립보드로 부터 추출한 ImageIcon으로 전송객체 생성
-			}
+				System.out.println("이미지에여"); //heee
+	            extractImage = (Image) contents.getTransferData(DataFlavor.imageFlavor); // Transferable객체를 ImageIcon으로 변환
+	            sendObject = new ImageContents(extractImage); // 클립보드로 부터 추출한 ImageIcon으로 전송객체 생성
+	         }
 			else {
 
 			}
@@ -102,17 +108,19 @@ public class ClipboardManager {
 			return sendObject;
 
 		} catch (UnsupportedFlavorException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	/** 전송받은 Contents객체를 Transferable해서 클립보드에 삽입 */
-	public static void writeClipboard(Contents data, Clipboard clip, int dataType) {
+	/** 전송받은 Contents 객체를 Transferable해서 클립보드에 삽입 
+	 * @param data 전송받은 데이터
+	 * @param dataType 전송받은 데이터 타입 */
+	public static void writeClipboard(Contents data, int dataType) {
+		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
 		switch (dataType) {
 		case LinKlipboard.STRING_TYPE:
 			StringContents stringData = (StringContents) data; // Contents를 stringContents로 다운캐스팅
@@ -122,7 +130,7 @@ public class ClipboardManager {
 			break;
 		case LinKlipboard.IMAGE_TYPE:
 			ImageContents ImageData = (ImageContents) data; // Contents를 ImageContents로 다운캐스팅
-			Image tmpImage = ImageData.getImage().getImage(); // ImageContent의 ImageIcon을 얻고  ImageIcon의 Image를 얻어옴
+			Image tmpImage = ImageData.getImage().getImage(); // ImageContent의 ImageIcon을 얻고 ImageIcon의 Image를 얻어옴
 			ImageTransferable Imagetransferable = new ImageTransferable(tmpImage); // 클립보드에 넣을 수 있는 Transferable 객체 생성
 			systemClipboard.setContents(Imagetransferable, null); // 시스템 클립보드에 삽입
 			break;

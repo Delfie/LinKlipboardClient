@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 import client_manager.LinKlipboardClient;
+import transfer_manager.ReceiveDataToServer;
 import transfer_manager.SendDataToServer;
 
 public class TmpCUI {
@@ -28,7 +29,6 @@ public class TmpCUI {
 	/** 클라이언트 정보 초기화 */
 	public void initClientInfo(LinKlipboardClient client) {
 		client.initGroupInfo();
-		client.initResponse();
 	}
 
 	public static void main(String[] args) {
@@ -77,11 +77,12 @@ public class TmpCUI {
 	
 	public void sendData() {
 		SendDataToServer sender = new SendDataToServer();
-		sender.requestReceiveData();
+		sender.requestSendData();
 	}
 	
 	public void receiveData() {
-		
+		ReceiveDataToServer receiver = new ReceiveDataToServer();
+		receiver.requestReceiveData();
 	}
 
 	public void createGroup() {

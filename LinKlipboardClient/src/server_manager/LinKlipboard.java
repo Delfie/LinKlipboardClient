@@ -26,8 +26,7 @@ public class LinKlipboard {
 	
 	public final static String RESPONSE_DELIMITER = ";"; // 응답 구분자
 	
-	//public final static String SERVER_IP = "113.198.84.51";
-	public final static String SERVER_IP = "localhost";
+	public final static String SERVER_IP = "113.198.84.52";
 	public final static int HTTP_PORT = 8080;
 	public final static int FTP_PORT = 20;
 	public final static String SERVER_PROJECT_NAME = "LinKlipboardServerProject";

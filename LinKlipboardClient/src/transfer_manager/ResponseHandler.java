@@ -12,17 +12,16 @@ public class ResponseHandler {
 	private int errorCodeNum; // 에러코드
 	private String errorMsg = null; // 에러코드에 대한 정보
 
-	// 두개를 합칠까...말까...
-	private String nickName = null; //사용자의 디폴트 닉네임
-	private String fileNeme = null; //전송할 파일이름
+	// 에러코드 다음에 오는 응답메세지(디폴트 닉네임 또는 전송받은 파일이름)
+	private String latterMsg = null;
 
 	private LinKlipboardClient client;
-	private UserInterface screen;
 
-	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client, UserInterface screen) {
+	
+	/** ResponseHandler 생성자 */
+	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client) {
 		this.responseWholeMsg = responseWholeMsg;
 		this.client = client;
-		this.screen = screen;
 	}
 
 	/** 넘겨받은 스트링 에러 코드를 분리하는 메소드 */
@@ -34,7 +33,7 @@ public class ResponseHandler {
 		
 		//뒤에 추가로 String이 있으면 
 		if(tokens.hasMoreTokens() == true){
-			nickName = tokens.nextToken();
+			latterMsg = tokens.nextToken();
 		}
 	}
 
@@ -71,34 +70,58 @@ public class ResponseHandler {
 		case LinKlipboard.ERROR_DUPLICATED_IP:
 			errorMsg = "중복된 ip 주소";
 			break;
+		case LinKlipboard.NULL:
+			errorMsg = "NULL";
+			break;
 		default: 
 			errorMsg = "알수 없는 오류";
 			break;
 		}
 	}
 
-	/** 응답핸들러 */
-	public void responseHandler() {
-		// 받은 response를 먼저 분리하여 저장한다.
+	/** 생성 및 접속에 대한 응답 핸들러 */
+	public void responseHandlerForStart() {
 		seperateErrorCode();
 
 		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
 		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
-			setNickName(nickName);
-			System.out.println(client.getGroupName() + "의 " + nickName + "가  접속");
+			setDefaultNickName(latterMsg);
+			System.out.println(client.getGroupName() + "의 " + latterMsg + "가  접속");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
 			// 사용자 인터페이스에 에러상태 표시
-			screen.updateErrorState(errorMsg);
+			client.updateErrorState(errorMsg);
 		}
+	}
+	
+	/** 데이터 전송 및 수신에 대한 응답 핸들러 */
+	public void responseHandlerForTransfer() {
+		seperateErrorCode();
+
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
+		if (errorCodeNum == LinKlipboard.READY_TO_TRANSFER) {
+			//소켓연결
+			System.out.println("소켓 연결");
+			//this.start(); //heee
+			
+			setFileName(latterMsg);
+			System.out.println(client.getGroupName() + "의 " + latterMsg + "을 전송받음");
+		}
+		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
+		else {
+			// 사용자 인터페이스에 에러상태 표시
+			// client.updateErrorState(errorMsg);
+		}
 	}
 
-	/** 클라이언트의 닉네임을 세팅 */
-	public void setNickName(String nickName) {
+	/** 클라이언트의 디폴트 닉네임을 세팅 */
+	public void setDefaultNickName(String nickName) {
 		client.setNickName(nickName);
 	}
 
-	/** 받을 파일의 이름을 세팅 */
+	/** 전송받을 파일의 이름을 세팅 */
+	public void setFileName(String fileName){
+		client.setFileName(fileName);
+	}
 }

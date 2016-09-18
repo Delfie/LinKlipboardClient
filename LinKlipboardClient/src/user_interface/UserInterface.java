@@ -141,7 +141,6 @@ public class UserInterface extends JFrame {
 	/** 클라이언트 정보 초기화 */
 	public void initClientInfo(LinKlipboardClient client) {
 		client.initGroupInfo();
-		client.initResponse();
 	}
 
 	public static void main(String[] args) {
