@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
 import contents.Contents;
+import contents.FileContents;
 import server_manager.LinKlipboard;
 
 public class SendDataToServer extends Thread {
@@ -38,7 +39,7 @@ public class SendDataToServer extends Thread {
 		this.client = client;
 	}
 
-	/** 데이터 전송 메소드 */
+	/** 문자열, 이미지 데이터 전송 메소드 */
 	public void requestSendData() {
 		try {
 			// 호출할 서블릿의 주소
@@ -50,9 +51,16 @@ public class SendDataToServer extends Thread {
 			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
 			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
-			// String fileName = "fileName=" + null; //수정. 파일명이 존재할 때 파일명을 넣는다.
-			String header = groupName;
-			// + "&" + fileName;
+			String fileName = null;
+			
+			//파일이면
+			if(ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE)
+			{
+				FileContents extractFile = new FileContents();
+				fileName = "fileName=" + extractFile.getFileName();
+				System.out.println("시스템 클립보드에 있는 파일 이름 : " + fileName); //delf
+			}
+			String header = groupName + "&" + fileName;
 			System.out.println("보낼 전체 데이터 확인" + header); //delf
 
 			bout.write(header);
@@ -126,10 +134,7 @@ public class SendDataToServer extends Thread {
 	public void run() {
 		setConnection();
 		try {
-			Contents sendContents = ClipboardManager.readClipboard(); // 전송할 객체를
-																		// 시스템
-																		// 클립보드로부터
-																		// 가져옴
+			Contents sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
 			out.writeObject(sendContents); // Contents 객체 전송
 			out.close();
 			socket.close();

@@ -86,7 +86,7 @@ public class ResponseHandler {
 		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
 		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setDefaultNickName(latterMsg);
-			System.out.println(client.getGroupName() + "의 " + latterMsg + "가  접속");
+			System.out.println(client.getGroupName() + "의 " + latterMsg + "(닉네임)가  접속");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
@@ -106,7 +106,7 @@ public class ResponseHandler {
 			//this.start(); //heee
 			
 			setFileName(latterMsg);
-			System.out.println(client.getGroupName() + "의 " + latterMsg + "을 전송받음");
+			System.out.println(client.getGroupName() + "의 " + latterMsg + "(파일명)을 전송받음");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {

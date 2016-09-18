@@ -39,20 +39,20 @@ public class ClipboardManager {
 		return systemClipboard.getContents(null);
 	}
 
-	/**  */
-//	public static int getClipboardDataTypeNow() {
-//		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
-//
-//		if (type.equals(DataFlavor.stringFlavor)) {
-//			return LinKlipboard.STRING_TYPE;
-//		} else if (type.equals(DataFlavor.imageFlavor)) {
-//			return LinKlipboard.IMAGE_TYPE;
-//		} else if (type.equals(DataFlavor.javaFileListFlavor)) {
-//			return LinKlipboard.FILE_TYPE;
-//		} else {
-//			return -1;
-//		}
-//	}
+	/** 현재 클립보드에 존재하는 Transferable객체가 어떤 타입인지 리턴 */
+	public static int getClipboardDataTypeNow() {
+		DataFlavor type = setDataFlavor(getSystmeClipboardContets());
+
+		if (type.equals(DataFlavor.stringFlavor)) {
+			return LinKlipboard.STRING_TYPE;
+		} else if (type.equals(DataFlavor.imageFlavor)) {
+			return LinKlipboard.IMAGE_TYPE;
+		} else if (type.equals(DataFlavor.javaFileListFlavor)) {
+			return LinKlipboard.FILE_TYPE;
+		} else {
+			return -1;
+		}
+	}
 
 	/** 클립보드의 Transferable 객체가 어떤 타입인지 set하고 리턴 
 	 * @param t 클립보드의 Transferable 객체

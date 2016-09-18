@@ -2,9 +2,11 @@ package transfer_manager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -12,44 +14,47 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 
-import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
-import contents.Contents;
+import contents.FileContents;
 import server_manager.LinKlipboard;
 
-public class ReceiveDataToServer extends Thread {
-	
+public class FileSendDataToServer extends Thread {
+
 	private Socket socket; // 서버와 연결할 소켓
-	private String ipAddr = LinKlipboard.SERVER_IP;
-	private final static int portNum = LinKlipboard.FTP_PORT;
-	
-	private String response; // 서버로부터 받은 응답 정보
 	private LinKlipboardClient client;
-
-	private ObjectInputStream in;
-	private ResponseHandler responseHandler; // 응답에 대한 처리
-
-	/** ReceiveDataToServer 생성자 */
-	public ReceiveDataToServer() {
-	}
 	
-	/** ReceiveDataToServer 생성자 */
-	public ReceiveDataToServer(LinKlipboardClient client) {
+	// 상대방에게 바이트 배열을 주고 받기위한 데이터 스트림 설정
+	private DataOutputStream dos;
+	private FileInputStream fis;
+	
+	FileContents extractFile;
+	
+	/** FileSendDataToServer 생성자 */
+	public FileSendDataToServer() {
+	}	
+	
+	/** FileSendDataToServer 생성자 */
+	public FileSendDataToServer(LinKlipboardClient client) {
 		this.client = client;
 	}
-	
-	/** 문자열, 이미지 데이터 수신 메소드 */
-	public void requestReceiveData() {
+
+	/** 파일 데이터 전송 메소드 */
+	public void requestSendData() {
 		try {
 			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/ReceiveDataToServer");
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/FileSendDataToServer");
 			URLConnection conn = url.openConnection();
 
 			conn.setDoOutput(true);
 
-			// 서버에 보낼 데이터(그룹이름)
+			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
 			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			String header = "groupName=" + LinKlipboardClient.getGroupName();
+			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
+
+			extractFile = new FileContents();
+			String fileName = "fileName=" + extractFile.getFileName();
+
+			String header = groupName + "&" + fileName;
 			System.out.println("보낼 전체 데이터 확인" + header); //delf
 
 			bout.write(header);
@@ -71,7 +76,6 @@ public class ReceiveDataToServer extends Thread {
 			exceptionHandling(this.response); 
 			*/ 
 			//heee
-
 			
 			String tmp = null;
 			int response = LinKlipboard.NULL;
@@ -87,7 +91,7 @@ public class ReceiveDataToServer extends Thread {
 				this.start();
 			}
 			//delf
-			
+
 			bin.close();
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
@@ -95,25 +99,14 @@ public class ReceiveDataToServer extends Thread {
 			ex.printStackTrace();
 		}
 	}
-	
-	/**
-	 * 예외 처리
-	 * @param response
-	 *            클라이언트 요청에 대한 서버의 응답
-	 */
-	public void exceptionHandling(String response) {
-		responseHandler = new ResponseHandler(response, client);
-		responseHandler.responseHandlerForTransfer();
-	}
 
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(ipAddr, portNum);
-			// 스트림 설정
-			in = new ObjectInputStream(socket.getInputStream());
-			System.out.println("연결 설정 끝"); //delf
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
+			
+			dos = new DataOutputStream(socket.getOutputStream()); // 바이트 배열을 보내기 위한 데이터스트림 생성
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -126,17 +119,32 @@ public class ReceiveDataToServer extends Thread {
 	public void run() {
 		setConnection();
 		try {
-			Contents receiveContents = (Contents) in.readObject(); // Contents
-																	// 객체 수신
-			ClipboardManager.writeClipboard(receiveContents, receiveContents.getType()); // 수신한
-																							// 시스템
-																							// 클립보드에
-																							// 삽입
-			System.out.println("데이터 받긴 받음"); //delf
-			in.close();
+			int byteSize = 65536;
+			byte[] sendFileTobyteArray = new byte[byteSize]; // 바이트 배열 생성
+
+			fis = new FileInputStream(extractFile.getSendFile()); // 파일에서 읽어오기 위한 스트림 생성
+
+			int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
+			while ((EndOfFile = fis.read(sendFileTobyteArray)) != -1) { // sendFileTobyteArray의 크기인 1024바이트 만큼 파일에서 읽어와 바이트 배열에 저장, EndOfFile에는 1024가 들어있음
+																		// 파일의 끝에 다다를때(EndOfFile=-1 일 때)까지 반복
+				dos.write(sendFileTobyteArray, 0, EndOfFile); // sendFileTobyteArray에 들어있는 바이트를 0~EndOfFile=1024 만큼 DataOutputStream으로 보냄
+			}
+
+			closeSocket();
+			
+		} catch (IOException e1) {
+			closeSocket();
+			return;
+		}
+
+	}
+	
+	/** 열려있는 소켓을 모두 닫는다. */
+	private void closeSocket() {
+		try {
+			dos.close();
+			fis.close();
 			socket.close();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

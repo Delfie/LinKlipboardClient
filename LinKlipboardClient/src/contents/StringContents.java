@@ -11,6 +11,7 @@ public class StringContents extends Contents implements Serializable {
 	
 	public StringContents() {
 		super();
+		type = LinKlipboard.STRING_TYPE;
 	}
 
 	public StringContents(String data) {
