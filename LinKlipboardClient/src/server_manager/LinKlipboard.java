@@ -34,5 +34,8 @@ public class LinKlipboard {
 	public final static String URL_To_CALL = "http://" + SERVER_IP + ":8080/LinKlipboardServerProject";
 	
 	
+	public final static int HISTORY_DEFAULT = 10;
+	public final static int HISTORY_MAX = 50;
+	
 
 }

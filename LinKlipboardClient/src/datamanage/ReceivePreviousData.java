@@ -27,7 +27,7 @@ public class ReceivePreviousData {
 	ReceivePreviousData(History history, int listIndex) {
 		this.history = history;
 		this.listIndex = listIndex;
-		this.previousData = history.getContents(listIndex); // 만드는즁
+		this.previousData = history.getRequestContents(listIndex); // 만드는즁
 		this.dataType = previousData.getType();
 		
 		receiveDataToServer();
