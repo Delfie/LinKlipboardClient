@@ -10,6 +10,7 @@ import server_manager.LinKlipboard;
 public class FileContents extends Contents implements Serializable {
 	private String fileName;
 	private long fileSize;
+	private String filePath;
 
 	public FileContents() {
 		super();

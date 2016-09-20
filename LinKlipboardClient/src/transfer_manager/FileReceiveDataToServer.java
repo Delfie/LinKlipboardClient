@@ -53,6 +53,11 @@ public class FileReceiveDataToServer extends Thread {
 	}
 	
 	/** FileReceiveDataToServer 생성자 */
+	public FileReceiveDataToServer(String fileName) {
+		this.receiveFilePath = fileReceiveDir + "\\" + fileName;
+	}
+	
+	/** FileReceiveDataToServer 생성자 */
 	public FileReceiveDataToServer(LinKlipboardClient client) {
 		this.client = client;
 		this.receiveFileName = LinKlipboardClient.getFileName();
@@ -149,44 +154,43 @@ public class FileReceiveDataToServer extends Thread {
 	@Override
 	public void run() {
 		setConnection();
-		while (true) {
-			try {
-				int byteSize = 65536;
-				byte[] ReceiveByteArrayToFile = new byte[byteSize]; // 바이트 배열 생성
+		try {
+			int byteSize = 65536;
+			byte[] ReceiveByteArrayToFile = new byte[byteSize]; // 바이트 배열 생성
 
-				fos = new FileOutputStream(receiveFilePath); // 지정한 경로에 바이트 배열을 쓰기위한 파일 스트림 생성
+			fos = new FileOutputStream(receiveFilePath); // 지정한 경로에 바이트 배열을 쓰기위한 파일 스트림 생성
 
-				int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
-				while ((EndOfFile = dis.read(ReceiveByteArrayToFile)) != -1) { // ReceiveByteArrayToFile의 크기인 1024바이트 만큼 DataInputStream에서 바이트를 읽어 바이트 배열에 저장, EndOfFile에는 1024가 들어있음
+			int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
+			while ((EndOfFile = dis.read(ReceiveByteArrayToFile)) != -1) { // ReceiveByteArrayToFile의 크기인 1024바이트 만큼 DataInputStream에서 바이트를 읽어 바이트 배열에 저장, EndOfFile에는 1024가 들어있음
 																				// DataInputStream에서 바이트를 다 읽어올 때(EndOfFile=-1 일 때)까지 반복
-					fos.write(ReceiveByteArrayToFile, 0, EndOfFile); // ReceiveByteArrayToFile에 들어있는 바이트를 0~EndOfFile=1024 만큼 FileOutputStream으로 보냄
-				}
-
-				closeSocket();
-				
-//				reply = JOptionPane.showConfirmDialog(null, "받을래?", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//				
-//				if (reply == JOptionPane.YES_OPTION) {
-//					// 받은 파일을 클립보드에 삽입
-//					setFileInClipboard(receiveFilePath + receiveFileName);
-//					System.out.println("클립보드 삽입 완료");
-//				}
-//				else {
-//					initDir();
-//				}
-				
-				createFileReceiveFolder();
-				initDir();
-				
-				setFileInClipboard(receiveFilePath);
-				System.out.println("클립보드 삽입 완료");
-				
-			} catch (IOException e) {
-				closeSocket();
-				return;
+				fos.write(ReceiveByteArrayToFile, 0, EndOfFile); // ReceiveByteArrayToFile에 들어있는 바이트를 0~EndOfFile=1024 만큼 FileOutputStream으로 보냄
 			}
+
+			closeSocket();
+				
+//			reply = JOptionPane.showConfirmDialog(null, "받을래?", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//				
+//			if (reply == JOptionPane.YES_OPTION) {
+//				// 받은 파일을 클립보드에 삽입
+//				setFileInClipboard(receiveFilePath + receiveFileName);
+//				System.out.println("클립보드 삽입 완료");
+//			}
+//			else {
+//				initDir();
+//			}
+				
+			createFileReceiveFolder();
+			initDir();
+				
+			setFileInClipboard(receiveFilePath);
+			System.out.println("클립보드 삽입 완료");
+			
+		} catch (IOException e) {
+			closeSocket();
+			return;
 		}
 	}
+	
 	
 	/** 전송받은 파일을 저장할 폴더(LinKlipboard) 생성 */ 
 	private void createFileReceiveFolder() {
