@@ -1,5 +1,8 @@
 package transfer_manager;
 
+import java.awt.HeadlessException;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -7,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -14,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 
+import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
 import contents.FileContents;
 import server_manager.LinKlipboard;
@@ -28,6 +33,7 @@ public class FileSendDataToServer extends Thread {
 	private FileInputStream fis;
 	
 	FileContents extractFile;
+	File sendFile;
 	
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer() {
@@ -51,8 +57,8 @@ public class FileSendDataToServer extends Thread {
 			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
 
-			extractFile = new FileContents();
-			String fileName = "fileName=" + extractFile.getFileName();
+			sendFile = new File(getFilePathInSystemClipboard());
+			String fileName = "fileName=" + sendFile.getName();
 
 			String header = groupName + "&" + fileName;
 			System.out.println("보낼 전체 데이터 확인" + header); //delf
@@ -106,6 +112,7 @@ public class FileSendDataToServer extends Thread {
 			// 소켓 접속 설정
 			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
 			
+			// 스트림 설정
 			dos = new DataOutputStream(socket.getOutputStream()); // 바이트 배열을 보내기 위한 데이터스트림 생성
 
 		} catch (UnknownHostException e) {
@@ -122,7 +129,7 @@ public class FileSendDataToServer extends Thread {
 			int byteSize = 65536;
 			byte[] sendFileTobyteArray = new byte[byteSize]; // 바이트 배열 생성
 
-			fis = new FileInputStream(extractFile.getSendFile()); // 파일에서 읽어오기 위한 스트림 생성
+			fis = new FileInputStream(sendFile); // 파일에서 읽어오기 위한 스트림 생성
 
 			int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
 			while ((EndOfFile = fis.read(sendFileTobyteArray)) != -1) { // sendFileTobyteArray의 크기인 1024바이트 만큼 파일에서 읽어와 바이트 배열에 저장, EndOfFile에는 1024가 들어있음
@@ -148,5 +155,27 @@ public class FileSendDataToServer extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/** @return 클립보드에 있는 파일의 경로명 */
+	public static String getFilePathInSystemClipboard() {
+
+		try {
+			//시스템 클립보드에서 내용을 추출
+			Transferable contents = ClipboardManager.getSystmeClipboardContets();
+			
+			String fileTotalPath = contents.getTransferData(ClipboardManager.setDataFlavor(contents)).toString();
+		
+			// 경로명만 얻어오기 위해 양 끝의 []를 제거
+			return fileTotalPath.substring(1, fileTotalPath.length() - 1);
+			
+		} catch (HeadlessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedFlavorException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

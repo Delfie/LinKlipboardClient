@@ -148,6 +148,7 @@ public class FileReceiveDataToServer extends Thread {
 
 	@Override
 	public void run() {
+		setConnection();
 		while (true) {
 			try {
 				int byteSize = 65536;

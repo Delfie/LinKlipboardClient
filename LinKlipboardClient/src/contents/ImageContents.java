@@ -41,6 +41,14 @@ public class ImageContents extends Contents implements Serializable {
 	public ImageIcon getImage() {
 		return imageData;
 	}
+	
+	public ImageIcon getResizingImageIcon() {
+		Image resizingImage = imageData.getImage();  // ImageIcon을 Image로 변환.
+		resizingImage = resizingImage.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH); // resize
+		ImageIcon resizingImageIcon = new ImageIcon(resizingImage); // Image로 ImageIcon 생성
+		
+		return resizingImageIcon;
+	}
 
 	@Override
 	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
