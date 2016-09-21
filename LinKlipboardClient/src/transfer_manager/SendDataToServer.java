@@ -61,7 +61,6 @@ public class SendDataToServer extends Thread {
          bout.close();
 
          // 서버로부터 받을 데이터(응답정보)
-         /*
          BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
          String response = null;
          
@@ -73,9 +72,13 @@ public class SendDataToServer extends Thread {
          bin.close();         
          
          exceptionHandling(this.response); 
-         */ 
-         //heee
+         if(responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER){
+        	 System.out.println("소켓 연결");
+        	 this.start();
+         }
+         //heee (돌아가면 나머지 데이터 송수신부분 수정하기)
          
+         /*
          String tmp = null;
          int response = LinKlipboard.NULL;
          BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -89,6 +92,7 @@ public class SendDataToServer extends Thread {
             System.out.println("소켓 연결");
             this.start();
          }
+         */
          //delf
 
          bin.close();

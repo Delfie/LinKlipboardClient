@@ -95,15 +95,13 @@ public class ResponseHandler {
 		}
 	}
 	
-	/** 데이터 전송 및 수신에 대한 응답 핸들러 */
+	/** 데이터 전송 및 수신에 대한 응답 핸들러(READY_TO_TRANSFER를 제외한 에러처리) */
 	public void responseHandlerForTransfer() {
 		seperateErrorCode();
 
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
 		if (errorCodeNum == LinKlipboard.READY_TO_TRANSFER) {
-			//소켓연결
-			System.out.println("소켓 연결");
-			//this.start(); //heee
+			//소켓연결 this.start();는 외부에서 처리
 			
 			setFileName(latterMsg);
 			System.out.println(client.getGroupName() + "의 " + latterMsg + "(파일명)을 전송받음");
@@ -123,5 +121,10 @@ public class ResponseHandler {
 	/** 전송받을 파일의 이름을 세팅 */
 	public void setFileName(String fileName){
 		client.setFileName(fileName);
+	}
+	
+	/** 에러코드를 반환 */
+	public int getErrorCodeNum(){
+		return errorCodeNum;
 	}
 }

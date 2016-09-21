@@ -3,7 +3,6 @@ package client_manager;
 import contents.Contents;
 import datamanage.History;
 import start_manager.StartToProgram;
-import transfer_manager.ReceiveDataToServer;
 import transfer_manager.SendDataToServer;
 import user_interface.UserInterface;
 

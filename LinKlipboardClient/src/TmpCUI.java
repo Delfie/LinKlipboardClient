@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 import client_manager.LinKlipboardClient;
-import transfer_manager.ReceiveDataToServer;
 import transfer_manager.SendDataToServer;
 
 public class TmpCUI {
@@ -80,10 +79,10 @@ public class TmpCUI {
 		sender.requestSendData();
 	}
 	
-	public void receiveData() {
-		ReceiveDataToServer receiver = new ReceiveDataToServer();
-		receiver.requestReceiveData();
-	}
+//	public void receiveData() {
+//		ReceiveDataToServer receiver = new ReceiveDataToServer();
+//		receiver.requestReceiveData();
+//	}
 
 	public void createGroup() {
 		System.out.println("\n - 그룹 생성 - ");
