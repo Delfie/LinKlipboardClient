@@ -24,7 +24,7 @@ public class LinKlipboardClient {
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
 	
-	ContentsReceive contentsReceive; // 서버로부터 받을 Contents
+	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
 
 	
 	/**
@@ -42,8 +42,8 @@ public class LinKlipboardClient {
 		this.history = new History();
 		
 		// 도연
-		this.contentsReceive = new ContentsReceive(); // Contents를 받는 스레드 생성
-		contentsReceive.start(); // 스레드 start
+		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
+		receiveContentsThread.start(); // 스레드 start
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class LinKlipboardClient {
 		this.history = new History();
 		
 		// 도연
-		this.contentsReceive = new ContentsReceive(); // Contents를 받는 스레드 생성
-		contentsReceive.start(); // 스레드 start
+		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
+		receiveContentsThread.start(); // 스레드 start
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
@@ -126,12 +126,10 @@ public class LinKlipboardClient {
 	}
 	
 	/** 서버가 전송하는 Contents를 받기 */
-	class ContentsReceive extends Thread {
+	class ReceiveContents extends Thread {
 		private ServerSocket listener;
 		private Socket socket;
 		private ObjectInputStream in; // Contents를 받기 위한 스트림
-		
-		private Contents receiveContents; // 서버로부터 받을 Contents
 		
 		/** 서버의 연결을 기다리는 소켓 설정 */
 		public void waitToServer() {
@@ -159,15 +157,16 @@ public class LinKlipboardClient {
 				waitToServer();
 				setConnection();
 				try {
-					receiveContents = (Contents) in.readObject(); // Contents 객체수신
-					history.addSharedContnestsInHistory(receiveContents); // history에 추가
+					latestContents = (Contents) in.readObject(); // Contents 객체수신
+					history.addSharedContnestsInHistory(latestContents); // history에 추가
 					// (알림 띄우기 추가)
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					this.start();
 				} catch (IOException e) {
-					e.printStackTrace();
+					this.start();
 				}
 			}
 		}
+		
 	}
 }
