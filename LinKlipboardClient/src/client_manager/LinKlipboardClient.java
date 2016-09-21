@@ -1,9 +1,14 @@
 package client_manager;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 import contents.Contents;
 import datamanage.History;
+import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
-import transfer_manager.SendDataToServer;
 import user_interface.UserInterface;
 
 public class LinKlipboardClient {
@@ -18,6 +23,8 @@ public class LinKlipboardClient {
 
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
+	
+	ContentsReceive contentsReceive; // 서버로부터 받을 Contents
 
 	
 	/**
@@ -33,6 +40,10 @@ public class LinKlipboardClient {
 		this.password = groupPassword;
 		this.startHandler = new StartToProgram(this); //생성/접속할때만 생성하도록 하까?
 		this.history = new History();
+		
+		// 도연
+		this.contentsReceive = new ContentsReceive(); // Contents를 받는 스레드 생성
+		contentsReceive.start(); // 스레드 start
 	}
 
 	/**
@@ -50,6 +61,10 @@ public class LinKlipboardClient {
 		this.screen = screen;
 		this.startHandler = new StartToProgram(this);
 		this.history = new History();
+		
+		// 도연
+		this.contentsReceive = new ContentsReceive(); // Contents를 받는 스레드 생성
+		contentsReceive.start(); // 스레드 start
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
@@ -95,6 +110,11 @@ public class LinKlipboardClient {
 		return fileName;
 	}
 	
+	/** 클라이언트가 공유한 최근 Contents 반환 */
+	public Contents getLatestContents() {
+		return latestContents;
+	}
+	
 	/** 클라이언트의 닉네임을 세팅 */
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
@@ -103,5 +123,51 @@ public class LinKlipboardClient {
 	/** 클라이언트가 전송받을 파일 이름을 세팅 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	
+	/** 서버가 전송하는 Contents를 받기 */
+	class ContentsReceive extends Thread {
+		private ServerSocket listener;
+		private Socket socket;
+		private ObjectInputStream in; // Contents를 받기 위한 스트림
+		
+		private Contents receiveContents; // 서버로부터 받을 Contents
+		
+		/** 서버의 연결을 기다리는 소켓 설정 */
+		public void waitToServer() {
+			try {
+				listener = new ServerSocket(LinKlipboard.FTP_PORT);
+				socket = listener.accept();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		/** 서버와의 연결을 위한 스트림 설정 */
+		public void setConnection() {
+			try {
+				in = new ObjectInputStream(socket.getInputStream()); //스트림 설정
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("연결 설정 끝");
+		}
+		
+		@Override
+		public void run() {
+			while (true) {
+				waitToServer();
+				setConnection();
+				try {
+					receiveContents = (Contents) in.readObject(); // Contents 객체수신
+					history.addSharedContnestsInHistory(receiveContents); // history에 추가
+					// (알림 띄우기 추가)
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
