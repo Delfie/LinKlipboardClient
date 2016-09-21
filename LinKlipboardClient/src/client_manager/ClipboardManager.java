@@ -91,18 +91,18 @@ public class ClipboardManager {
 
 			// 클립보드의 내용을 추출
 			if (type == LinKlipboard.STRING_TYPE) {
-				System.out.println("문자열이에여"); //heee
+				System.out.println("[ClipboardManager]전송 객체의 타입: 문자열"); 
 				extractString = (String) contents.getTransferData(DataFlavor.stringFlavor); // Transferable객체를 String으로 변환
 				sendObject = new StringContents(extractString); // 클립보드로 부터 추출한 String으로 전송객체 생성
 
 			}
 			else if (type == LinKlipboard.IMAGE_TYPE) {
-				System.out.println("이미지에여"); //heee
+				System.out.println("[ClipboardManager]전송 객체의 타입: 이미지"); 
 	            extractImage = (Image) contents.getTransferData(DataFlavor.imageFlavor); // Transferable객체를 ImageIcon으로 변환
 	            sendObject = new ImageContents(extractImage); // 클립보드로 부터 추출한 ImageIcon으로 전송객체 생성
 	         }
 			else {
-
+				System.out.println("[ClipboardManager]전송 객체의 타입: 문자열, 이미지가 아님");
 			}
 
 			return sendObject;
@@ -115,7 +115,7 @@ public class ClipboardManager {
 		return null;
 	}
 
-	/** 전송받은 Contents 객체를 Transferable해서 클립보드에 삽입 
+	/** 전송받은 Contents 객체를 Transferable해서 클립보드에 삽입(문자열, 이미지인 경우) 
 	 * @param data 전송받은 데이터
 	 * @param dataType 전송받은 데이터 타입 */
 	public static void writeClipboard(Contents data, int dataType) {
@@ -133,8 +133,6 @@ public class ClipboardManager {
 			Image tmpImage = ImageData.getImage().getImage(); // ImageContent의 ImageIcon을 얻고 ImageIcon의 Image를 얻어옴
 			ImageTransferable Imagetransferable = new ImageTransferable(tmpImage); // 클립보드에 넣을 수 있는 Transferable 객체 생성
 			systemClipboard.setContents(Imagetransferable, null); // 시스템 클립보드에 삽입
-			break;
-		case LinKlipboard.FILE_TYPE:
 			break;
 		default:
 			break;

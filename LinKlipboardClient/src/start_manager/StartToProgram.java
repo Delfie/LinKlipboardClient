@@ -88,7 +88,12 @@ public class StartToProgram {
 		 */
 		public void exceptionHandling(String response) {
 			responseHandler = new ResponseHandler(response, client);
-			responseHandler.responseHandlerForStart();
+			if(response != null){
+				responseHandler.responseHandlerForStart();
+			}
+			else{
+				System.out.println("[StartToProgram] Error!!!! 서버가 보낸 response가 null임");
+			}
 		}
 		
 		/** 서버로부터 받은 오류 정보를 반환 */

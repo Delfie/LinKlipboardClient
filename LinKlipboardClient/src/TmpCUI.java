@@ -2,7 +2,9 @@ import java.util.Scanner;
 
 import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
+import contents.Contents;
 import server_manager.LinKlipboard;
+import transfer_manager.FileReceiveDataToServer;
 import transfer_manager.FileSendDataToServer;
 import transfer_manager.SendDataToServer;
 
@@ -73,12 +75,11 @@ public class TmpCUI {
 			else{
 				sendData();
 			}
-			
 			break;
 			
 		case "2":
+			receiveData();
 			break;
-			//receiveData();
 		default:
 			break;
 		}
@@ -94,10 +95,23 @@ public class TmpCUI {
 		sender.requestSendData();
 	}
 	
-//	public void receiveData() {
-//		ReceiveDataToServer receiver = new ReceiveDataToServer();
-//		receiver.requestReceiveData();
-//	}
+	
+	public void receiveData() {
+		Contents latestContentsFromServer = client.getLatestContents();
+		int latestContentsType = client.getLatestContents().getType();
+		
+		if(latestContentsType == LinKlipboard.FILE_TYPE){
+			FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
+			receiver.requestReceiveData();
+		}
+		else if(latestContentsType == LinKlipboard.STRING_TYPE || latestContentsType == LinKlipboard.IMAGE_TYPE){
+			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+		}
+		else{
+			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
+		}
+	}
+	
 
 	public void createGroup() {
 		System.out.println("\n - 그룹 생성 - ");

@@ -15,10 +15,15 @@ import contents.Contents;
 import contents.FileContents;
 import server_manager.LinKlipboard;
 import transfer_manager.FileReceiveDataToServer;
+import transfer_manager.ResponseHandler;
 
 public class ReceivePreviousData {
 	private Contents previousData; // 클립보드에 삽입할 데이터
-	private History history; // 히스토리
+	
+	private String response; // 서버로부터 받은 응답 정보
+	private ResponseHandler responseHandler; // 응답에 대한 처리
+	
+	private LinKlipboardClient client;
 	
 	private int dataType; 
 	private int listIndex;
@@ -34,10 +39,9 @@ public class ReceivePreviousData {
 	/** ReceivePreviousData 생성자 
 	 * @param history 사용자가 가지고 있던 history 정보
 	 * @param listIndex history에서 받기를 원하는 Contents의 index값 */
-	public ReceivePreviousData(History history, int listIndex) {
-		this.history = history;
+	public ReceivePreviousData(LinKlipboardClient client, int listIndex) {
 		this.listIndex = listIndex;
-		this.previousData = history.getRequestContents(listIndex); 
+		this.previousData = client.getHistory().getRequestContents(listIndex); 
 		this.dataType = previousData.getType();
 		
 		receiveDataInClipboard();
@@ -72,51 +76,51 @@ public class ReceivePreviousData {
 			String header = "groupName=" + LinKlipboardClient.getGroupName() + "&";
 			header += "index=" + listIndex + "\r\n";
 			
-			System.out.println("보낼 전체 데이터 확인" + header); //delf
+			System.out.println("[ReceivePreviousData] 보낼 전체 데이터 확인" + header); //delf
 
 			bout.write(header);
 			bout.flush();
 			bout.close();
 
 			// 서버로부터 받을 데이터(응답정보)
-			/*
 			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String response = null;
-			
+
 			if ((response = bin.readLine()) != null) {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + this.response); //delf
-			bin.close();			
-			
-			exceptionHandling(this.response); 
-			*/ 
-			//heee
+			System.out.println("[ReceivePreviousData] 서버로부터의 응답 데이터 확인: " + this.response); // delf
+			bin.close();
 
-			
-			String tmp = null;
-			int response = LinKlipboard.NULL;
-			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			exceptionHandling(this.response);
 
-			while ((tmp = bin.readLine()) != null) {
-				response = Integer.parseInt(tmp);
-			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + response);
-			
-			if (response == LinKlipboard.READY_TO_TRANSFER) {
-				System.out.println("소켓 연결");
+			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
+				System.out.println("[ReceivePreviousData] 소켓 연결");
 				fileReceive.start();
 			}
-			//delf
-			
-			//exceptionHandling(this.response); // heee
-			
 			bin.close();
+			
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 예외 처리
+	 * 
+	 * @param response
+	 *            클라이언트 요청에 대한 서버의 응답
+	 */
+	public void exceptionHandling(String response) {
+		responseHandler = new ResponseHandler(response, client);
+		if(response != null){
+			responseHandler.responseHandlerForTransfer();
+		}
+		else{
+			System.out.println("Error!!!! 서버가 보낸 response가 null임");
 		}
 	}
 }

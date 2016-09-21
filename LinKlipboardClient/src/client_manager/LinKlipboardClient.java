@@ -115,6 +115,11 @@ public class LinKlipboardClient {
 		return latestContents;
 	}
 	
+	/** 클라이언트의 history 반환 */
+	public History getHistory(){
+		return history;
+	}
+	
 	/** 클라이언트의 닉네임을 세팅 */
 	public void setNickName(String nickName) {
 		this.nickName = nickName;

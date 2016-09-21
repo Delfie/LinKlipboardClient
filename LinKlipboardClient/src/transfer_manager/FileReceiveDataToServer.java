@@ -77,7 +77,7 @@ public class FileReceiveDataToServer extends Thread {
 			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			String header = "groupName=" + LinKlipboardClient.getGroupName();
 
-			System.out.println("보낼 전체 데이터 확인" + header); // delf
+			System.out.println("[FileReceiveDataToServer] 보낼 전체 데이터 확인" + header); // delf
 
 			bout.write(header);
 			bout.flush();
@@ -91,13 +91,13 @@ public class FileReceiveDataToServer extends Thread {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + this.response); // delf
+			System.out.println("[FileReceiveDataToServer] 서버로부터의 응답 데이터 확인: " + this.response); // delf
 			bin.close();
 
 			exceptionHandling(this.response);
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
-				System.out.println("소켓 연결");
+				System.out.println("[FileReceiveDataToServer] 소켓 연결");
 				this.start();
 			}
 
@@ -117,7 +117,12 @@ public class FileReceiveDataToServer extends Thread {
 	 */
 	public void exceptionHandling(String response) {
 		responseHandler = new ResponseHandler(response, client);
-		responseHandler.responseHandlerForTransfer();
+		if(response != null){
+			responseHandler.responseHandlerForTransfer();
+		}
+		else{
+			System.out.println("[FileReceiveDataToServer] Error!!!! 서버가 보낸 response가 null임");
+		}
 	}
 
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */
@@ -127,7 +132,7 @@ public class FileReceiveDataToServer extends Thread {
 			socket = new Socket(ipAddr, portNum);
 			// 스트림 설정
 			dis = new DataInputStream(socket.getInputStream()); // 바이트 배열을 받기 위한 데이터스트림 생성
-			System.out.println("연결 설정 끝"); // delf
+			System.out.println("[FileReceiveDataToServer] 연결 설정 끝"); // delf
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -168,7 +173,7 @@ public class FileReceiveDataToServer extends Thread {
 			initDir();
 
 			setFileInClipboard(receiveFilePath);
-			System.out.println("클립보드 삽입 완료");
+			System.out.println("[FileReceiveDataToServer] 클립보드 삽입 완료");
 
 		} catch (IOException e) {
 			closeSocket();
