@@ -64,7 +64,7 @@ public class FileSendDataToServer extends Thread {
 			String fileName = "fileName=" + sendFile.getName();
 
 			String header = groupName + "&" + fileName;
-			System.out.println("보낼 전체 데이터 확인" + header); // delf
+			System.out.println("[FileSendDataToServer] 보낼 전체 데이터 확인" + header); // delf
 
 			bout.write(header);
 			bout.flush();
@@ -78,12 +78,12 @@ public class FileSendDataToServer extends Thread {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + this.response); // delf
+			System.out.println("[FileSendDataToServer] 서버로부터의 응답 데이터 확인: " + this.response); // delf
 			bin.close();
 
 			exceptionHandling(this.response);
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
-				System.out.println("소켓 연결");
+				System.out.println("[FileSendDataToServer] 소켓 연결");
 				this.start();
 			}
 
@@ -103,7 +103,12 @@ public class FileSendDataToServer extends Thread {
 	 */
 	public void exceptionHandling(String response) {
 		responseHandler = new ResponseHandler(response, client);
-		responseHandler.responseHandlerForTransfer();
+		if(response != null){
+			responseHandler.responseHandlerForTransfer();
+		}
+		else{
+			System.out.println("[FileSendDataToServer] Error!!!! 서버가 보낸 response가 null임");
+		}
 	}
 
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */

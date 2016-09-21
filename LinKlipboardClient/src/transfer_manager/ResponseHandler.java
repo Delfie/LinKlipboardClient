@@ -1,4 +1,5 @@
 package transfer_manager;
+
 import java.util.StringTokenizer;
 
 import client_manager.LinKlipboardClient;
@@ -17,7 +18,6 @@ public class ResponseHandler {
 
 	private LinKlipboardClient client;
 
-	
 	/** ResponseHandler 생성자 */
 	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client) {
 		this.responseWholeMsg = responseWholeMsg;
@@ -30,15 +30,14 @@ public class ResponseHandler {
 
 		errorCodeNum = Integer.parseInt(tokens.nextToken());
 		setErrorMsg(errorCodeNum);
-		
-		
-		//TEST
-		System.out.println("latterMsg 자르기 전: " + latterMsg);
-		
-		//뒤에 추가로 String이 있으면 
-		if(tokens.hasMoreTokens() == true){
+
+		// TEST
+		System.out.println("[ResponseHandler] latterMsg 자르기 전: " + latterMsg);
+
+		// 뒤에 추가로 String이 있으면
+		if (tokens.hasMoreTokens() == true) {
 			latterMsg = tokens.nextToken();
-			System.out.println("latterMsg 자른 후: " + latterMsg);
+			System.out.println("[ResponseHandler] latterMsg 자른 후: " + latterMsg);
 		}
 	}
 
@@ -81,7 +80,7 @@ public class ResponseHandler {
 		case LinKlipboard.NULL:
 			errorMsg = "NULL";
 			break;
-		default: 
+		default:
 			System.out.println(errorCodeNum);
 			errorMsg = "알수 없는 오류";
 			break;
@@ -95,25 +94,25 @@ public class ResponseHandler {
 		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
 		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setDefaultNickName(latterMsg);
-			System.out.println(client.getGroupName() + "의 " + latterMsg + "(닉네임)가  접속");
+			System.out.println("[ResponseHandler] " + client.getGroupName() + "의 " + latterMsg + "(닉네임)가  접속");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
 			// 사용자 인터페이스에 에러상태 표시
-			//client.updateErrorState(errorMsg);
+			// client.updateErrorState(errorMsg);
 			System.out.println(errorMsg);
 		}
 	}
-	
+
 	/** 데이터 전송 및 수신에 대한 응답 핸들러(READY_TO_TRANSFER를 제외한 에러처리) */
 	public void responseHandlerForTransfer() {
 		seperateErrorCode();
 
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
 		if (errorCodeNum == LinKlipboard.READY_TO_TRANSFER) {
-			//소켓연결 this.start();는 외부에서 처리
+			// 소켓연결 this.start();는 외부에서 처리
 			setFileName(latterMsg);
-			System.out.println(client.getGroupName() + "의 " + latterMsg + "(파일명)을 전송받음");
+			System.out.println("[ResponseHandler] " + client.getGroupName() + "의 " + latterMsg + "(파일명)을 전송받음");
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
@@ -129,12 +128,12 @@ public class ResponseHandler {
 	}
 
 	/** 전송받을 파일의 이름을 세팅 */
-	public void setFileName(String fileName){
+	public void setFileName(String fileName) {
 		client.setFileName(fileName);
 	}
-	
+
 	/** 에러코드를 반환 */
-	public int getErrorCodeNum(){
+	public int getErrorCodeNum() {
 		return errorCodeNum;
 	}
 }

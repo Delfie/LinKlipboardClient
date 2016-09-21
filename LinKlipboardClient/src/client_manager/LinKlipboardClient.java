@@ -24,7 +24,7 @@ public class LinKlipboardClient {
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
 	
-	ReceiveContents receiveContentsThread; // 서버로부터 Contents를 받는 Thread
+	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
 
 	
 	/**
@@ -113,6 +113,11 @@ public class LinKlipboardClient {
 	/** 클라이언트가 공유한 최근 Contents 반환 */
 	public Contents getLatestContents() {
 		return latestContents;
+	}
+	
+	/** 클라이언트의 history 반환 */
+	public History getHistory(){
+		return history;
 	}
 	
 	/** 클라이언트의 닉네임을 세팅 */
