@@ -97,6 +97,9 @@ public class TmpCUI {
 	
 	
 	public void receiveData() {
+		/*
+		 * 
+		//파일이 무엇인지에 따라서 판단
 		Contents latestContentsFromServer = client.getLatestContents();
 		int latestContentsType = client.getLatestContents().getType();
 		
@@ -110,6 +113,10 @@ public class TmpCUI {
 		else{
 			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
 		}
+		*/
+		
+		FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
+		receiver.requestReceiveData();
 	}
 	
 

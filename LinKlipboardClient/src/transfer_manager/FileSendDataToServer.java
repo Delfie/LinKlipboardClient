@@ -131,8 +131,7 @@ public class FileSendDataToServer extends Thread {
 	public void run() {
 		setConnection();
 		try {
-			int byteSize = 65536;
-			byte[] sendFileTobyteArray = new byte[byteSize]; // 바이트 배열 생성
+			byte[] sendFileTobyteArray = new byte[LinKlipboard.byteSize]; // 바이트 배열 생성
 
 			fis = new FileInputStream(sendFile); // 파일에서 읽어오기 위한 스트림 생성
 
