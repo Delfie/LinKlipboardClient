@@ -24,7 +24,7 @@ public class LinKlipboardClient {
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
 	
-	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
+	ReceiveContents receiveContentsThread; // 서버로부터 Contents를 받는 Thread
 
 	
 	/**
