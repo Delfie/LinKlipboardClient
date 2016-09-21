@@ -49,9 +49,9 @@ public class History {
 	}
 
 	/** 전달받은 Contents가 어떤 타입인지에 따라서 resizingImgContents를 세팅 */
-	public void setResizingImgContents(Contents latestContents) {
-		if (latestContents.getType() == LinKlipboard.IMAGE_TYPE) {
-			ImageContents ImageData = (ImageContents) latestContents;
+	public void setResizingImgContents(Contents Contents) {
+		if (Contents.getType() == LinKlipboard.IMAGE_TYPE) {
+			ImageContents ImageData = (ImageContents) Contents;
 			this.resizingImgContents.add(ImageData.getResizingImageIcon());
 		} else {
 			this.resizingImgContents.add(null);

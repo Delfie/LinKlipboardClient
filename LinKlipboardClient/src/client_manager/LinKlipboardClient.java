@@ -11,14 +11,14 @@ public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName; // 닉네임
+	
 	private static String fileName; // 전송받을 파일이름
+	
 	private History history; // 히스토리(미완)
-	private Contents latestContents; //최신데이터(미완)
+	private static Contents latestContents; //최신데이터(미완)
 
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
-	SendDataToServer sendDataHandler;
-	ReceiveDataToServer receiveDataHandler;
 
 	
 	/**
@@ -33,6 +33,7 @@ public class LinKlipboardClient {
 		this.groupName = groupName;
 		this.password = groupPassword;
 		this.startHandler = new StartToProgram(this); //생성/접속할때만 생성하도록 하까?
+		this.history = new History();
 	}
 
 	/**
@@ -49,6 +50,7 @@ public class LinKlipboardClient {
 		this.password = groupPassword;
 		this.screen = screen;
 		this.startHandler = new StartToProgram(this);
+		this.history = new History();
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
