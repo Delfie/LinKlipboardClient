@@ -27,18 +27,21 @@ public class FileSendDataToServer extends Thread {
 
 	private Socket socket; // 서버와 연결할 소켓
 	private LinKlipboardClient client;
-	
+
+	private String response; // 서버로부터 받은 응답 정보
+	private ResponseHandler responseHandler; // 응답에 대한 처리
+
 	// 상대방에게 바이트 배열을 주고 받기위한 데이터 스트림 설정
 	private DataOutputStream dos;
 	private FileInputStream fis;
-	
+
 	FileContents extractFile;
 	File sendFile;
-	
+
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer() {
-	}	
-	
+	}
+
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer(LinKlipboardClient client) {
 		this.client = client;
@@ -48,7 +51,7 @@ public class FileSendDataToServer extends Thread {
 	public void requestSendData() {
 		try {
 			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/FileSendDataToServer");
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/SendDataToServer");
 			URLConnection conn = url.openConnection();
 
 			conn.setDoOutput(true);
@@ -61,42 +64,28 @@ public class FileSendDataToServer extends Thread {
 			String fileName = "fileName=" + sendFile.getName();
 
 			String header = groupName + "&" + fileName;
-			System.out.println("보낼 전체 데이터 확인" + header); //delf
+			System.out.println("보낼 전체 데이터 확인" + header); // delf
 
 			bout.write(header);
 			bout.flush();
 			bout.close();
 
 			// 서버로부터 받을 데이터(응답정보)
-			/*
 			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String response = null;
-			
+
 			if ((response = bin.readLine()) != null) {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + this.response); //delf
-			bin.close();			
-			
-			exceptionHandling(this.response); 
-			*/ 
-			//heee
-			
-			String tmp = null;
-			int response = LinKlipboard.NULL;
-			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			System.out.println("서버로부터의 응답 데이터 확인: " + this.response); // delf
+			bin.close();
 
-			while ((tmp = bin.readLine()) != null) {
-				response = Integer.parseInt(tmp);
-			}
-			System.out.println("서버로부터의 응답 데이터 확인: " + response);
-			
-			if (response == LinKlipboard.READY_TO_TRANSFER) {
+			exceptionHandling(this.response);
+			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("소켓 연결");
 				this.start();
 			}
-			//delf
 
 			bin.close();
 		} catch (MalformedURLException ex) {
@@ -106,12 +95,23 @@ public class FileSendDataToServer extends Thread {
 		}
 	}
 
+	/**
+	 * 예외 처리
+	 * 
+	 * @param response
+	 *            클라이언트 요청에 대한 서버의 응답
+	 */
+	public void exceptionHandling(String response) {
+		responseHandler = new ResponseHandler(response, client);
+		responseHandler.responseHandlerForTransfer();
+	}
+
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
 			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
-			
+
 			// 스트림 설정
 			dos = new DataOutputStream(socket.getOutputStream()); // 바이트 배열을 보내기 위한 데이터스트림 생성
 
@@ -138,14 +138,14 @@ public class FileSendDataToServer extends Thread {
 			}
 
 			closeSocket();
-			
+
 		} catch (IOException e1) {
 			closeSocket();
 			return;
 		}
 
 	}
-	
+
 	/** 열려있는 소켓을 모두 닫는다. */
 	private void closeSocket() {
 		try {
@@ -156,19 +156,19 @@ public class FileSendDataToServer extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** @return 클립보드에 있는 파일의 경로명 */
 	public static String getFilePathInSystemClipboard() {
 
 		try {
-			//시스템 클립보드에서 내용을 추출
+			// 시스템 클립보드에서 내용을 추출
 			Transferable contents = ClipboardManager.getSystmeClipboardContets();
-			
+
 			String fileTotalPath = contents.getTransferData(ClipboardManager.setDataFlavor(contents)).toString();
-		
+
 			// 경로명만 얻어오기 위해 양 끝의 []를 제거
 			return fileTotalPath.substring(1, fileTotalPath.length() - 1);
-			
+
 		} catch (HeadlessException e) {
 			e.printStackTrace();
 		} catch (UnsupportedFlavorException e) {

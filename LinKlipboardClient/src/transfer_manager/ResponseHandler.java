@@ -31,9 +31,14 @@ public class ResponseHandler {
 		errorCodeNum = Integer.parseInt(tokens.nextToken());
 		setErrorMsg(errorCodeNum);
 		
+		
+		//TEST
+		System.out.println("latterMsg 자르기 전: " + latterMsg);
+		
 		//뒤에 추가로 String이 있으면 
 		if(tokens.hasMoreTokens() == true){
 			latterMsg = tokens.nextToken();
+			System.out.println("latterMsg 자른 후: " + latterMsg);
 		}
 	}
 
@@ -42,6 +47,9 @@ public class ResponseHandler {
 		switch (errorCodeNum) {
 		case LinKlipboard.ACCESS_PERMIT:
 			errorMsg = "접속 허용";
+			break;
+		case LinKlipboard.READY_TO_TRANSFER:
+			errorMsg = "전송 준비";
 			break;
 		case LinKlipboard.ERROR_DUPLICATED_GROUPNAME:
 			errorMsg = "그룹명 중복";
@@ -74,6 +82,7 @@ public class ResponseHandler {
 			errorMsg = "NULL";
 			break;
 		default: 
+			System.out.println(errorCodeNum);
 			errorMsg = "알수 없는 오류";
 			break;
 		}
@@ -91,7 +100,8 @@ public class ResponseHandler {
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
 			// 사용자 인터페이스에 에러상태 표시
-			client.updateErrorState(errorMsg);
+			//client.updateErrorState(errorMsg);
+			System.out.println(errorMsg);
 		}
 	}
 	
@@ -102,7 +112,6 @@ public class ResponseHandler {
 		// 만약 errorCode가 READY_TO_TRANSFER이면 소켓을 연다
 		if (errorCodeNum == LinKlipboard.READY_TO_TRANSFER) {
 			//소켓연결 this.start();는 외부에서 처리
-			
 			setFileName(latterMsg);
 			System.out.println(client.getGroupName() + "의 " + latterMsg + "(파일명)을 전송받음");
 		}
@@ -110,6 +119,7 @@ public class ResponseHandler {
 		else {
 			// 사용자 인터페이스에 에러상태 표시
 			// client.updateErrorState(errorMsg);
+			System.out.println(errorMsg);
 		}
 	}
 

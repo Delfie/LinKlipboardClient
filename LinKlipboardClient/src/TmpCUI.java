@@ -1,6 +1,9 @@
 import java.util.Scanner;
 
+import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
+import server_manager.LinKlipboard;
+import transfer_manager.FileSendDataToServer;
 import transfer_manager.SendDataToServer;
 
 public class TmpCUI {
@@ -64,16 +67,28 @@ public class TmpCUI {
 		System.out.print("1. 전송 / 2. 수신\n>> ");
 		switch (s.next()) {
 		case "1":
-			sendData();
+			if(ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE){
+				fileSendDataToServer();
+			}
+			else{
+				sendData();
+			}
+			
 			break;
 			
 		case "2":
 			break;
+			//receiveData();
 		default:
 			break;
 		}
 	}
 	
+	public void fileSendDataToServer() {
+		FileSendDataToServer sender = new FileSendDataToServer(client);
+		sender.requestSendData();
+	}
+
 	public void sendData() {
 		SendDataToServer sender = new SendDataToServer();
 		sender.requestSendData();

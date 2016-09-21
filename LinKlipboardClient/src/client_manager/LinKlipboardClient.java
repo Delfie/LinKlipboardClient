@@ -9,9 +9,9 @@ import user_interface.UserInterface;
 public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
-	private String nickName; // 닉네임
+	private String nickName = null; // 닉네임
 	
-	private static String fileName; // 전송받을 파일이름
+	private static String fileName = null; // 전송받을 파일이름
 	
 	private History history; // 히스토리(미완)
 	private static Contents latestContents; //최신데이터(미완)
