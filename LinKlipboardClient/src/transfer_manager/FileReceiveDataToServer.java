@@ -64,7 +64,7 @@ public class FileReceiveDataToServer extends Thread {
 		this.receiveFilePath = fileReceiveDir + "\\" + this.receiveFileName;
 	}
 	
-	/** 파일 데이터 수신 메소드 */
+	/** 파일 데이터 수신 메소드 (FileReceiveDataToServer 서블릿 호출) */
 	public void requestReceiveData() {
 		try {
 			// 호출할 서블릿의 주소

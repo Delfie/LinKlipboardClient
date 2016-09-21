@@ -39,7 +39,7 @@ public class SendDataToServer extends Thread {
 		this.client = client;
 	}
 
-	/** 문자열, 이미지 데이터 전송 메소드 */
+	/** 문자열, 이미지 데이터 전송 메소드 (SendDataToServer 서블릿 호출) */
 	public void requestSendData() {
 		try {
 			// 호출할 서블릿의 주소

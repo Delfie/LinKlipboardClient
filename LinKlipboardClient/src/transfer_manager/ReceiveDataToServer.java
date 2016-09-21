@@ -38,7 +38,7 @@ public class ReceiveDataToServer extends Thread {
 		this.client = client;
 	}
 	
-	/** 문자열, 이미지 데이터 수신 메소드 */
+	/** 문자열, 이미지 데이터 수신 메소드 (ReceiveDataToServer 서블릿 호출) */
 	public void requestReceiveData() {
 		try {
 			// 호출할 서블릿의 주소

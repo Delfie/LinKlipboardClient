@@ -44,7 +44,7 @@ public class FileSendDataToServer extends Thread {
 		this.client = client;
 	}
 
-	/** 파일 데이터 전송 메소드 */
+	/** 파일 데이터 전송 메소드 (FileSendDataToServer 서블릿 호출) */
 	public void requestSendData() {
 		try {
 			// 호출할 서블릿의 주소

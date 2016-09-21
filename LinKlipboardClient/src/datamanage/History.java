@@ -1,5 +1,6 @@
 package datamanage;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -19,11 +20,6 @@ public class History {
 		resizingImgContents = new Vector<ImageIcon>();
 		historySize = LinKlipboard.HISTORY_DEFAULT;
 	}
-	
-//	/** Vector<Contents>에 있는 Contents들이 어떤 타입인지에 따라서 resizingImgContents 초기화 */
-//	public void InitSharedContnestsInHistory() {
-//		// Vector<Contents> 값을 돌면서 Vector<ImageIcon>를 채워 넣는다.
-//	}
 
 	/**
 	 * 전달받은 latestContents를 Vector<Contents>에 넣고 Contents의 타입이 이미지 이면 Vector<ImageIcon> 에 resizing된 이미지를 넣음
@@ -47,6 +43,9 @@ public class History {
 	/** Vector<Contents>에 있는 Contents들이 어떤 타입인지에 따라서 resizingImgContents 초기화 */
 	public void InitResizingImgContents() {
 		// Vector<Contents> 값을 돌면서 Vector<ImageIcon>를 채워 넣는다.
+		for(int i=0; i<sharedContents.size(); i++){
+			setResizingImgContents(sharedContents.elementAt(i)); 
+		}
 	}
 
 	/** 전달받은 Contents가 어떤 타입인지에 따라서 resizingImgContents를 세팅 */
@@ -64,9 +63,14 @@ public class History {
 		this.historySize = historySize;
 	}
 	
+	/** Vector<Contents>와 Vector<ImageIcon>를 세팅 */
+	public void setVector(Vector<Contents> sharedContents, Vector<ImageIcon> resizingImgContents) {
+		this.sharedContents = sharedContents;
+		this.resizingImgContents = resizingImgContents;
+	}
+	
 	/** index에 해당하는 Contents를 반환 */
 	public Contents getRequestContents(int index) {
-		// index에 해당하는 Contents를 리턴????????
 		return sharedContents.elementAt(index);
 	}
 

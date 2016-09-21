@@ -1,10 +1,14 @@
 package datamanage;
 
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+
 import contents.Contents;
 
 public class ReceiveHistoryList {
 	private History history;
-	private Contents latestContents;
+	//private Contents latestContents; // 가장 최근에 공유한 Contents
 	
 	/** ReceiveHistoryList 생성자 */
 	public ReceiveHistoryList() {
@@ -15,15 +19,17 @@ public class ReceiveHistoryList {
 	 * @param history 서버에서 넘겨준 History 객체 */
 	public ReceiveHistoryList(History history) {
 		this.history = history;
-		this.latestContents = null;
+		
+		updateHistoryList();
 	}
 	
-	/** 히스토리 업데이트 시  
+	/** 히스토리 업데이트 시(히스토리 보기 버튼을 눌러 업데이트)  
 	 * History 객체를 넘겨받아서 set해줘야 되나???????????(no!!! setHistory해) */
 	public void updateHistoryList(){
 		//서버가 준 history의 Vector<Contents>에 따른 resizingImgContents을 초기화
 		history.InitResizingImgContents();		
 		//ui업데이트
+		//외부로 나와서 사용자의 히스토리정보 업데이트... (history setSharedContents()메소드 이용)
 	}
 	
 	/** sharedContents 업로드 시 서버에서 최신 Contents를 넘겨받음 */
@@ -33,14 +39,14 @@ public class ReceiveHistoryList {
 		//ui업데이트
 	}
 	
-	/** history를 세팅 */
-	public void setHistory(History history){
-		this.history = history;
+	/** history의 Vector<Contents>를 반환 */
+	public Vector<Contents> getSharedContents(){
+		return history.getSharedContents();
 	}
 	
-	/** 최신 데이터(latestContents)를 세팅 */
-	public void setLatestContents(Contents latestContents){
-		this.latestContents = latestContents;
+	/** history의 Vector<ImageIcon>를 반환 */
+	public Vector<ImageIcon> getResizingImgContents(){
+		return history.getResizingImgContents();
 	}
 	
 	//ui업데이트?
