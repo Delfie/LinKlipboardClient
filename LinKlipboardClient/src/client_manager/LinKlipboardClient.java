@@ -83,7 +83,7 @@ public class LinKlipboardClient {
 	}
 
 	/** 폴더 안의 파일들을 삭제(파일인 경우만 생각.) */
-	public void initDir() {
+	public static void initDir() {
 		File[] innerFile = fileReceiveFolder.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
 
 		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
@@ -158,6 +158,12 @@ public class LinKlipboardClient {
 	/** 클라이언트가 전송받을 파일 이름을 세팅 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	
+	// 도연 히스토리 테스트
+	/** 클라이언트가 공유한 최근 Contents를 히스토리의 마지막 Contest로 세팅 */
+	public void settLatestContents() {
+		this.latestContents = history.getlastContents();
 	}
 	
 	

@@ -123,6 +123,10 @@ public class SendDataToServer extends Thread {
 		setConnection();
 		try {
 			Contents sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
+			
+			// 도연 히스토리 테스트
+			client.getHistory().addSharedContnestsInHistory(sendContents);
+			
 			out.writeObject(sendContents); // Contents 객체 전송
 			out.close();
 			socket.close();

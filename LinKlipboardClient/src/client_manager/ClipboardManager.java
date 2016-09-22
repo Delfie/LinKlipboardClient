@@ -94,6 +94,7 @@ public class ClipboardManager {
 				System.out.println("[ClipboardManager]전송 객체의 타입: 문자열"); 
 				extractString = (String) contents.getTransferData(DataFlavor.stringFlavor); // Transferable객체를 String으로 변환
 				sendObject = new StringContents(extractString); // 클립보드로 부터 추출한 String으로 전송객체 생성
+				System.out.println("서버에 보낼 contents의 타입: " +  sendObject.getType());
 
 			}
 			else if (type == LinKlipboard.IMAGE_TYPE) {

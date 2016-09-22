@@ -3,6 +3,8 @@ import java.util.Scanner;
 import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
 import contents.Contents;
+import contents.FileContents;
+import contents.StringContents;
 import server_manager.LinKlipboard;
 import transfer_manager.FileReceiveDataToServer;
 import transfer_manager.FileSendDataToServer;
@@ -74,7 +76,7 @@ public class TmpCUI {
 	}
 
 	private void menu() {
-		System.out.print("1. 전송 / 2. 수신\n>> ");
+		System.out.print("1. 전송 / 2. 수신 / 3. 히스토리 목록 보기 / 4. 히스토리의 원하는 데이터 받기\n>> ");
 		switch (s.next()) {
 		case "1":
 			if(ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE){
@@ -88,6 +90,18 @@ public class TmpCUI {
 		case "2":
 			receiveData();
 			break;
+			
+		case "3":
+			printHistoryList();
+			break;
+			
+		case "4":
+			printHistoryList();
+			
+			System.out.println("--index : ");
+			int index = s.nextInt();
+			 receiveDataInHistory(index);
+			
 		default:
 			break;
 		}
@@ -99,16 +113,19 @@ public class TmpCUI {
 	}
 
 	public void sendData() {
-		SendDataToServer sender = new SendDataToServer();
+		SendDataToServer sender = new SendDataToServer(client);
 		sender.requestSendData();
 	}
 	
 	
 	public void receiveData() {
-		/*
-		 * 
+		
+		client.settLatestContents();
+		
 		Contents latestContentsFromServer = client.getLatestContents();
 		int latestContentsType = client.getLatestContents().getType();
+		
+		System.out.println("받은 데이터 타입 : " + latestContentsType);
 		
 		if(latestContentsType == LinKlipboard.FILE_TYPE){
 			FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
@@ -122,11 +139,11 @@ public class TmpCUI {
 		else{
 			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
 		}
-		*/
 		
-		FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
-		receiver.requestReceiveData();
-		trayIcon.showMsg("파일도착!");
+		
+//		FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
+//		receiver.requestReceiveData();
+//		trayIcon.showMsg("파일도착!");
 		
 	}
 	
@@ -156,7 +173,7 @@ public class TmpCUI {
 		client.joinGroup();
 		ACCESS = true;
 	}
-
+	
 	public void debugCreateGroup() {
 
 	}
@@ -164,4 +181,49 @@ public class TmpCUI {
 	public void debugJoinGroup() {
 
 	}
+	
+	public void printHistoryList() {
+		for(int i=0; i<client.getHistory().getSharedContents().size(); i++) {
+			Contents contentsListInHistory = client.getHistory().getRequestContents(i);
+			System.out.print("[" + i + "] ");
+			
+			switch(contentsListInHistory.getType()) {
+			case LinKlipboard.STRING_TYPE:
+				StringContents strContents = (StringContents)contentsListInHistory;
+				System.out.print(" <String> ");
+				System.out.print(strContents.getString());
+				break;
+			case LinKlipboard.FILE_TYPE:
+				FileContents fileContents = (FileContents)contentsListInHistory;
+				System.out.print(" <File> ");
+				System.out.print(fileContents.getFileName());
+				break;
+			}
+			
+			System.out.println();
+		}
+	}
+	
+	public void receiveDataInHistory(int index) {
+		
+		Contents indexContents = client.getHistory().getRequestContents(index);
+		int indexContentsType = indexContents.getType();
+		
+		System.out.println("받은 데이터 타입 : " + indexContentsType);
+		
+		/*
+		if(indexContentsType == LinKlipboard.FILE_TYPE){
+			FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
+			receiver.requestReceiveData();
+			trayIcon.showMsg("파일도착!");
+		}
+		else*/ if(indexContentsType == LinKlipboard.STRING_TYPE || indexContentsType == LinKlipboard.IMAGE_TYPE){
+			ClipboardManager.writeClipboard(indexContents, indexContentsType);
+			trayIcon.showMsg("스트링/이미지 도착!");
+		}
+		else{
+			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
+		}
+	}
+	
 }

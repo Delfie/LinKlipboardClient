@@ -1,6 +1,5 @@
 package datamanage;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -73,10 +72,22 @@ public class History {
 	public Contents getRequestContents(int index) {
 		return sharedContents.elementAt(index);
 	}
-
-	/** 사용자의 히스토리 크기 반환 */
+	
+	// 도연 히스토리 테스트
+	/** 히스토리의 마지막 Contents를 반환 */
+	public Contents getlastContents()
+	{
+		return sharedContents.lastElement();
+	}
+	
+	/** 사용자에게 보여지는 히스토리 크기 반환 */
 	public int getHistorySize() {
 		return this.historySize;
+	}
+	
+	/** 사용자의 실제 히스토리에 들어있는 Contents 크기 반환 */
+	public int getSizeOfContentsInHistory() {
+		return this.sharedContents.size();
 	}
 
 	/** Vector<Contents> sharedContents를 반환 */
