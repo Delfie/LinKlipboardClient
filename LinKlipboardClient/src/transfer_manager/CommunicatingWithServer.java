@@ -72,11 +72,11 @@ public class CommunicatingWithServer {
 			bin.close();
 
 			exceptionHandling(this.response);
-			FileReceiveDataToServer_1.setFilePath();
+			FileReceiveDataToServer.setFilePath();
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[requestReceiveFileData] 소켓 연결");
-				new FileReceiveDataToServer_1();
+				new FileReceiveDataToServer();
 			}
 
 			bin.close();
@@ -137,7 +137,7 @@ public class CommunicatingWithServer {
 				//new FileSendDataToServer_1();
 				
 				// 도연 히스토리 테스트
-				new FileSendDataToServer_1(client);
+				new FileSendDataToServer(client);
 			}
 			bin.close();
 			
@@ -185,7 +185,7 @@ public class CommunicatingWithServer {
 				//new SendDataToServer_1();
 				
 				// 도연 히스토리 테스트
-				new SendDataToServer_1(client);
+				new SendDataToServer(client);
 			}
 
 			bin.close();

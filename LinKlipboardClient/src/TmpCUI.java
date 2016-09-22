@@ -6,14 +6,13 @@ import contents.Contents;
 import contents.FileContents;
 import contents.StringContents;
 import server_manager.LinKlipboard;
-import transfer_manager.FileReceiveDataToServer;
-import transfer_manager.FileSendDataToServer;
-import transfer_manager.SendDataToServer;
+import transfer_manager.CommunicatingWithServer;
 import user_interface.TrayIconManager;
 
 public class TmpCUI {
 
 	private LinKlipboardClient client;
+	private CommunicatingWithServer communicatingWithServer; 
 
 	public static Scanner s = new Scanner(System.in);
 
@@ -23,7 +22,12 @@ public class TmpCUI {
 
 	public TmpCUI() {
 	}
-
+	
+	/** 서버와의 응답 처리 클래스 생성 */
+	private void createCommunicationClass(LinKlipboardClient client){
+		communicatingWithServer = new CommunicatingWithServer(client);
+	}
+	
 	/** 클라이언트 생성 */
 	private void createClient(String groupName, String groupPassword) {
 		client = new LinKlipboardClient(groupName, groupPassword);
@@ -42,8 +46,6 @@ public class TmpCUI {
 
 	public static void main(String[] args) {
 		new TmpCUI().run();
-		
-		
 	}
 
 	public void run() {
@@ -108,13 +110,11 @@ public class TmpCUI {
 	}
 	
 	public void fileSendDataToServer() {
-		FileSendDataToServer sender = new FileSendDataToServer(client);
-		sender.requestSendData();
+		communicatingWithServer.requestSendFileData();
 	}
 
 	public void sendData() {
-		SendDataToServer sender = new SendDataToServer(client);
-		sender.requestSendData();
+		communicatingWithServer.requestSendExpFileData();
 	}
 	
 	
@@ -128,8 +128,7 @@ public class TmpCUI {
 		System.out.println("받은 데이터 타입 : " + latestContentsType);
 		
 		if(latestContentsType == LinKlipboard.FILE_TYPE){
-			FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
-			receiver.requestReceiveData();
+			communicatingWithServer.requestReceiveFileData();
 			trayIcon.showMsg("파일도착!");
 		}
 		else if(latestContentsType == LinKlipboard.STRING_TYPE || latestContentsType == LinKlipboard.IMAGE_TYPE){
@@ -138,13 +137,7 @@ public class TmpCUI {
 		}
 		else{
 			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
-		}
-		
-		
-//		FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
-//		receiver.requestReceiveData();
-//		trayIcon.showMsg("파일도착!");
-		
+		}	
 	}
 	
 
@@ -157,6 +150,7 @@ public class TmpCUI {
 
 		System.out.println("\n입력 확인: " + name + ", " + password + "\n");
 		createClient(name, password);
+		createCommunicationClass(client);
 		client.createGroup();
 		ACCESS = true;
 	}
@@ -170,6 +164,7 @@ public class TmpCUI {
 
 		System.out.println("\n입력 확인: " + name + ", " + password + "\n");
 		createClient(name, password);
+		createCommunicationClass(client);
 		client.joinGroup();
 		ACCESS = true;
 	}
