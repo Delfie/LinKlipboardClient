@@ -37,6 +37,9 @@ public class FileSendDataToServer extends Thread {
 	private FileInputStream fis;
 
 	private File sendFile;
+	
+	// 도연 히스토리 테스트
+	private FileContents fileContents;
 
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer() {
@@ -62,6 +65,9 @@ public class FileSendDataToServer extends Thread {
 
 			sendFile = new File(getFilePathInSystemClipboard());
 			String fileName = "fileName=" + sendFile.getName();
+			
+			// 도연 히스토리 테스트
+			fileContents = new FileContents(sendFile);
 
 			String header = groupName + "&" + fileName;
 			System.out.println("[FileSendDataToServer] 보낼 전체 데이터 확인" + header); // delf
@@ -131,6 +137,9 @@ public class FileSendDataToServer extends Thread {
 	public void run() {
 		setConnection();
 		try {
+			// 도연 히스토리 테스트
+			client.getHistory().addSharedContnestsInHistory(fileContents);
+			
 			byte[] sendFileTobyteArray = new byte[LinKlipboard.byteSize]; // 바이트 배열 생성
 
 			fis = new FileInputStream(sendFile); // 파일에서 읽어오기 위한 스트림 생성
