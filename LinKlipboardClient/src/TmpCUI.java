@@ -7,6 +7,7 @@ import server_manager.LinKlipboard;
 import transfer_manager.FileReceiveDataToServer;
 import transfer_manager.FileSendDataToServer;
 import transfer_manager.SendDataToServer;
+import user_interface.TrayIconManager;
 
 public class TmpCUI {
 
@@ -15,6 +16,8 @@ public class TmpCUI {
 	public static Scanner s = new Scanner(System.in);
 
 	private static boolean ACCESS;
+	
+	private TrayIconManager trayIcon;
 
 	public TmpCUI() {
 	}
@@ -37,10 +40,14 @@ public class TmpCUI {
 
 	public static void main(String[] args) {
 		new TmpCUI().run();
+		
+		
 	}
 
 	public void run() {
-		ACCESS = false;
+		trayIcon = new TrayIconManager();
+		trayIcon.addTrayIconInSystemTray();
+		
 		System.out.println("\n[[this is program for debuging client side]]");
 
 		while (true) {
@@ -103,9 +110,11 @@ public class TmpCUI {
 		if(latestContentsType == LinKlipboard.FILE_TYPE){
 			FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
 			receiver.requestReceiveData();
+			trayIcon.showMsg("파일도착!");
 		}
 		else if(latestContentsType == LinKlipboard.STRING_TYPE || latestContentsType == LinKlipboard.IMAGE_TYPE){
 			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+			trayIcon.showMsg("스트링/이미지 도착!");
 		}
 		else{
 			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
