@@ -30,13 +30,13 @@ public class FileSendDataToServer extends Thread {
 
 	private String response; // 서버로부터 받은 응답 정보
 	private ResponseHandler responseHandler; // 응답에 대한 처리
+	
 
 	// 상대방에게 바이트 배열을 주고 받기위한 데이터 스트림 설정
 	private DataOutputStream dos;
 	private FileInputStream fis;
 
-	FileContents extractFile;
-	File sendFile;
+	private File sendFile;
 
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer() {

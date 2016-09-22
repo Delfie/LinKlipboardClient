@@ -79,7 +79,20 @@ public class LinKlipboardClient {
 		if (!fileReceiveFolder.exists()) {
 			fileReceiveFolder.mkdir(); // 폴더 생성
 			System.out.println("[FolderManager] C:\\Program Files에 LinKlipboard 폴더 생성");
-		} 
+		}
+	}
+
+	/** 폴더 안의 파일들을 삭제(파일인 경우만 생각.) */
+	public void initDir() {
+		File[] innerFile = fileReceiveFolder.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
+
+		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
+			file.delete(); // 파일 삭제
+			System.out.println("[FolderManager] C:\\Program Files\\LinKlipboard 폴더 안의 파일 삭제");
+		}
+
+		// Dir안에 파일이 하나만 있는 경우에 사용 가능
+		// innerFile[0].delete();
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
@@ -146,7 +159,6 @@ public class LinKlipboardClient {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
 	
 	
 	/** 서버가 전송하는 Contents를 받는 클래스 

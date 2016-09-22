@@ -27,11 +27,10 @@ import server_manager.LinKlipboard;
 public class FileReceiveDataToServer extends Thread {
 
 	private Socket socket; // 서버와 연결할 소켓
-
+	private LinKlipboardClient client;
+	
 	private String response; // 서버로부터 받은 응답 정보
 	private ResponseHandler responseHandler; // 응답에 대한 처리
-
-	private LinKlipboardClient client;
 
 	// 파일을 읽고 쓰기위한 파일 스트림 설정
 	private FileOutputStream fos;
@@ -44,7 +43,8 @@ public class FileReceiveDataToServer extends Thread {
 	}
 
 	/** FileReceiveDataToServer 생성자 */
-	public FileReceiveDataToServer(String fileName) {
+	public FileReceiveDataToServer(LinKlipboardClient client, String fileName) {
+		this.client = client;
 		this.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + fileName;
 	}
 
@@ -91,7 +91,9 @@ public class FileReceiveDataToServer extends Thread {
 				this.start();
 			}
 
+			System.out.println("bin.close 전");
 			bin.close();
+			System.out.println("bin.close 후");
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
@@ -135,6 +137,8 @@ public class FileReceiveDataToServer extends Thread {
 		setConnection();
 
 		try {
+			client.initDir();
+			
 			byte[] ReceiveByteArrayToFile = new byte[LinKlipboard.byteSize]; // 바이트 배열 생성
 
 			System.out.println("[FileReceiveDataToServer] 지정 경로: " + receiveFilePath);
@@ -147,22 +151,24 @@ public class FileReceiveDataToServer extends Thread {
 			}
 
 			closeSocket();
-
+			
 			setFileInClipboard(receiveFilePath);
 			System.out.println("[FileReceiveDataToServer] 클립보드 삽입 완료");
-
 		} catch (IOException e) {
 			closeSocket();
 			return;
 		}
+		System.out.println("run 끝~");
 	}
 
 	/** 열려있는 소켓을 모두 닫는다. */
 	private void closeSocket() {
 		try {
+			System.out.println("[FileReceiveDataToServer] closeSocket실행 ");
 			dis.close();
 			fos.close();
 			socket.close();
+			System.out.println("[FileReceiveDataToServer] closeSocket실행 끝 부분");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

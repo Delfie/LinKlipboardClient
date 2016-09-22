@@ -44,11 +44,14 @@ public class TmpCUI {
 		System.out.println("\n[[this is program for debuging client side]]");
 
 		while (true) {
+			
 			if (ACCESS == false) {
 				accessServer();
 			}
 			else {
+				System.out.println("메뉴호출 전");
 				menu();
+				System.out.println("메뉴호출 후");
 			}
 		}
 	}
@@ -69,6 +72,7 @@ public class TmpCUI {
 		System.out.print("1. 전송 / 2. 수신\n>> ");
 		switch (s.next()) {
 		case "1":
+			System.out.println("전송 선택");
 			if(ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE){
 				fileSendDataToServer();
 			}
@@ -79,6 +83,7 @@ public class TmpCUI {
 			
 		case "2":
 			receiveData();
+			System.out.println("receiveData() 빠져나옴");
 			break;
 		default:
 			break;

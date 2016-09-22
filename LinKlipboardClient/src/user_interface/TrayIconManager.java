@@ -5,80 +5,73 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TrayIconManager {
-	private final SystemTray systemTray; // 시스템 트레이
+	private final SystemTray systemTray = SystemTray.getSystemTray(); // 시스템트레이 얻어옴
 	
-	private Image image; // 트레이아이콘 이미지
-	private PopupMenu popup; // 트레이아이콘 우클릭 메뉴
-	private MenuItem item; // 트레이아이콘 우클릭 메뉴 항목
-	private final TrayIcon trayIcon; // 트레이아이콘
+	private Image trayIconImage; // 트레이아이콘 이미지
+	private PopupMenu trayIconMenu; // 트레이아이콘 우클릭 메뉴
+	private MenuItem menuItem; // 트레이아이콘 우클릭 메뉴 항목
+	private TrayIcon trayIcon; // 트레이아이콘
 
 	public TrayIconManager() {
-		systemTray = SystemTray.getSystemTray();
-		image = Toolkit.getDefaultToolkit().getImage("image/LK.png"); 
-		popup = new PopupMenu();
-		trayIcon = new TrayIcon(image, "LinKlipboard", popup);
+		trayIconImage = Toolkit.getDefaultToolkit().getImage("image/LK.png"); // 트레이아이콘 이미지
+		trayIconMenu = new PopupMenu();
+		trayIcon = new TrayIcon(trayIconImage, "LinKlipboard", trayIconMenu);
 	}
 	
-	/** 트레이아이콘  */
-	public void displayTrayIcon() {
+	/** 트레이아이콘을 시스템트레이에 추가*/
+	public void addTrayIconInSystemTray() {
 		if (SystemTray.isSupported()) { // 시스템 트레이가 지원되면
-			
-			/* 트레이 아이콘 마우스 리스너 */
-			MouseListener mouseListener = new MouseAdapter() {
-				public void mousePressed(MouseEvent e) {
-					if (e.getClickCount() == 2) { // 트레이 아이콘을 더블 클릭하면
-						//displayMainApp(); // frame을 보여줌
-					}
-				}
-			};
-
-			setPopup();
+			setMouseEvent();
+			setMenu();
 
 			try {
 				systemTray.add(trayIcon); // 시스템 트레이에 트레이 아이콘 추가
 				trayIcon.setImageAutoSize(true); // 트레이 아이콘 크기 자동 조절
-				trayIcon.addMouseListener(mouseListener); // 트레이 아이콘에 마우스 리스너 추가
+//				trayIcon.addMouseListener(mouseListener); // 트레이 아이콘에 마우스 리스너 추가
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}
+			
 		} else {
 			System.err.println("Tray unavailable");
 		}
 	}
 	
+	/** 트레이아이콘 마우스 이벤트 설정 */
+	public void setMouseEvent() {
+//		/* 트레이 아이콘 마우스 리스너 */
+//		MouseListener mouseListener = new MouseAdapter() {
+//			public void mousePressed(MouseEvent e) {
+//				if (e.getClickCount() == 2) { // 트레이 아이콘을 더블 클릭하면
+//					//displayMainApp(); // frame을 보여줌
+//				}
+//			}
+//		};
+	}
+	
 	/** 트레이아이콘 우클릭 메뉴 설정 */
-	public void setPopup() {
+	public void setMenu() {
 		
-		item = new MenuItem("Main APP"); // frame 보여줌
-		item.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//displayMainApp();
-			}
-		});
-		popup.add(item);
+//		menuItem = new MenuItem("Main APP"); // frame 보여줌
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				//displayMainApp();
+//			}
+//		});
+//		trayIconMenu.add(item);
 
-
-		item = new MenuItem("Info"); // Info Message 띄움
-		item.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showMsg("Info Title");
-			}
-		});
-		popup.add(item);
-
-
-		item = new MenuItem("Close"); // 프로그램 종료
-		item.addActionListener(new ActionListener() {
+		menuItem = new MenuItem("Close"); // 프로그램 종료
+		menuItem.addActionListener(new ActionListener() { // Close 메뉴에 대한 액션 리스너
 			public void actionPerformed(ActionEvent e) {
 				systemTray.remove(trayIcon); // 시스템트레이에서 트레이아이콘 제거
-				System.exit(0);
+				System.exit(0); // 프로그램 종료
 			}
 		});
-		popup.add(item);
+		trayIconMenu.add(menuItem);
 	}
 	
 	/** 트레이아이콘 메시지 띄우기 */
 	public void showMsg(String msg) {
-		trayIcon.displayMessage(msg, "Info", TrayIcon.MessageType.INFO);
+		trayIcon.displayMessage("*공유데이터 도착*", msg, TrayIcon.MessageType.INFO);
 	}
 }

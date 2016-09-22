@@ -21,16 +21,16 @@ import server_manager.LinKlipboard;
 public class SendDataToServer extends Thread {
 
 	private Socket socket; // 서버와 연결할 소켓
-	private String ipAddr = LinKlipboard.SERVER_IP;
-	private final static int portNum = LinKlipboard.FTP_PORT;
+	private LinKlipboardClient client;
 
 	private String response; // 서버로부터 받은 응답 정보
 	private ResponseHandler responseHandler; // 응답에 대한 처리
 
-	private LinKlipboardClient client;
+	
 
 	private ObjectOutputStream out;
 
+	
 	/** SendDataToServer 생성자 */
 	public SendDataToServer() {
 	}
@@ -107,7 +107,7 @@ public class SendDataToServer extends Thread {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(ipAddr, portNum);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
 
