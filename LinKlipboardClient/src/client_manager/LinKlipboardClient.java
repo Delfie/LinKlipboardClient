@@ -1,5 +1,6 @@
 package client_manager;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
@@ -18,12 +19,13 @@ public class LinKlipboardClient {
 	
 	private static String fileName = null; // 전송받을 파일이름
 	
-	private History history; // 히스토리(미완)
-	private static Contents latestContents; //최신데이터(미완)
+	private History history; // 히스토리
+	private static Contents latestContents; //최신데이터
 
 	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; //프로그램 시작에 대한 핸들러
 	
+	private static File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
 	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
 
 	
@@ -38,10 +40,11 @@ public class LinKlipboardClient {
 		
 		this.groupName = groupName;
 		this.password = groupPassword;
-		this.startHandler = new StartToProgram(this); //생성/접속할때만 생성하도록 하까?
+		
 		this.history = new History();
 		
-		// 도연
+		createFileReceiveFolder(); // LinKlipboard folder 생성
+		
 		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
 		receiveContentsThread.start(); // 스레드 start
 	}
@@ -59,23 +62,50 @@ public class LinKlipboardClient {
 		this.groupName = groupName;
 		this.password = groupPassword;
 		this.screen = screen;
-		this.startHandler = new StartToProgram(this);
+		
 		this.history = new History();
 		
-		// 도연
+		createFileReceiveFolder(); // LinKlipboard folder 생성
+		
 		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
 		receiveContentsThread.start(); // 스레드 start
+	}
+	
+	/** 전송받은 파일을 저장할 폴더(LinKlipboard) 생성 */
+	private void createFileReceiveFolder() {
+		fileReceiveFolder = new File(LinKlipboard.fileReceiveDir);
+
+		// C:\\Program Files에 LinKlipboard폴더가 존재하지 않으면
+		if (!fileReceiveFolder.exists()) {
+			fileReceiveFolder.mkdir(); // 폴더 생성
+			System.out.println("[FolderManager] C:\\Program Files에 LinKlipboard 폴더 생성");
+		}
+	}
+
+	/** 폴더 안의 파일들을 삭제(파일인 경우만 생각.) */
+	public void initDir() {
+		File[] innerFile = fileReceiveFolder.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
+
+		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
+			file.delete(); // 파일 삭제
+			System.out.println("[FolderManager] C:\\Program Files\\LinKlipboard 폴더 안의 파일 삭제");
+		}
+
+		// Dir안에 파일이 하나만 있는 경우에 사용 가능
+		// innerFile[0].delete();
 	}
 
 	// 생성버튼을 누르면 이 메소드가 실행
 	/** 그룹생성 메소드 */
 	public void createGroup() {
+		this.startHandler = new StartToProgram(this);
 		startHandler.createGroup();
 	}
 
 	// 접속버튼을 누르면 이 메소드가 실행
 	/** 그룹접속 메소드 */
 	public void joinGroup() {
+		this.startHandler = new StartToProgram(this);
 		startHandler.joinGroup();
 	}
 
@@ -130,7 +160,9 @@ public class LinKlipboardClient {
 		this.fileName = fileName;
 	}
 	
-	/** 서버가 전송하는 Contents를 받기 */
+	
+	/** 서버가 전송하는 Contents를 받는 클래스 
+	 * 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다. */
 	class ReceiveContents extends Thread {
 		private ServerSocket listener;
 		private Socket socket;
@@ -153,7 +185,7 @@ public class LinKlipboardClient {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("연결 설정 끝");
+			System.out.println("[ReceiveContents] 연결 설정 끝");
 		}
 		
 		@Override
@@ -172,6 +204,5 @@ public class LinKlipboardClient {
 				}
 			}
 		}
-		
 	}
 }

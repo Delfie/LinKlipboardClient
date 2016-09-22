@@ -21,54 +21,43 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import client_manager.LinKlipboardClient;
 import server_manager.LinKlipboard;
 
 public class FileReceiveDataToServer extends Thread {
 
 	private Socket socket; // 서버와 연결할 소켓
-	private String ipAddr = LinKlipboard.SERVER_IP;
-	private final static int portNum = LinKlipboard.FTP_PORT;
-
+	private LinKlipboardClient client;
+	
 	private String response; // 서버로부터 받은 응답 정보
 	private ResponseHandler responseHandler; // 응답에 대한 처리
-
-	private LinKlipboardClient client;
 
 	// 파일을 읽고 쓰기위한 파일 스트림 설정
 	private FileOutputStream fos;
 	private DataInputStream dis;
 
-	private static File fileReceiveFolder;
-	private final static String fileReceiveDir = "C:\\Program Files\\LinKlipboard";
-	private String receiveFileName; // 전송받을 파일의 이름
 	private String receiveFilePath; // 전송받을 파일의 경로
 
 	/** FileReceiveDataToServer 생성자 */
 	public FileReceiveDataToServer() {
-		this.receiveFileName = LinKlipboardClient.getFileName();
-		this.receiveFilePath = fileReceiveDir + "\\" + this.receiveFileName;
 	}
 
 	/** FileReceiveDataToServer 생성자 */
-	public FileReceiveDataToServer(String fileName) {
-		this.receiveFilePath = fileReceiveDir + "\\" + fileName;
+	public FileReceiveDataToServer(LinKlipboardClient client, String fileName) {
+		this.client = client;
+		this.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + fileName;
 	}
 
 	/** FileReceiveDataToServer 생성자 */
 	public FileReceiveDataToServer(LinKlipboardClient client) {
 		this.client = client;
-		this.receiveFileName = LinKlipboardClient.getFileName();
-		this.receiveFilePath = fileReceiveDir + "\\" + this.receiveFileName;
 	}
 
-	/** 파일 데이터 수신 메소드 (FileReceiveDataToServer 서블릿 호출) */
+	/** 파일 데이터 수신 메소드 (ReceiveDataToServer 서블릿 호출) */
 	public void requestReceiveData() {
 		try {
 			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/FileReceiveDataToServer");
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/ReceiveDataToServer");
 			URLConnection conn = url.openConnection();
 
 			conn.setDoOutput(true);
@@ -77,7 +66,7 @@ public class FileReceiveDataToServer extends Thread {
 			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			String header = "groupName=" + LinKlipboardClient.getGroupName();
 
-			System.out.println("[FileReceiveDataToServer] 보낼 전체 데이터 확인" + header); // delf
+			System.out.println("[FileReceiveDataToServer] 보낼 전체 데이터 확인" + header);
 
 			bout.write(header);
 			bout.flush();
@@ -95,13 +84,16 @@ public class FileReceiveDataToServer extends Thread {
 			bin.close();
 
 			exceptionHandling(this.response);
+			setFilePath();
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[FileReceiveDataToServer] 소켓 연결");
 				this.start();
 			}
 
+			System.out.println("bin.close 전");
 			bin.close();
+			System.out.println("bin.close 후");
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
@@ -117,10 +109,9 @@ public class FileReceiveDataToServer extends Thread {
 	 */
 	public void exceptionHandling(String response) {
 		responseHandler = new ResponseHandler(response, client);
-		if(response != null){
+		if (response != null) {
 			responseHandler.responseHandlerForTransfer();
-		}
-		else{
+		} else {
 			System.out.println("[FileReceiveDataToServer] Error!!!! 서버가 보낸 response가 null임");
 		}
 	}
@@ -129,10 +120,10 @@ public class FileReceiveDataToServer extends Thread {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(ipAddr, portNum);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
 			// 스트림 설정
 			dis = new DataInputStream(socket.getInputStream()); // 바이트 배열을 받기 위한 데이터스트림 생성
-			System.out.println("[FileReceiveDataToServer] 연결 설정 끝"); // delf
+			System.out.println("[FileReceiveDataToServer] 연결 설정 끝");
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -144,10 +135,13 @@ public class FileReceiveDataToServer extends Thread {
 	@Override
 	public void run() {
 		setConnection();
-		try {
-			int byteSize = 65536;
-			byte[] ReceiveByteArrayToFile = new byte[byteSize]; // 바이트 배열 생성
 
+		try {
+			client.initDir();
+			
+			byte[] ReceiveByteArrayToFile = new byte[LinKlipboard.byteSize]; // 바이트 배열 생성
+
+			System.out.println("[FileReceiveDataToServer] 지정 경로: " + receiveFilePath);
 			fos = new FileOutputStream(receiveFilePath); // 지정한 경로에 바이트 배열을 쓰기위한 파일 스트림 생성
 
 			int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
@@ -157,60 +151,24 @@ public class FileReceiveDataToServer extends Thread {
 			}
 
 			closeSocket();
-
-			// reply = JOptionPane.showConfirmDialog(null, "받을래?", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			//
-			// if (reply == JOptionPane.YES_OPTION) {
-			// // 받은 파일을 클립보드에 삽입
-			// setFileInClipboard(receiveFilePath + receiveFileName);
-			// System.out.println("클립보드 삽입 완료");
-			// }
-			// else {
-			// initDir();
-			// }
-
-			createFileReceiveFolder();
-			initDir();
-
+			
 			setFileInClipboard(receiveFilePath);
 			System.out.println("[FileReceiveDataToServer] 클립보드 삽입 완료");
-
 		} catch (IOException e) {
 			closeSocket();
 			return;
 		}
-	}
-
-	/** 전송받은 파일을 저장할 폴더(LinKlipboard) 생성 */
-	private void createFileReceiveFolder() {
-		fileReceiveFolder = new File(fileReceiveDir);
-
-		// C:\\Program Files에 LinKlipboard폴더가 존재하지 않으면
-		if (!fileReceiveFolder.exists()) {
-			fileReceiveFolder.mkdir(); // 폴더 생성
-			System.out.println("C:\\Program Files에 LinKlipboard폴더 생성");
-		} else {
-			initDir();
-		}
-	}
-
-	/** 폴더 안의 파일들을 삭제(파일인 경우만 생각.) */
-	private void initDir() {
-		File[] innerFile = fileReceiveFolder.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
-		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
-			file.delete(); // 파일 삭제
-			System.out.println("C:\\Program Files\\LinKlipboard폴더 안의 파일 삭제");
-		}
-
-		// Dir안에 파일이 하나만 있는 경우에 사용 가능
-		// innerFile[0].delete();
+		System.out.println("run 끝~");
 	}
 
 	/** 열려있는 소켓을 모두 닫는다. */
 	private void closeSocket() {
 		try {
-			fos.close();
+			System.out.println("[FileReceiveDataToServer] closeSocket실행 ");
 			dis.close();
+			fos.close();
+			socket.close();
+			System.out.println("[FileReceiveDataToServer] closeSocket실행 끝 부분");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -259,5 +217,10 @@ public class FileReceiveDataToServer extends Thread {
 				System.out.println("Lost ownership");
 			}
 		});
+	}
+
+	/** 서버로부터 받은 파일이름으로 파일경로를 다시 세팅 */
+	public void setFilePath() {
+		this.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + LinKlipboardClient.getFileName();
 	}
 }

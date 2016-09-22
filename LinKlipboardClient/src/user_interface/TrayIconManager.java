@@ -67,6 +67,7 @@ public class TrayIconManager {
 				System.exit(0); // 프로그램 종료
 			}
 		});
+		
 		trayIconMenu.add(menuItem);
 	}
 	

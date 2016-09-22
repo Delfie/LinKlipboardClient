@@ -48,6 +48,7 @@ public class TmpCUI {
 		trayIcon = new TrayIconManager();
 		trayIcon.addTrayIconInSystemTray();
 		
+		ACCESS = false;
 		System.out.println("\n[[this is program for debuging client side]]");
 
 		while (true) {
@@ -104,6 +105,8 @@ public class TmpCUI {
 	
 	
 	public void receiveData() {
+		/*
+		 * 
 		Contents latestContentsFromServer = client.getLatestContents();
 		int latestContentsType = client.getLatestContents().getType();
 		
@@ -119,6 +122,12 @@ public class TmpCUI {
 		else{
 			System.out.println("[TmpCUI_receiveData]File, String, Image 어디에도 속하지 않음");
 		}
+		*/
+		
+		FileReceiveDataToServer receiver = new FileReceiveDataToServer(client);
+		receiver.requestReceiveData();
+		trayIcon.showMsg("파일도착!");
+		
 	}
 	
 
