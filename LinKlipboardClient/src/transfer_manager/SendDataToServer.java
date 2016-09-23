@@ -6,35 +6,21 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import client_manager.ClipboardManager;
-import client_manager.LinKlipboardClient;
 import contents.Contents;
 import server_manager.LinKlipboard;
 
-public class SendDataToServer extends Transfer{
+public class SendDataToServer extends Transfer {
 
 	private ObjectOutputStream out;
-	
-	
-	
-	
-	// 도연 히스토리 테스트
-	private LinKlipboardClient client;
 
-	/** FileSendDataToServer_1 생성자 */
-	public SendDataToServer(LinKlipboardClient client) {
-		super();
-		this.client = client;
-		this.start();
-	}
-	
-	
-	
-	/** SendDataToServer_1 생성자 */
+	private Contents sendContents;
+
+	/** SendDataToServer 생성자 */
 	public SendDataToServer() {
 		super();
 		this.start();
 	}
-	
+
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */
 	@Override
 	public void setConnection() {
@@ -43,6 +29,7 @@ public class SendDataToServer extends Transfer{
 			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
+			System.out.println("[SendDataToServer] 연결 설정 끝");
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -63,24 +50,22 @@ public class SendDataToServer extends Transfer{
 	}
 
 	@Override
-	public void run(){
+	public void run() {
 		setConnection();
 		try {
-			Contents sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
-			
-			
-			
-			// 도연 히스토리 테스트
-			client.getHistory().addSharedContnestsInHistory(sendContents);
-			
-			
-			
+			sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
+
 			out.writeObject(sendContents); // Contents 객체 전송
-			
+
 			closeSocket();
 		} catch (IOException e) {
 			e.printStackTrace();
 			closeSocket();
 		}
+	}
+
+	/** 서버에 보낼 Contents를 반환 */
+	public Contents getSendContents() {
+		return sendContents;
 	}
 }

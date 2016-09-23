@@ -20,25 +20,124 @@ import server_manager.LinKlipboard;
 
 public class CommunicatingWithServer {
 
-	protected LinKlipboardClient client;
+	private LinKlipboardClient client;
 
-	protected String response; // 서버로부터 받은 응답 정보
-	protected ResponseHandler responseHandler; // 응답에 대한 처리
-	
-	private static File sendFile;
-	
-	
-	
-	
-	// 도연 히스토리 테스트
-	private static FileContents fileContents;
+	private String response; // 서버로부터 받은 응답 정보
+	private ResponseHandler responseHandler; // 응답에 대한 처리
 
-	
-	
-	
+	private int serialNum; // 서버로부터 응답 받은 Contents의 SerialNum
+
+	private static File sendFile; // static-> FileSendDataToServer에서 사용
+	private FileContents fileContents; // 자신의 히스토리에 저장할 FileContents
+
 	/** CommunicatingWithServer 생성자 */
 	public CommunicatingWithServer(LinKlipboardClient client) {
 		this.client = client;
+	}
+
+	/** 문자열, 이미지 데이터 전송 메소드 (SendDataToServer 서블릿 호출) */
+	public void requestSendExpFileData() {
+		try {
+			// 호출할 서블릿의 주소
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/SendDataToServer");
+			URLConnection conn = url.openConnection();
+
+			conn.setDoOutput(true);
+
+			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
+			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			String header = "groupName=" + LinKlipboardClient.getGroupName();
+
+			System.out.println("[requestSendExpFileData] 보낼 전체 데이터 확인" + header);
+
+			bout.write(header);
+			bout.flush();
+			bout.close();
+
+			// 서버로부터 받을 데이터(응답정보)
+			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String response = null;
+
+			if ((response = bin.readLine()) != null) {
+				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
+				this.response = response;
+			}
+			System.out.println("[requestSendExpFileData] 서버로부터의 응답 데이터 확인: " + this.response);
+			bin.close();
+
+			exceptionHandling(this.response);
+
+			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
+				System.out.println("[requestSendExpFileData] 소켓 연결");
+
+				SendDataToServer sendDataToServer = new SendDataToServer();
+				// 히스토리에 추가할 Contents의 고유번호 세팅
+				sendDataToServer.getSendContents().setSerialNum(serialNum);
+				// 자신이 서버에 공유한 Contents를 히스토리에 추가
+				client.getHistory().addSharedContentsInHistory(sendDataToServer.getSendContents());
+			}
+
+			bin.close();
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/** 파일 데이터 전송 메소드 (SendDataToServer 서블릿 호출) */
+	public void requestSendFileData() {
+		try {
+			// 호출할 서블릿의 주소
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/SendDataToServer");
+			URLConnection conn = url.openConnection();
+
+			conn.setDoOutput(true);
+
+			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
+			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
+
+			sendFile = new File(getFilePathInSystemClipboard());
+			String fileName = "fileName=" + sendFile.getName();
+			fileContents = new FileContents(sendFile);
+
+			String header = groupName + "&" + fileName;
+			System.out.println("[requestSendFileData] 보낼 전체 데이터 확인" + header);
+
+			bout.write(header);
+			bout.flush();
+			bout.close();
+
+			// 서버로부터 받을 데이터(응답정보)
+			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String response = null;
+
+			if ((response = bin.readLine()) != null) {
+				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
+				this.response = response;
+			}
+			System.out.println("[requestSendFileData] 서버로부터의 응답 데이터 확인: " + this.response);
+			bin.close();
+
+			exceptionHandling(this.response);
+
+			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
+				System.out.println("[requestSendFileData] 소켓 연결");
+
+				new FileSendDataToServer();
+				// 히스토리에 추가할 Contents의 고유번호 세팅
+				fileContents.setSerialNum(serialNum);
+				// 자신이 서버에 공유한 Contents를 히스토리에 추가
+				client.getHistory().addSharedContentsInHistory(fileContents);
+			}
+			bin.close();
+
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/** 파일 데이터 수신 메소드 (ReceiveDataToServer 서블릿 호출) */
@@ -87,115 +186,6 @@ public class CommunicatingWithServer {
 		}
 	}
 
-	/** 파일 데이터 전송 메소드 (SendDataToServer 서블릿 호출) */
-	public void requestSendFileData() {
-		try {
-			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/SendDataToServer");
-			URLConnection conn = url.openConnection();
-
-			conn.setDoOutput(true);
-
-			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
-			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
-
-			sendFile = new File(getFilePathInSystemClipboard());
-			String fileName = "fileName=" + sendFile.getName();
-			
-			
-			
-			
-			// 도연 히스토리 테스트
-			fileContents = new FileContents(sendFile);
-
-			
-			
-			
-			String header = groupName + "&" + fileName;
-			System.out.println("[requestSendFileData] 보낼 전체 데이터 확인" + header); 
-
-			bout.write(header);
-			bout.flush();
-			bout.close();
-
-			// 서버로부터 받을 데이터(응답정보)
-			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String response = null;
-
-			if ((response = bin.readLine()) != null) {
-				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
-				this.response = response;
-			}
-			System.out.println("[requestSendFileData] 서버로부터의 응답 데이터 확인: " + this.response); 
-			bin.close();
-
-			exceptionHandling(this.response);
-			
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
-				System.out.println("[requestSendFileData] 소켓 연결");
-				//new FileSendDataToServer_1();
-				
-				// 도연 히스토리 테스트
-				new FileSendDataToServer(client);
-			}
-			bin.close();
-			
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	/** 문자열, 이미지 데이터 전송 메소드 (SendDataToServer 서블릿 호출) */
-	public void requestSendExpFileData() {
-		try {
-			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/SendDataToServer");
-			URLConnection conn = url.openConnection();
-
-			conn.setDoOutput(true);
-
-			// 서버에 보낼 데이터(그룹이름, (파일명 존재시 파일명전송))
-			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			String header = "groupName=" + LinKlipboardClient.getGroupName();
-
-			System.out.println("[requestSendExpFileData] 보낼 전체 데이터 확인" + header);
-			
-			bout.write(header);
-			bout.flush();
-			bout.close();
-
-			// 서버로부터 받을 데이터(응답정보)
-			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String response = null;
-
-			if ((response = bin.readLine()) != null) {
-				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
-				this.response = response;
-			}
-			System.out.println("[requestSendExpFileData] 서버로부터의 응답 데이터 확인: " + this.response);
-			bin.close();
-
-			exceptionHandling(this.response);
-
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
-				System.out.println("[requestSendExpFileData] 소켓 연결");
-				//new SendDataToServer_1();
-				
-				// 도연 히스토리 테스트
-				new SendDataToServer(client);
-			}
-
-			bin.close();
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-
 	/**
 	 * 예외 처리
 	 * 
@@ -209,8 +199,10 @@ public class CommunicatingWithServer {
 		} else {
 			System.out.println("[exceptionHandling] Error!!!! 서버가 보낸 response가 null임");
 		}
+
+		serialNum = responseHandler.getContentsSerialNum();
 	}
-	
+
 	/** @return 클립보드에 있는 파일의 경로명 */
 	public static String getFilePathInSystemClipboard() {
 
@@ -232,14 +224,9 @@ public class CommunicatingWithServer {
 		}
 		return null;
 	}
-	
+
 	/** 클라이언트가 서버에 보낼 실제 파일을 리턴 */
-	public static File getSendFile(){
+	public static File getSendFile() {
 		return sendFile;
-	}
-	
-	// 도연 히스토리 테스트
-	public static FileContents getFileContents(){
-		return fileContents;
 	}
 }

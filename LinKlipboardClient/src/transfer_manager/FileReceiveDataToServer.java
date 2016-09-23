@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import client_manager.LinKlipboardClient;
 import server_manager.LinKlipboard;
-import transfer_manager.FileReceiveDataToServer.FileTransferable;
 
 public class FileReceiveDataToServer extends Transfer {
 
@@ -26,7 +25,7 @@ public class FileReceiveDataToServer extends Transfer {
 
 	// 전송받을 파일의 경로
 	private static String receiveFilePath;
-	//외부에서 어디서쓰이는지 확인!!!!!!!!!!!
+	// 외부에서 어디서쓰이는지 확인!!!!!!!!!!!
 
 	/** FileReceiveDataToServer 생성자 */
 	public FileReceiveDataToServer() {
@@ -37,8 +36,7 @@ public class FileReceiveDataToServer extends Transfer {
 	/** FileReceiveDataToServer 생성자 */
 	public FileReceiveDataToServer(String fileName) {
 		super();
-		this.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + fileName;
-		this.start();
+		FileReceiveDataToServer.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + fileName;
 	}
 
 	/** 서버와의 연결을 위한 소켓과 스트림 설정 */

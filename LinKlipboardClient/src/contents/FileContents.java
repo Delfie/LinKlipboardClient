@@ -15,15 +15,15 @@ public class FileContents extends Contents implements Serializable {
 	public FileContents() {
 		super();
 		type = LinKlipboard.FILE_TYPE;
-		//createSendFile();
+		// createSendFile();
 	}
-	
+
 	public FileContents(File file) {
 		fileName = file.getName();
 		fileSize = file.length();
 		type = LinKlipboard.FILE_TYPE;
 	}
-	
+
 	public FileContents(String sharer, String path) {
 		super(sharer);
 		type = LinKlipboard.FILE_TYPE;
@@ -33,16 +33,15 @@ public class FileContents extends Contents implements Serializable {
 	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		return null;
 	}
-	
 
 	/** 보낼 파일의 이름을 반환 */
 	public String getFileName() {
 		return this.fileName;
 	}
-	
+
 	/** 보낼 파일의 크기를 반환 */
 	public long getFileSize() {
 		return this.fileSize;
 	}
-	
+
 }
