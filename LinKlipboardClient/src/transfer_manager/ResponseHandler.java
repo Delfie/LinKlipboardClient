@@ -17,6 +17,7 @@ public class ResponseHandler {
 	private int resontentsSerialNum = LinKlipboard.NULL; // Contents의 고유번호
 	private String resFileName = null; // 전송받은 파일이름
 	private String resNickName = null; // 디폴트 닉네임
+	private int resPortNum = LinKlipboard.NULL; // 서버로부터 응답받은 포트번호
 
 	/** ResponseHandler 생성자 */
 	public ResponseHandler(String responseWholeMsg, LinKlipboardClient client) {
@@ -45,6 +46,9 @@ public class ResponseHandler {
 				break;
 			case LinKlipboard.RES_SERIAL_NUM:
 				resontentsSerialNum = Integer.parseInt(tokens.nextToken());
+				break;
+			case LinKlipboard.RES_PORT:
+				resPortNum = Integer.parseInt(tokens.nextToken());
 				break;
 			default:
 				System.out.println("[ResponseHandler] 알 수 없는 구분자");

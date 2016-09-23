@@ -34,6 +34,7 @@ public class LinKlipboard {
 	public final static String RES_FILENAME = "fileName";
 	public final static String RES_NICKNAME = "nickname";
 	public final static String RES_SERIAL_NUM = "serialNo";
+	public final static String RES_PORT = "portNum";
 
 	/* 통신을 위한 static 변수 */
 	public final static String SERVER_IP = "113.198.84.52";
