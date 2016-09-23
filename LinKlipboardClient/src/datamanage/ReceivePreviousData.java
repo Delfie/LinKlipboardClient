@@ -73,7 +73,7 @@ public class ReceivePreviousData {
 	public void requestReceiveFileData() {
 		try {
 			// 호출할 서블릿의 주소
-			URL url = new URL(LinKlipboard.URL_To_CALL + "/FileReceiveDataToServerInHistory");
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/ReceiveDataToServer");
 			URLConnection conn = url.openConnection();
 
 			conn.setDoOutput(true);

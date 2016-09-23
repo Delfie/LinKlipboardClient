@@ -82,9 +82,12 @@ public class StartToProgram {
 			bin.close();
 
 			exceptionHandling(this.response);
+			System.out.println(responseHandler.getErrorCodeNum());
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT) {
+				System.out.println("orderMsg: " + orderMsg);
 				if (orderMsg.equals("create")) {
+					System.out.println("생성 들어옴");
 					LinKlipboardClient.setHistory();
 				} else if (orderMsg.equals("join")) {
 					// 서버에 있는 Vector<Contents>를 받는다.

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import server_manager.LinKlipboard;
 
 public class FileContents extends Contents implements Serializable {
+	private static final long serialVersionUID = 1559329719938703224L;
 	private String fileName;
 	private long fileSize;
 	private String filePath;
@@ -18,6 +19,10 @@ public class FileContents extends Contents implements Serializable {
 		// createSendFile();
 	}
 
+	public FileContents(String sharer) {
+		super(sharer);
+	}
+	
 	public FileContents(File file) {
 		fileName = file.getName();
 		fileSize = file.length();
@@ -25,14 +30,10 @@ public class FileContents extends Contents implements Serializable {
 	}
 
 	public FileContents(String sharer, String path) {
-		super(sharer);
+		this(sharer);
 		type = LinKlipboard.FILE_TYPE;
 	}
 
-	@Override
-	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		return null;
-	}
 
 	/** 보낼 파일의 이름을 반환 */
 	public String getFileName() {

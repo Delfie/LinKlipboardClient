@@ -31,15 +31,16 @@ public class History {
 
 	/** 히스토리의 데이터가 historySize만큼 차면 데이터 하나 삭제 */
 	public void removeContents() {
+		System.out.println("[History] 들어가기 전 sharedContents의 크기: " + this.sharedContents.size());
 		if (this.sharedContents.size() == this.historySize) {
 			this.sharedContents.remove(0);
 		}
 	}
 
 	/** 전달받은 Contents가 어떤 타입인지에 따라서 resizingImgContents를 세팅 */
-	public void setResizingImgContents(Contents Contents) {
-		if (Contents.getType() == LinKlipboard.IMAGE_TYPE) {
-			ImageContents ImageData = (ImageContents) Contents;
+	public void setResizingImgContents(Contents contents) {
+		if (contents.getType() == LinKlipboard.IMAGE_TYPE) {
+			ImageContents ImageData = (ImageContents) contents;
 			this.resizingImgContents.add(ImageData.getResizingImageIcon());
 		} else {
 			this.resizingImgContents.add(null);

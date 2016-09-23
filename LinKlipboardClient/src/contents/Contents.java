@@ -9,6 +9,8 @@ import server_manager.LinKlipboard;
 // 테스트
 public abstract class Contents implements Serializable {
 
+	private static final long serialVersionUID = 4131370422438049456L;
+
 	private int serialNum = LinKlipboard.NULL;
 
 	protected String date;
@@ -16,7 +18,6 @@ public abstract class Contents implements Serializable {
 	protected int type;
 
 	public Contents() {
-		// date = Logger.now();
 	}
 
 	public Contents(String sharer) {
@@ -48,12 +49,4 @@ public abstract class Contents implements Serializable {
 		return type;
 	}
 
-	/**
-	 * 데이터를 수신
-	 * 
-	 * @param in
-	 *            수신 받을 스트림
-	 * @return 데이터를 저장하고 자기 자신을 반환
-	 */
-	abstract public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException;
 }

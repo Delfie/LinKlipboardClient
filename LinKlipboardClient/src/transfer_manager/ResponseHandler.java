@@ -34,6 +34,7 @@ public class ResponseHandler {
 
 		while (tokens.hasMoreTokens() == true) {
 			delimiter = tokens.nextToken(); // errorCodeNum 다음에 오는 구분자 확인
+			System.out.println("구분자: " + delimiter);
 
 			switch (delimiter) {
 			case LinKlipboard.RES_NICKNAME:

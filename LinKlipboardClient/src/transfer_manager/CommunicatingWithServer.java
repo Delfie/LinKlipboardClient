@@ -28,7 +28,6 @@ public class CommunicatingWithServer {
 	private int serialNum; // 서버로부터 응답 받은 Contents의 SerialNum
 
 	private static File sendFile; // static-> FileSendDataToServer에서 사용
-	private FileContents fileContents; // 자신의 히스토리에 저장할 FileContents
 
 	/** CommunicatingWithServer 생성자 */
 	public CommunicatingWithServer(LinKlipboardClient client) {
@@ -70,11 +69,7 @@ public class CommunicatingWithServer {
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[requestSendExpFileData] 소켓 연결");
 
-				SendDataToServer sendDataToServer = new SendDataToServer();
-				// 히스토리에 추가할 Contents의 고유번호 세팅
-				sendDataToServer.getSendContents().setSerialNum(serialNum);
-				// 자신이 서버에 공유한 Contents를 히스토리에 추가
-				client.getHistory().addSharedContentsInHistory(sendDataToServer.getSendContents());
+				new SendDataToServer(client, serialNum);
 			}
 
 			bin.close();
@@ -100,7 +95,6 @@ public class CommunicatingWithServer {
 
 			sendFile = new File(getFilePathInSystemClipboard());
 			String fileName = "fileName=" + sendFile.getName();
-			fileContents = new FileContents(sendFile);
 
 			String header = groupName + "&" + fileName;
 			System.out.println("[requestSendFileData] 보낼 전체 데이터 확인" + header);
@@ -125,11 +119,7 @@ public class CommunicatingWithServer {
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[requestSendFileData] 소켓 연결");
 
-				new FileSendDataToServer();
-				// 히스토리에 추가할 Contents의 고유번호 세팅
-				fileContents.setSerialNum(serialNum);
-				// 자신이 서버에 공유한 Contents를 히스토리에 추가
-				client.getHistory().addSharedContentsInHistory(fileContents);
+				new FileSendDataToServer(client, serialNum);
 			}
 			bin.close();
 

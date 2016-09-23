@@ -141,7 +141,8 @@ public class TmpCUI {
 		Contents indexContents = client.getHistory().getRequestContents(index);
 		int indexContentsType = indexContents.getType();
 
-		System.out.println("받은 데이터 타입 : " + indexContentsType);
+		System.out.println("[TmpCUI] 받은 데이터 타입 : " + indexContentsType);
+		System.out.println("[TmpCUI] 받은 데이터의 고유번호 : " + indexContents.getSerialNum());
 
 		if (indexContentsType == LinKlipboard.FILE_TYPE) {
 			new ReceivePreviousData(client, indexContents);

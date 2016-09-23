@@ -6,17 +6,27 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import client_manager.LinKlipboardClient;
+import contents.FileContents;
 import server_manager.LinKlipboard;
 
 public class FileSendDataToServer extends Transfer {
-
+	LinKlipboardClient client;
+	
 	// 상대방에게 바이트 배열을 주고 받기위한 데이터 스트림 설정
 	private DataOutputStream dos;
 	private FileInputStream fis;
+	
+	private int serialNum;
+	
+	// 자신의 히스토리에 저장할 FileContents
+	private FileContents fileContents = new FileContents(CommunicatingWithServer.getSendFile()); 
 
 	/** FileSendDataToServer 생성자 */
-	public FileSendDataToServer() {
+	public FileSendDataToServer(LinKlipboardClient client, int serialNum) {
 		super();
+		this.client = client;
+		this.serialNum = serialNum;
 		this.start();
 	}
 
@@ -56,7 +66,6 @@ public class FileSendDataToServer extends Transfer {
 			byte[] sendFileTobyteArray = new byte[LinKlipboard.byteSize]; // 바이트 배열 생성
 			int EndOfFile = 0; // 파일의 끝(-1)을 알리는 변수 선언
 
-			// 희정
 			fis = new FileInputStream(CommunicatingWithServer.getSendFile()); // 파일에서 읽어오기 위한 스트림 생성
 
 			/*
@@ -66,6 +75,12 @@ public class FileSendDataToServer extends Transfer {
 				// sendFileTobyteArray에 들어있는 바이트를 0~EndOfFile=1024 만큼 DataOutputStream으로 보냄
 				dos.write(sendFileTobyteArray, 0, EndOfFile);
 			}
+			
+			// 히스토리에 추가할 Contents의 고유번호 세팅
+			fileContents.setSerialNum(serialNum);
+			
+			// 자신이 서버에 공유한 Contents를 히스토리에 추가
+			client.getHistory().addSharedContentsInHistory(fileContents);
 
 			closeSocket();
 

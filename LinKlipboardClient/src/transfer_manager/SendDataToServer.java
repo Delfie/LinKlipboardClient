@@ -6,18 +6,23 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import client_manager.ClipboardManager;
+import client_manager.LinKlipboardClient;
 import contents.Contents;
 import server_manager.LinKlipboard;
 
 public class SendDataToServer extends Transfer {
-
+	LinKlipboardClient client;
+	
 	private ObjectOutputStream out;
-
+	private int serialNum;
+	
 	private Contents sendContents;
 
 	/** SendDataToServer 생성자 */
-	public SendDataToServer() {
+	public SendDataToServer(LinKlipboardClient client, int serialNum) {
 		super();
+		this.client = client;
+		this.serialNum = serialNum;
 		this.start();
 	}
 
@@ -54,7 +59,14 @@ public class SendDataToServer extends Transfer {
 		setConnection();
 		try {
 			sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
+			
+			// 히스토리에 추가할 Contents의 고유번호 세팅
+			sendContents.setSerialNum(serialNum);
 
+			// 자신이 서버에 공유한 Contents를 히스토리에 추가
+			client.getHistory().addSharedContentsInHistory(sendContents);
+			//???????????????
+			
 			out.writeObject(sendContents); // Contents 객체 전송
 
 			closeSocket();
@@ -64,8 +76,8 @@ public class SendDataToServer extends Transfer {
 		}
 	}
 
-	/** 서버에 보낼 Contents를 반환 */
-	public Contents getSendContents() {
-		return sendContents;
-	}
+//	/** 서버에 보낼 Contents를 반환 */
+//	public Contents getSendContents() {
+//		return sendContents;
+//	}
 }
