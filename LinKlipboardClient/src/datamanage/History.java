@@ -54,7 +54,8 @@ public class History {
 	/** 받은 Vector<Contents>로 sharedContents 초기화 */
 	public void initSharedContents(Vector<Contents> updateHistory) {
 		System.out.println("[History] initSharedContents 메소드 들어옴 ");
-		sharedContents = updateHistory;
+		//sharedContents = updateHistory;
+		sharedContents = new Vector<Contents>(updateHistory);
 		System.out.println("[History]" + sharedContents.get(0).getType());
 	}
 
