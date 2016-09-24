@@ -1,7 +1,20 @@
 package user_interface;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.LayoutStyle;
+import javax.swing.border.BevelBorder;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,11 +31,10 @@ public class ConnectionPanel extends JPanel {
     // Variables declaration - do not modify                     
     private JLabel accessCountLabel;
     private JLabel accessGroupNameLabel;
-    private javax.swing.JScrollPane accessPeosonLabel;
-    private javax.swing.JPanel connectionPanel;
+    private JScrollPane accessPeosonLabel;
     private JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JButton receiveButton;
+    private JList<String> jList1;
+    private JButton receiveButton;
     private JLabel sharedContentsInfoLabel;
     private JLabel sharedTimeLabel;
     // End of variables declaration   
@@ -41,23 +53,21 @@ public class ConnectionPanel extends JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-
-        connectionPanel = new javax.swing.JPanel();
-        accessPeosonLabel = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        accessPeosonLabel = new JScrollPane();
+        jList1 = new JList<>();
         accessCountLabel = new JLabel();
         accessGroupNameLabel = new JLabel();
         sharedTimeLabel = new JLabel();
         sharedContentsInfoLabel = new JLabel();
-        receiveButton = new javax.swing.JButton();
+        receiveButton = new JButton();
         jLabel1 = new JLabel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
 
-        connectionPanel.setPreferredSize(new java.awt.Dimension(300, 320));
+        this.setPreferredSize(new Dimension(300, 320));
 
-        jList1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        jList1.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        jList1.setModel(new AbstractListModel<String>() {
             String[] strings = { "student_1", "student_2", "delf", "heeeee", "doooy", " ", " " };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
@@ -73,61 +83,61 @@ public class ConnectionPanel extends JPanel {
         sharedContentsInfoLabel.setText("delf님이 \"테스트 문장을 복사하였습... \" 공유");
 
         receiveButton.setText("Receive");
-        receiveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        receiveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 receiveButtonActionPerformed(evt);
             }
         });
 
         jLabel1.setText("jLabel1");
 
-        javax.swing.GroupLayout connectionPanelLayout = new javax.swing.GroupLayout(connectionPanel);
-        connectionPanel.setLayout(connectionPanelLayout);
-        connectionPanelLayout.setHorizontalGroup(
-            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(connectionPanelLayout.createSequentialGroup()
+        GroupLayout thisLayout = new GroupLayout(this);
+        this.setLayout(thisLayout);
+        thisLayout.setHorizontalGroup(
+            thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(thisLayout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(connectionPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(thisLayout.createSequentialGroup()
+                        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sharedTimeLabel))
-                    .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, connectionPanelLayout.createSequentialGroup()
+                    .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
                             .addComponent(accessGroupNameLabel)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(accessCountLabel))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(accessPeosonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(accessPeosonLabel, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)
                             .addComponent(sharedContentsInfoLabel))
-                        .addComponent(receiveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(receiveButton, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
-        connectionPanelLayout.setVerticalGroup(
-            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(connectionPanelLayout.createSequentialGroup()
+        thisLayout.setVerticalGroup(
+            thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(thisLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(accessCountLabel)
                     .addComponent(accessGroupNameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(accessPeosonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(accessPeosonLabel, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(sharedTimeLabel)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sharedContentsInfoLabel)
                 .addGap(18, 18, 18)
                 .addComponent(receiveButton)
                 .addGap(24, 24, 24))
         );
 
-        add(connectionPanel, java.awt.BorderLayout.CENTER);
-        connectionPanel.getAccessibleContext().setAccessibleName("");
+        add(this, BorderLayout.CENTER);
+        this.getAccessibleContext().setAccessibleName("");
     }// </editor-fold>                        
 
-    private void receiveButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void receiveButtonActionPerformed(ActionEvent evt) {                                              
         // TODO add your handling code here:
     }                                             
 

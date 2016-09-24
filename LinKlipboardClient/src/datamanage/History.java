@@ -43,7 +43,7 @@ public class History {
 			ImageContents ImageData = (ImageContents) contents;
 			this.resizingImgContents.add(ImageData.getResizingImageIcon());
 		} else {
-			this.resizingImgContents.add(null);
+			this.resizingImgContents.add(new ImageIcon());
 		}
 	}
 

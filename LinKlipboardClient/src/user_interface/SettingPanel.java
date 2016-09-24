@@ -1,5 +1,19 @@
 package user_interface;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,19 +24,19 @@ package user_interface;
  *
  * @author Administrator
  */
-public class SettingPanel extends java.awt.Panel {
+public class SettingPanel extends JPanel {
 	
     // Variables declaration - do not modify                     
-    private javax.swing.JButton exitButton;
+	private JButton exitButton;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JCheckBox setNotification;
-    private javax.swing.JCheckBox setReceiveContents;
-    private javax.swing.JPanel settingPanel;
-    private javax.swing.JPanel shortcutSetPanel;
+    private JLabel jLabel5;
+    private JLabel jLabel6;
+    private JPanel jPanel4;
+    private JCheckBox setNotification;
+    private JCheckBox setReceiveContents;
+
+    private JPanel shortcutSetPanel;
     // End of variables declaration
 
     /**
@@ -39,93 +53,91 @@ public class SettingPanel extends java.awt.Panel {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-    	
-        settingPanel = new javax.swing.JPanel();
-        shortcutSetPanel = new javax.swing.JPanel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        setNotification = new javax.swing.JCheckBox();
-        setReceiveContents = new javax.swing.JCheckBox();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        exitButton = new javax.swing.JButton();
+        shortcutSetPanel = new JPanel();
+        jComboBox2 = new JComboBox<>();
+        jLabel5 = new JLabel();
+        jComboBox1 = new JComboBox<>();
+        setNotification = new JCheckBox();
+        setReceiveContents = new JCheckBox();
+        jPanel4 = new JPanel();
+        jLabel6 = new JLabel();
+        exitButton = new JButton();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
 
-        settingPanel.setPreferredSize(new java.awt.Dimension(300, 320));
+        this.setPreferredSize(new Dimension(300, 320));
 
-        shortcutSetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Shortcut Setting"));
+        shortcutSetPanel.setBorder(BorderFactory.createTitledBorder(" Shortcut Setting"));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jComboBox2.setModel(new DefaultComboBoxModel<>(new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" }));
+        jComboBox2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);
             }
         });
 
         jLabel5.setText("+");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ctrl", "Alt" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jComboBox1.setModel(new DefaultComboBoxModel<>(new String[] { "Ctrl", "Alt" }));
+        jComboBox1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout shortcutSetPanelLayout = new javax.swing.GroupLayout(shortcutSetPanel);
+        GroupLayout shortcutSetPanelLayout = new GroupLayout(shortcutSetPanel);
         shortcutSetPanel.setLayout(shortcutSetPanelLayout);
         shortcutSetPanelLayout.setHorizontalGroup(
-            shortcutSetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            shortcutSetPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(shortcutSetPanelLayout.createSequentialGroup()
                 .addGap(66, 66, 66)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jComboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         shortcutSetPanelLayout.setVerticalGroup(
-            shortcutSetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            shortcutSetPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(shortcutSetPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(shortcutSetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(shortcutSetPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jComboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setNotification.setText("Turn off the notification (Always recieved)");
-        setNotification.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setNotification.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 setNotificationActionPerformed(evt);
             }
         });
 
         setReceiveContents.setText("Deny the recieve clipboard data");
-        setReceiveContents.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setReceiveContents.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 setReceiveContentsActionPerformed(evt);
             }
         });
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(" Shortcut Setting"));
+        jPanel4.setBorder(BorderFactory.createTitledBorder(" Shortcut Setting"));
 
         jLabel6.setText("+");
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
@@ -133,33 +145,33 @@ public class SettingPanel extends java.awt.Panel {
         );
 
         exitButton.setText("Exit");
-        exitButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 exitButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout settingPanelLayout = new javax.swing.GroupLayout(settingPanel);
-        settingPanel.setLayout(settingPanelLayout);
-        settingPanelLayout.setHorizontalGroup(
-            settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingPanelLayout.createSequentialGroup()
+        GroupLayout thisLayout = new GroupLayout(this);
+        this.setLayout(thisLayout);
+        thisLayout.setHorizontalGroup(
+            thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(thisLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addComponent(setReceiveContents)
-                    .addComponent(exitButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setNotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(shortcutSetPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(exitButton, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setNotification, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(shortcutSetPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 21, Short.MAX_VALUE))
         );
-        settingPanelLayout.setVerticalGroup(
-            settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingPanelLayout.createSequentialGroup()
+        thisLayout.setVerticalGroup(
+            thisLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(thisLayout.createSequentialGroup()
                 .addContainerGap(29, Short.MAX_VALUE)
-                .addComponent(shortcutSetPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(shortcutSetPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(setNotification)
                 .addGap(10, 10, 10)
@@ -169,26 +181,26 @@ public class SettingPanel extends java.awt.Panel {
                 .addGap(18, 18, 18))
         );
 
-        add(settingPanel, java.awt.BorderLayout.CENTER);
+        add(this, BorderLayout.CENTER);
     }// </editor-fold>                        
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jComboBox2ActionPerformed(ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jComboBox1ActionPerformed(ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
 
-    private void setNotificationActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    private void setNotificationActionPerformed(ActionEvent evt) {                                                
         // TODO add your handling code here:
     }                                               
 
-    private void setReceiveContentsActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+    private void setReceiveContentsActionPerformed(ActionEvent evt) {                                                   
         // TODO add your handling code here:
     }                                                  
 
-    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void exitButtonActionPerformed(ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
 
