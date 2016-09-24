@@ -65,6 +65,9 @@ public class ResponseHandler {
 		case LinKlipboard.ACCESS_PERMIT:
 			errorMsg = "접속 허용";
 			break;
+		case LinKlipboard.COMPLETE_APPLY:
+			errorMsg = "변경 요청 승인";
+			break;
 		case LinKlipboard.READY_TO_TRANSFER:
 			errorMsg = "전송 준비";
 			break;
@@ -95,6 +98,12 @@ public class ResponseHandler {
 		case LinKlipboard.ERROR_DUPLICATED_IP:
 			errorMsg = "중복된 ip 주소";
 			break;
+		case LinKlipboard.ERROR_DUPLICATED_NICKNAME:
+			errorMsg = "중복된 닉네임";
+			break;
+		case LinKlipboard.ERROR_NOT_SUPPORTED:
+			errorMsg = "지원하지 않는 형식";
+			break;
 		case LinKlipboard.NULL:
 			errorMsg = "NULL";
 			break;
@@ -109,11 +118,12 @@ public class ResponseHandler {
 	public void responseHandlerForStart() {
 		seperateErrorCode();
 
-		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임을 set
+		// 만약 errorCode가 ACCESS_PERMIT이면 디폴트 닉네임과 포트번호를 set
 		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setDefaultNickName(resNickName);
+			setPortNum(resPortNum);
 			System.out.println(
-					"[ResponseHandler] " + LinKlipboardClient.getGroupName() + "의 " + resNickName + "(닉네임)가  접속");
+					"[ResponseHandler] " + LinKlipboardClient.getGroupName() + "의 " + resNickName + "(닉네임)가  접속, 사용 포트번호: " + resPortNum);
 		}
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
@@ -150,6 +160,11 @@ public class ResponseHandler {
 	/** 전송받을 파일의 이름을 세팅 */
 	public void setFileName(String fileName) {
 		client.setFileName(fileName);
+	}
+	
+	/** 클라이언트의 포트번호를 세팅 */
+	public void setPortNum(int portNum) {
+		client.setPortNum(portNum);
 	}
 
 	/** 클라이언트가 서버에 전송한 Contents의 serialNum를 넘겨받아 세팅 */

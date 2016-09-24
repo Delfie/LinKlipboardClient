@@ -18,8 +18,8 @@ public class GetTotalHistoryFromServer extends Transfer {
 	private Vector<Contents> historyInServer; // 서버로부터 받을 Vector<Contents>
 
 	/** GetTotalHistoryFromServer 생성자 */
-	public GetTotalHistoryFromServer() {
-		super();
+	public GetTotalHistoryFromServer(LinKlipboardClient client) {
+		super(client);
 		this.start();
 	}
 
@@ -28,7 +28,7 @@ public class GetTotalHistoryFromServer extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboardClient.getPortNum());
 			// 스트림 설정
 			in = new ObjectInputStream(socket.getInputStream());
 			System.out.println("[GetTotalHistoryFromServer] 연결 설정 끝");

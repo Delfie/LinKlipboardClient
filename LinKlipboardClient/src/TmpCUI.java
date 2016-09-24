@@ -7,6 +7,7 @@ import contents.FileContents;
 import contents.StringContents;
 import datamanage.ReceivePreviousData;
 import server_manager.LinKlipboard;
+import start_manager.StartToProgram;
 import transfer_manager.CommunicatingWithServer;
 import user_interface.TrayIconManager;
 
@@ -59,7 +60,9 @@ public class TmpCUI {
 		while (true) {
 			if (ACCESS == false) {
 				accessServer();
+				
 			} else {
+				
 				menu();
 			}
 		}
@@ -74,8 +77,15 @@ public class TmpCUI {
 		case "2":
 			joinGroup();
 		}
+		//닉네임 적용
+		System.out.println("--nickName : ");
+		String nickName = s.next();
+		requestChangeInfoToServer(nickName);
+		
 		System.out.println("서버 접속 완료\n");
 	}
+
+
 
 	private void menu() {
 		System.out.print("1. 전송 / 2. 수신 / 3. 히스토리 목록 보기 / 4. 히스토리의 원하는 데이터 받기\n>> ");
@@ -153,6 +163,11 @@ public class TmpCUI {
 		} else {
 			System.out.println("[TmpCUI_receiveData] File, String, Image 어디에도 속하지 않음");
 		}
+	}
+	
+	private void requestChangeInfoToServer(String nickName) {
+		new StartToProgram(client).requestChangeInfoToServer(nickName);
+		
 	}
 
 	public void createGroup() {

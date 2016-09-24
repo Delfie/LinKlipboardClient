@@ -11,8 +11,6 @@ import contents.FileContents;
 import server_manager.LinKlipboard;
 
 public class FileSendDataToServer extends Transfer {
-	LinKlipboardClient client;
-	
 	// 상대방에게 바이트 배열을 주고 받기위한 데이터 스트림 설정
 	private DataOutputStream dos;
 	private FileInputStream fis;
@@ -24,7 +22,7 @@ public class FileSendDataToServer extends Transfer {
 
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer(LinKlipboardClient client, int serialNum) {
-		super();
+		super(client);
 		this.client = client;
 		this.serialNum = serialNum;
 		this.start();
@@ -35,7 +33,7 @@ public class FileSendDataToServer extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboardClient.getPortNum());
 			// 스트림 설정
 			dos = new DataOutputStream(socket.getOutputStream()); // 바이트 배열을 보내기 위한 데이터스트림 생성
 

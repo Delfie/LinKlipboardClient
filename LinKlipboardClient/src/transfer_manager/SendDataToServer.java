@@ -11,8 +11,6 @@ import contents.Contents;
 import server_manager.LinKlipboard;
 
 public class SendDataToServer extends Transfer {
-	LinKlipboardClient client;
-	
 	private ObjectOutputStream out;
 	private int serialNum;
 	
@@ -20,8 +18,8 @@ public class SendDataToServer extends Transfer {
 
 	/** SendDataToServer 생성자 */
 	public SendDataToServer(LinKlipboardClient client, int serialNum) {
-		super();
-		this.client = client;
+		super(client);
+
 		this.serialNum = serialNum;
 		this.start();
 	}
@@ -31,7 +29,7 @@ public class SendDataToServer extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboardClient.getPortNum());
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
 			System.out.println("[SendDataToServer] 연결 설정 끝");

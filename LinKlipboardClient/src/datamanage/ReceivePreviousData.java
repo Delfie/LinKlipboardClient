@@ -63,7 +63,7 @@ public class ReceivePreviousData {
 			break;
 		case LinKlipboard.FILE_TYPE:
 			fileContents = (FileContents) previousData; // 수신받을 파일의 이름을 알아내기 위해 Contents를 FileContents로 캐스팅
-			fileReceive = new FileReceiveDataToServer(fileContents.getFileName()); // 파일이름을 인자로 전달해 FileReceiveDataToServer 객체 생성
+			fileReceive = new FileReceiveDataToServer(client, fileContents.getFileName()); // 파일이름을 인자로 전달해 FileReceiveDataToServer 객체 생성
 			requestReceiveFileData(); // 서버에 index 보내고 응답 받고 파일 받아서 클립보드에 삽입
 			break;
 		}

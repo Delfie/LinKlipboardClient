@@ -28,14 +28,14 @@ public class FileReceiveDataToServer extends Transfer {
 	// 외부에서 어디서쓰이는지 확인!!!!!!!!!!!
 
 	/** FileReceiveDataToServer 생성자 */
-	public FileReceiveDataToServer() {
-		super();
+	public FileReceiveDataToServer(LinKlipboardClient client) {
+		super(client);
 		this.start();
 	}
 
 	/** FileReceiveDataToServer 생성자 */
-	public FileReceiveDataToServer(String fileName) {
-		super();
+	public FileReceiveDataToServer(LinKlipboardClient client, String fileName) {
+		super(client);
 		FileReceiveDataToServer.receiveFilePath = LinKlipboard.fileReceiveDir + "\\" + fileName;
 	}
 
@@ -44,7 +44,7 @@ public class FileReceiveDataToServer extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboard.FTP_PORT);
+			socket = new Socket(LinKlipboard.SERVER_IP, LinKlipboardClient.getPortNum());
 			// 스트림 설정
 			dis = new DataInputStream(socket.getInputStream()); // 바이트 배열을 받기 위한 데이터스트림 생성
 			System.out.println("[FileReceiveDataToServer] 연결 설정 끝");

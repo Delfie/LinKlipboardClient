@@ -17,7 +17,8 @@ public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName = null; // 닉네임
-
+	private static int portNum; // 서버와 통신할 포트번호
+	
 	private static String fileName = null; // 전송받을 파일이름
 
 	private static History history = new History(); // 히스토리
@@ -145,6 +146,11 @@ public class LinKlipboardClient {
 	public History getHistory() {
 		return history;
 	}
+	
+	/** 서버와 통신할 포트번호 반환 */
+	public static int getPortNum(){
+		return LinKlipboardClient.portNum;
+	}
 
 	/** 클라이언트의 닉네임을 세팅 */
 	public void setNickName(String nickName) {
@@ -154,6 +160,11 @@ public class LinKlipboardClient {
 	/** 클라이언트가 전송받을 파일 이름을 세팅 */
 	public void setFileName(String fileName) {
 		LinKlipboardClient.fileName = fileName;
+	}
+	
+	/** 서버와 통신할 포트번호를 세팅 */
+	public void setPortNum(int portNum){
+		LinKlipboardClient.portNum = portNum;
 	}
 
 	/** 클라이언트 히스토리의 마지막 Contest를 가장 최근에 공유한 Contents로 세팅 */
@@ -187,7 +198,7 @@ public class LinKlipboardClient {
 		/** 서버의 연결을 기다리는 소켓 설정 */
 		public void waitToServer() {
 			try {
-				listener = new ServerSocket(LinKlipboard.FTP_PORT);
+				listener = new ServerSocket(LinKlipboardClient.portNum);
 				socket = listener.accept();
 			} catch (IOException e) {
 				e.printStackTrace();

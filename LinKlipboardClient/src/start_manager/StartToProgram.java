@@ -23,6 +23,7 @@ public class StartToProgram {
 	private String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String orderMsg; // 사용자가 원하는 명령(create/join)
+	private String nickName; // 사용자가 입력한 닉네임
 
 	/**
 	 * StartToProgram 생성자
@@ -38,6 +39,13 @@ public class StartToProgram {
 		this.response = null;
 
 		startProgram();
+	}
+	
+	public StartToProgram(LinKlipboardClient client) {
+		this.client = client;
+		this.groupName = LinKlipboardClient.getGroupName();
+		this.password = client.getGroupPassword();
+		this.response = null;
 	}
 
 	public void startProgram() {
@@ -82,16 +90,15 @@ public class StartToProgram {
 			bin.close();
 
 			exceptionHandling(this.response);
-			System.out.println(responseHandler.getErrorCodeNum());
+			System.out.println("[sendGroupInfoToServer] " + responseHandler.getErrorCodeNum());
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT) {
-				System.out.println("orderMsg: " + orderMsg);
 				if (orderMsg.equals("create")) {
-					System.out.println("생성 들어옴");
 					LinKlipboardClient.setHistory();
+					
 				} else if (orderMsg.equals("join")) {
 					// 서버에 있는 Vector<Contents>를 받는다.
-					new GetTotalHistoryFromServer();
+					new GetTotalHistoryFromServer(client);
 				}
 			}
 
@@ -102,6 +109,54 @@ public class StartToProgram {
 		}
 		this.response = response;
 	}
+	
+	
+	/** 클라이언트 정보를 변경하기 위한 메소드(현재 닉네임만) */
+	public void requestChangeInfoToServer(String nickName) {
+		String response = Integer.toString(LinKlipboard.ERROR_TRYCATCH);
+
+		try {
+			// 호출할 서블릿의 URL
+			URL url = new URL(LinKlipboard.URL_To_CALL + "/ChangeSettingOfClient");
+			URLConnection conn = url.openConnection();
+
+			// servlet의 doPost호출
+			conn.setDoOutput(true);
+
+			// 서버에 보낼 데이터(닉네임)
+			BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			String header = "groupName=" + groupName + "&" + "nickname=" + nickName;
+
+			// server에 그룹이름과 패스워드 전송(servlet이 받는 구분자: &)
+			bout.write(header);
+			bout.flush();
+			bout.close();
+
+			// 서버로부터 받을 데이터(응답정보)
+			BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			if ((response = bin.readLine()) != null) {
+				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
+				this.response = response;
+			}
+			bin.close();
+
+			exceptionHandling(this.response);
+			System.out.println("[requestChangeInfoToServer] " + responseHandler.getErrorCodeNum());
+
+			if (responseHandler.getErrorCodeNum() == LinKlipboard.COMPLETE_APPLY) {
+				// 나의 닉네임을 변경한다.
+				client.setNickName(nickName);
+			}
+
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		this.response = response;
+	}
+	
 
 	/**
 	 * 예외 처리

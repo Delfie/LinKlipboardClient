@@ -165,7 +165,7 @@ public class CommunicatingWithServer {
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[requestReceiveFileData] 소켓 연결");
-				new FileReceiveDataToServer();
+				new FileReceiveDataToServer(client);
 			}
 
 			bin.close();
