@@ -93,6 +93,8 @@ public class History {
 
 	public void setHistory(Vector<Contents> updateHistory) {
 		System.out.println("[History] setHistory메소드 호출");
+		sharedContents = new Vector<Contents>();
+		resizingImgContents = new Vector<ImageIcon>();
 		initSharedContents(updateHistory);
 		InitResizingImgContents();
 	}

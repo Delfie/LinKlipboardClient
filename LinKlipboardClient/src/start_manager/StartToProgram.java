@@ -51,11 +51,11 @@ public class StartToProgram {
 
 	public void startProgram() {
 		// 생성버튼을 누르면 이 메소드가 실행
-		if (orderMsg == "create") {
+		if (orderMsg.equals("create")) {
 			sendGroupInfoToServer("/CreateGroup");
 		}
 		// 접속버튼을 누르면 이 메소드가 실행
-		else if (orderMsg == "join") {
+		else if (orderMsg.equals("join")) {
 			sendGroupInfoToServer("/JoinGroup");
 		}
 	}
@@ -184,6 +184,8 @@ public class StartToProgram {
 	// return response;
 	// }
 	// //UI할 때 필요할듯
+	
+	
 	public static String convert(String str) throws IOException {
 		  ByteArrayOutputStream requestOutputStream = new ByteArrayOutputStream();
 		  requestOutputStream.write(str.getBytes("EUC-KR"));
