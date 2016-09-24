@@ -40,20 +40,27 @@ public class History {
 	/** 전달받은 Contents가 어떤 타입인지에 따라서 resizingImgContents를 세팅 */
 	public void setResizingImgContents(Contents contents) {
 		if (contents.getType() == LinKlipboard.IMAGE_TYPE) {
+			//리사이징 이미지 삽입
 			ImageContents ImageData = (ImageContents) contents;
 			this.resizingImgContents.add(ImageData.getResizingImageIcon());
 		} else {
+			//빈 이미지 객체 삽입
+			System.out.println("[History] setResizingImgContents 빈 이미지 객체 삽입 전");
 			this.resizingImgContents.add(new ImageIcon());
+			System.out.println("[History] setResizingImgContents 빈 이미지 객체 삽입 후");
 		}
 	}
 
 	/** 받은 Vector<Contents>로 sharedContents 초기화 */
 	public void initSharedContents(Vector<Contents> updateHistory) {
+		System.out.println("[History] initSharedContents 메소드 들어옴 ");
 		sharedContents = updateHistory;
 	}
 
 	/** Vector<Contents>에 있는 Contents들이 어떤 타입인지에 따라서 resizingImgContents 초기화 */
 	public void InitResizingImgContents() {
+		System.out.println("[History] InitResizingImgContents 메소드 들어옴 ");
+		
 		// Vector<Contents> 값을 돌면서 Vector<ImageIcon>를 채워 넣는다.
 		for (int i = 0; i < sharedContents.size(); i++) {
 			setResizingImgContents(sharedContents.elementAt(i));
@@ -82,6 +89,7 @@ public class History {
 	}
 
 	public void setHistory(Vector<Contents> updateHistory) {
+		System.out.println("[History] setHistory메소드 호출");
 		initSharedContents(updateHistory);
 		InitResizingImgContents();
 	}

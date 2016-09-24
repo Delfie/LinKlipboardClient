@@ -184,6 +184,7 @@ public class LinKlipboardClient {
 	 *            server에서 받아온 Vector<Contents>
 	 */
 	public static void setHistory(Vector<Contents> updateHistory) {
+		System.out.println("[LlinKlipboardClient] setHistory메소드 호출");
 		history.setHistory(updateHistory);
 	}
 
