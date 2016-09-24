@@ -11,7 +11,7 @@ import contents.Contents;
 import datamanage.History;
 import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
-import user_interface.UserInterface;
+import user_interface.Past_UserInterface;
 
 public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
@@ -24,7 +24,7 @@ public class LinKlipboardClient {
 	private static History history = new History(); // 히스토리
 	private static Contents latestContents; // 최신데이터
 
-	UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
+	Past_UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
 
 	private static File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
@@ -55,7 +55,7 @@ public class LinKlipboardClient {
 	 * @param groupPassword
 	 * @param screen
 	 */
-	public LinKlipboardClient(String groupName, String groupPassword, UserInterface screen) {
+	public LinKlipboardClient(String groupName, String groupPassword, Past_UserInterface screen) {
 		System.out.println("<클라이언트 생성> groupName: " + groupName + " groupPassword: " + groupPassword);
 
 		this.groupName = groupName;

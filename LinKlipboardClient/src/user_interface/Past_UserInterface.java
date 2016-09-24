@@ -14,7 +14,7 @@ import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 
-public class UserInterface extends JFrame {
+public class Past_UserInterface extends JFrame {
 
 	private LinKlipboardClient client;
 
@@ -29,7 +29,7 @@ public class UserInterface extends JFrame {
 	JButton createGroupBtn = new JButton("CREATE");
 	JButton joinGroupBtn = new JButton("JOIN");
 
-	public UserInterface() {
+	public Past_UserInterface() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setHooker();
 		setComponents();
@@ -145,6 +145,6 @@ public class UserInterface extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new UserInterface();
+		new Past_UserInterface();
 	}
 }

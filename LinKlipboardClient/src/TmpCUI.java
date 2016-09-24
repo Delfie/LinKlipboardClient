@@ -70,19 +70,29 @@ public class TmpCUI {
 
 	private void accessServer() {
 		System.out.print("1. 생성 / 2. 접속\n>> ");
+		
+		
 		switch (s.next()) {
 		case "1":
 			createGroup();
+			//닉네임 적용
+			System.out.println("--nickName(create) : ");
+			String nickName = s.next();
+			requestChangeInfoToServer(nickName);
+			
+			System.out.println("서버 접속 완료\n");
 			break;
 		case "2":
 			joinGroup();
+			//닉네임 적용
+			System.out.println("--nickName(join) : ");
+			String nickName1 = s.next();
+			requestChangeInfoToServer(nickName1);
+			
+			System.out.println("서버 접속 완료\n");
+			break;
 		}
-		//닉네임 적용
-		System.out.println("--nickName : ");
-		String nickName = s.next();
-		requestChangeInfoToServer(nickName);
 		
-		System.out.println("서버 접속 완료\n");
 	}
 
 

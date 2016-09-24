@@ -2,6 +2,7 @@ package start_manager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -137,7 +138,7 @@ public class StartToProgram {
 
 			if ((response = bin.readLine()) != null) {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
-				this.response = response;
+				this.response = new String(response.getBytes("utf-8"), "utf-8");
 			}
 			bin.close();
 
@@ -157,6 +158,11 @@ public class StartToProgram {
 		this.response = response;
 	}
 	
+
+	private String String(byte[] bytes, String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * 예외 처리
@@ -178,4 +184,9 @@ public class StartToProgram {
 	// return response;
 	// }
 	// //UI할 때 필요할듯
+	public static String convert(String str) throws IOException {
+		  ByteArrayOutputStream requestOutputStream = new ByteArrayOutputStream();
+		  requestOutputStream.write(str.getBytes("EUC-KR"));
+		  return requestOutputStream.toString("EUC-KR");
+	}
 }
