@@ -55,11 +55,13 @@ public class History {
 	public void initSharedContents(Vector<Contents> updateHistory) {
 		System.out.println("[History] initSharedContents 메소드 들어옴 ");
 		sharedContents = updateHistory;
+		System.out.println("[History]" + sharedContents.get(0).getType());
 	}
 
 	/** Vector<Contents>에 있는 Contents들이 어떤 타입인지에 따라서 resizingImgContents 초기화 */
 	public void InitResizingImgContents() {
 		System.out.println("[History] InitResizingImgContents 메소드 들어옴 ");
+		System.out.println("[History] sharedContents.size(): " + sharedContents.size());
 		
 		// Vector<Contents> 값을 돌면서 Vector<ImageIcon>를 채워 넣는다.
 		for (int i = 0; i < sharedContents.size(); i++) {

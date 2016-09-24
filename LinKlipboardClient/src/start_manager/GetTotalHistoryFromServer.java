@@ -59,7 +59,7 @@ public class GetTotalHistoryFromServer extends Transfer {
 			System.out.println("[GetTotalHistoryFromServer] Vector<Contents> 수신 전");
 			historyInServer = (Vector<Contents>) in.readObject();
 			System.out.println("[GetTotalHistoryFromServer] Vector<Contents> 수신 후");
-			System.out.println(historyInServer.get(0).getType());
+			System.out.println("[GetTotalHistoryFromServer]" + historyInServer.get(0).getType());
 
 			// 클라이언트 히스토리에 세팅해준다.
 			LinKlipboardClient.setHistory(historyInServer);
