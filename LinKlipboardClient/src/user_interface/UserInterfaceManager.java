@@ -1,8 +1,8 @@
 package user_interface;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -196,6 +196,7 @@ public class UserInterfaceManager extends JFrame {
 
 class NicknameDialog extends JDialog {
 	JLabel label = new JLabel("Please enter your nickname.");
+	JLabel errorLabel = new JLabel();
 	JTextField inputNicknameField = new JTextField();
 	JButton okButton = new JButton("OK");
 
@@ -208,6 +209,10 @@ class NicknameDialog extends JDialog {
 		// label.setBackground(Color.yellow);
 		// label.setOpaque(true);
 		add(label);
+		
+		errorLabel.setBounds(40, 70, 100, 20);
+		errorLabel.setForeground(Color.red);
+		add(errorLabel);
 
 		inputNicknameField.setBounds(55, 40, 130, 25);
 		inputNicknameField.setText(defaulNickname);
@@ -217,7 +222,7 @@ class NicknameDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if (inputNicknameField.getText().length() != 0) {
-					//닉네임 입력하라고 오류표시하기
+					errorLabel.setText("닉네임 필수 입력");
 					setVisible(false);
 				}
 			}

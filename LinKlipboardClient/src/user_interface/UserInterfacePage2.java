@@ -19,8 +19,8 @@ public class UserInterfacePage2 extends BasePanel {
 	private JPanel connectionPanel;
 	private JPanel historyPanel;
 	private JPanel settingPanel;
-	
-	private static boolean LOGOUT = false; //그룹에서 나가기 설정
+
+	private static boolean LOGOUT = false; // 그룹에서 나가기 설정
 
 	public UserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
 		super(client, trayIcon, main);
@@ -74,7 +74,7 @@ public class UserInterfacePage2 extends BasePanel {
 					tableTabbedPane.setIconAt(2, settingImage);
 				} else if (index == 1) {
 					tableTabbedPane.setComponentAt(index, new HistoryPanel(client));
-					
+
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(index, selectedHistoryImage);
 					tableTabbedPane.setIconAt(2, settingImage);
@@ -89,7 +89,7 @@ public class UserInterfacePage2 extends BasePanel {
 
 	public ImageIcon resizeConnectionImageIcon(ImageIcon imageIcon) {
 		Image resizingImage = imageIcon.getImage(); // ImageIcon을 Image로 변환.
-		resizingImage = resizingImage.getScaledInstance(75, 17, java.awt.Image.SCALE_SMOOTH); // resize
+		resizingImage = resizingImage.getScaledInstance(65, 20, java.awt.Image.SCALE_SMOOTH); // resize
 		ImageIcon resizingImageIcon = new ImageIcon(resizingImage); // Image로 ImageIcon 생성
 
 		return resizingImageIcon;
@@ -97,7 +97,7 @@ public class UserInterfacePage2 extends BasePanel {
 
 	public ImageIcon resizeImageIcon(ImageIcon imageIcon) {
 		Image resizingImage = imageIcon.getImage(); // ImageIcon을 Image로 변환.
-		resizingImage = resizingImage.getScaledInstance(50, 20, java.awt.Image.SCALE_SMOOTH); // resize
+		resizingImage = resizingImage.getScaledInstance(65, 19, java.awt.Image.SCALE_SMOOTH); // resize
 		ImageIcon resizingImageIcon = new ImageIcon(resizingImage); // Image로 ImageIcon 생성
 
 		return resizingImageIcon;
