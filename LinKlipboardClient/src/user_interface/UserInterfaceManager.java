@@ -59,16 +59,16 @@ public class UserInterfaceManager extends JFrame {
 		// setLayout(null);
 
 		// //TEST
-		 client = new LinKlipboardClient(this);
-		 setUserInterfacePage2(client, trayIcon, this);
+//		 client = new LinKlipboardClient(this);
+//		 setUserInterfacePage2(client, trayIcon, this);
 //
-//		setUserInterfacePage1(client, this);
-//		this.client = page1.getClient();
-//
-//		if (page1.getACCESS() == true) {
-//			setUserInterfacePage2(client, trayIcon, this);
-//			dealInputnickName(this.client.getNickName()); // 닉네임 설정
-//		}
+		setUserInterfacePage1(client, this);
+		this.client = page1.getClient();
+
+		if (page1.getACCESS() == true) {
+			setUserInterfacePage2(client, trayIcon, this);
+			dealInputnickName(this.client.getNickName()); // 닉네임 설정
+		}
 
 		setVisible(true);
 		setResizable(false);
