@@ -1,5 +1,6 @@
 package user_interface;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,16 +14,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
-public class SettingPanel extends JPanel {
-	private ShowNicknamePanel showNicknamePanel = new ShowNicknamePanel();
-	private ShortcutSetPanel shortcutSetPanel = new ShortcutSetPanel();
+import client_manager.LinKlipboardClient;
+
+public class SettingPanel extends BasePanel {
+	private ShowNicknamePanel showNicknamePanel;
+	private ShortcutSetPanel shortcutSetPanel;
 
 	private JCheckBox setNotification = new JCheckBox();
-	private JCheckBox setReceiveContents = new JCheckBox();
 
 	private JButton exitButton = new JButton();
 
-	public SettingPanel() {
+	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+		super(client, trayIcon, main);
+		
+		showNicknamePanel = new ShowNicknamePanel(client);
+		shortcutSetPanel = new ShortcutSetPanel(client);
+		
 		setLayout(null);
 		setSize(320, 360);
 
@@ -45,15 +52,6 @@ public class SettingPanel extends JPanel {
 		setNotification.setBounds(20, 210, 280, 20);
 		add(setNotification);
 
-		setReceiveContents.setText("Deny the recieve clipboard data");
-		setReceiveContents.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				setReceiveContentsActionPerformed(evt);
-			}
-		});
-		setReceiveContents.setBounds(20, 245, 280, 20);
-		add(setReceiveContents);
-
 		exitButton.setText("Exit");
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -73,16 +71,16 @@ public class SettingPanel extends JPanel {
 	}
 
 	private void exitButtonActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
+		//contentPane을 page1으로 돌아가도록 
+		//돌아가기전에 client정보 초기화 or 새로 생성??
 	}
-
 }
 
-class ShowNicknamePanel extends JPanel {
+class ShowNicknamePanel extends BasePanel{
 	private JLabel userNicknameLabel = new JLabel();
 
-	public ShowNicknamePanel() {
-		setLayout(null);
+	public ShowNicknamePanel(LinKlipboardClient client) {
+		super(client);
 		setSize(320, 360);
 
 		initComponents();
@@ -111,12 +109,14 @@ class ShowNicknamePanel extends JPanel {
 	}
 }
 
-class ShortcutSetPanel extends JPanel {
+class ShortcutSetPanel extends BasePanel {
 	private JComboBox<String> firstShortcut = new JComboBox<>();
 	private JLabel label = new JLabel();
 	private JComboBox<String> secondShortcut = new JComboBox<>();
 
-	public ShortcutSetPanel() {
+	public ShortcutSetPanel(LinKlipboardClient client) {
+		super(client);
+		
 		setLayout(null);
 		setSize(320, 360);
 

@@ -3,13 +3,28 @@ package user_interface;
 import javax.swing.JPanel;
 
 import client_manager.LinKlipboardClient;
+import transfer_manager.CommunicatingWithServer;
 
 public abstract class BasePanel extends JPanel {
 
 	protected LinKlipboardClient client;
-
+	protected CommunicatingWithServer communicatingWithServer;
+	protected UserInterfaceManager main;
+	TrayIconManager trayIcon;
+	
 	public BasePanel(LinKlipboardClient client) {
 		this.client = client;
+	}
+	
+	public BasePanel(LinKlipboardClient client, TrayIconManager trayIcon) {
+		this.client = client;
+		this.trayIcon = trayIcon;
+	}
+
+	public BasePanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+		this.client = client;
+		this.trayIcon = trayIcon;
+		this.main = main;
 	}
 
 	public LinKlipboardClient getClient() {

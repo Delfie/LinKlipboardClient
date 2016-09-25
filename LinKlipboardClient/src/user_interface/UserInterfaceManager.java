@@ -1,9 +1,8 @@
 package user_interface;
 
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -11,10 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
+import contents.Contents;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
+import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
 import transfer_manager.CommunicatingWithServer;
 
@@ -25,20 +27,16 @@ import transfer_manager.CommunicatingWithServer;
  */
 
 public class UserInterfaceManager extends JFrame {
-	private LinKlipboardClient client = new LinKlipboardClient();
-
-	private UserInterfacePage1 page1 = new UserInterfacePage1(client);
-	private UserInterfacePage2 page2 = new UserInterfacePage2(client);
+	private LinKlipboardClient client;
+	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 	private TrayIconManager trayIcon = new TrayIconManager();
+
+	private UserInterfacePage1 page1;
+	private UserInterfacePage2 page2;
 
 	private NicknameDialog inputNickNameDialog; // 사용자가 원하는 닉네임 입력 다이얼로그
 
-	Container contentPane;
-
-	// 서버와의 응답 처리 클래스
-	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
-
-	public static Scanner s = new Scanner(System.in);
+	// private Container contentPane;
 
 	private static final int startXOfFrame = 0;
 	private static final int startYOfFrame = 0;
@@ -58,39 +56,120 @@ public class UserInterfaceManager extends JFrame {
 		trayIcon.addTrayIconInSystemTray();
 		setHooker();
 
-		contentPane = getContentPane();
-		// contentPane.setLayout(null);
+		// setLayout(null);
 
-		contentPane.add(page1);
-		this.client = page1.getClient();
-		
-		// contentPane.add(page2);
-		// dealInputnickName(this.client.getNickName());
+		// //TEST
+		 client = new LinKlipboardClient(this);
+		 setUserInterfacePage2(client, trayIcon, this);
+//
+//		setUserInterfacePage1(client, this);
+//		this.client = page1.getClient();
+//
+//		if (page1.getACCESS() == true) {
+//			setUserInterfacePage2(client, trayIcon, this);
+//			dealInputnickName(this.client.getNickName()); // 닉네임 설정
+//		}
 
 		setVisible(true);
 		setResizable(false);
 	}
 
-	/** 단축키(초기값[Ctrl + T])를 누르면 서버에 데이터 전송 */
+	/** UserInterfacePage1, LinKlipboardClient를 생성하여 초기화 후 배치 */
+	public void setUserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
+		// page1 패널 생성
+		client = new LinKlipboardClient(main);
+		page1 = new UserInterfacePage1(client);
+
+		main.setContentPane(page1);
+	}
+
+	/** UserInterfacePage2 생성 및 배치 */
+	public void setUserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+		// page2 패널 생성
+		page2 = new UserInterfacePage2(client, trayIcon, main);
+
+		main.setContentPane(page2);
+	}
+
+	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
 	private void setHooker() {
 		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
 
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 			@Override
 			public void keyPressed(GlobalKeyEvent event) {
-				if (event.isControlPressed()) {
-					if (event.getVirtualKeyCode() == event.VK_T) {
-						System.out.println("[Ctrl + T] is detected.");
-						// client.sendDateToServer();
-						// 도연이 클래스
+				char secondShortcutForSend = client.getSecondShortcutForSend().charAt(0);
+				int getKeyCodeForSend = (int) secondShortcutForSend; // int keyCode를 얻어와 event,VK_ 꼴로 만들어야함
+
+				char secondShortcutForReceive = client.getSecondShortcutForReceive().charAt(0);
+				int getKeyCodeForReceive = (int) secondShortcutForReceive;
+
+				if (client.getFirstShortcutForSend().equals("Ctrl")) {
+					if (event.isControlPressed()) {
+						if (event.getVirtualKeyCode() == getKeyCodeForSend) {
+							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
+							// 전송한다.
+							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
+								communicatingWithServer.requestSendFileData();
+							} else {
+								communicatingWithServer.requestSendExpFileData();
+							}
+						}
 					}
+				} else if (client.getFirstShortcutForSend().equals("Alt")) {
+					if (event.isMenuPressed()) {
+						if (event.getVirtualKeyCode() == getKeyCodeForSend) {
+							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
+							// 전송한다.
+							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
+								communicatingWithServer.requestSendFileData();
+							} else {
+								communicatingWithServer.requestSendExpFileData();
+							}
+						}
+					}
+				} else {
+					System.out.println("[setHookerForSend] 단축키 오류");
+				}
+
+				if (client.getFirstShortcutForReceive().equals("Ctrl")) {
+					if (event.isControlPressed()) {
+						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
+							System.out.println("[Ctrl + " + secondShortcutForReceive + "] is detected.");
+							receiveData();
+						}
+					}
+				} else if (client.getFirstShortcutForReceive().equals("Alt")) {
+					if (event.isMenuPressed()) {
+						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
+							System.out.println("[Alt + " + secondShortcutForReceive + "] is detected.");
+							receiveData();
+						}
+					}
+				} else {
+					System.out.println("[setHookerForReceive] 단축키 오류");
 				}
 			}
 		});
 	}
 
-	public static void main(String[] args) {
-		new UserInterfaceManager();
+
+	/** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
+	public void receiveData() {
+		client.settLatestContents();
+
+		Contents latestContentsFromServer = client.getLatestContents();
+		int latestContentsType = client.getLatestContents().getType();
+
+		if (latestContentsType == LinKlipboard.FILE_TYPE) {
+			communicatingWithServer.requestReceiveFileData();
+		} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+		} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+		} else {
+			System.out.println("[ConnectionPanel] File, String, Image 어디에도 속하지 않음");
+		}
 	}
 
 	/** 다이얼로그에서 입력받은 닉네임을 처리 */
@@ -103,6 +182,15 @@ public class UserInterfaceManager extends JFrame {
 		new StartToProgram(client).requestChangeInfoToServer(nickname);
 
 		// page2로 넘어간 후에 다이얼로그 띄우기
+	}
+	
+	/** TrayIcon을 반환 */
+	public TrayIconManager getTrayIcon(){
+		return this.trayIcon;
+	}
+
+	public static void main(String[] args) {
+		new UserInterfaceManager();
 	}
 }
 
@@ -128,7 +216,10 @@ class NicknameDialog extends JDialog {
 		okButton.setBounds(150, 70, 80, 23);
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				setVisible(false);
+				if (inputNicknameField.getText().length() != 0) {
+					//닉네임 입력하라고 오류표시하기
+					setVisible(false);
+				}
 			}
 		});
 		add(okButton);

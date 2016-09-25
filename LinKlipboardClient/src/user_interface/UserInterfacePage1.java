@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -27,7 +27,7 @@ public class UserInterfacePage1 extends BasePanel {
 	private String groupName; // 사용자가 입력한 그룹이름
 	private String groupPW; // 사용자가 입력한 그룹패스워드
 	
-	private static boolean ACCESS = false; 
+	private static boolean ACCESS = false; //접속 성공 여부
 
 	public UserInterfacePage1(LinKlipboardClient client) {
 		super(client);
@@ -36,6 +36,7 @@ public class UserInterfacePage1 extends BasePanel {
 		setSize(320, 400);
 		
 		initField();
+		client.setScreen(this);
 		ACCESS = false;
 
 		initComponents();
@@ -43,11 +44,9 @@ public class UserInterfacePage1 extends BasePanel {
 
 	@SuppressWarnings("unchecked")
 	private void initComponents() {
-		// mainImgLabel.setIcon(new
-		// ImageIcon("C:\\Users\\Administrator\\Desktop\\mainImg.PNG")); //
-		// NOI18N
-		mainImgLabel.setBackground(new Color(255, 132, 0));
-		mainImgLabel.setOpaque(true);
+		mainImgLabel.setIcon(new ImageIcon("image/mainImage.png")); 
+//		mainImgLabel.setBackground(new Color(255, 132, 0));
+//		mainImgLabel.setOpaque(true);
 		mainImgLabel.setBounds(0, 0, 320, 250);
 		add(mainImgLabel);
 
@@ -72,10 +71,13 @@ public class UserInterfacePage1 extends BasePanel {
 		groupPassWordField.setText("");
 		groupPassWordField.setBounds(135, 305, 150, 20);
 		add(groupPassWordField);
+		
+		
 
 		responseState.setText("");
 		responseState.setBounds(87, 335, 150, 20);
-		responseState.setBackground(Color.GRAY);
+		responseState.setHorizontalAlignment(JLabel.CENTER);
+//		responseState.setBackground(Color.GRAY);
 		responseState.setOpaque(true);
 		add(responseState);
 

@@ -19,13 +19,15 @@ public class UserInterfacePage2 extends BasePanel {
 	private JPanel connectionPanel;
 	private JPanel historyPanel;
 	private JPanel settingPanel;
+	
+	private static boolean LOGOUT = false; //그룹에서 나가기 설정
 
-	public UserInterfacePage2(LinKlipboardClient client) {
-		super(client);
+	public UserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+		super(client, trayIcon, main);
 
 		connectionPanel = new ConnectionPanel(client);
 		// historyPanel = new HistoryPanel(client);
-		// settingPanel = new SettingPanel(client);
+		settingPanel = new SettingPanel(client, trayIcon, main);
 
 		setLayout(null);
 		setSize(320, 400);
@@ -71,6 +73,8 @@ public class UserInterfacePage2 extends BasePanel {
 					tableTabbedPane.setIconAt(1, historyImage);
 					tableTabbedPane.setIconAt(2, settingImage);
 				} else if (index == 1) {
+					tableTabbedPane.setComponentAt(index, new HistoryPanel(client));
+					
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(index, selectedHistoryImage);
 					tableTabbedPane.setIconAt(2, settingImage);

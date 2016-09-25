@@ -61,9 +61,12 @@ public class SendDataToServer extends Transfer {
 			// 히스토리에 추가할 Contents의 고유번호 세팅
 			sendContents.setSerialNum(serialNum);
 
+			
+			//공유한 날짜, 시간 설정
+			sendContents.setDate();
+			
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(sendContents);
-			//???????????????
 			
 			out.writeObject(sendContents); // Contents 객체 전송
 

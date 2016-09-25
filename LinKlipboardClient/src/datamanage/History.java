@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import contents.Contents;
 import contents.ImageContents;
 import server_manager.LinKlipboard;
+import user_interface.UserInterfaceManager;
 
 public class History {
 	private Vector<Contents> sharedContents;

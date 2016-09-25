@@ -128,8 +128,7 @@ public class ResponseHandler {
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
 			// 사용자 인터페이스에 에러상태 표시
-			// client.updateErrorState(errorMsg);
-			System.out.println(errorMsg);
+			client.updateErrorState(errorMsg);
 		}
 	}
 
@@ -147,8 +146,7 @@ public class ResponseHandler {
 		// 만약 errorCode가 ERROR이면 errorMsg에 오류정보 set
 		else {
 			// 사용자 인터페이스에 에러상태 표시
-			// client.updateErrorState(errorMsg);
-			System.out.println(errorMsg);
+			client.updateErrorState(errorMsg);
 		}
 	}
 

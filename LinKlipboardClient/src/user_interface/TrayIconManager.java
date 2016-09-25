@@ -72,6 +72,6 @@ public class TrayIconManager {
 
 	/** 트레이아이콘 메시지 띄우기 */
 	public void showMsg(String msg) {
-		trayIcon.displayMessage("*공유데이터 도착*", msg, TrayIcon.MessageType.INFO);
+		trayIcon.displayMessage("** Arrived Shared Contents **", msg, TrayIcon.MessageType.INFO);
 	}
 }

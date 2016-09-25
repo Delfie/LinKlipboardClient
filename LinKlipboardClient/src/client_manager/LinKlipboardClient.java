@@ -11,34 +11,45 @@ import contents.Contents;
 import datamanage.History;
 import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
+import user_interface.TrayIconManager;
+import user_interface.UserInterfaceManager;
 //import user_interface.Past_UserInterface;
 import user_interface.UserInterfacePage1;
+import user_interface.UserInterfacePage2;
 
 public class LinKlipboardClient {
+	private UserInterfaceManager main;
+	private UserInterfacePage1 screen1; // 사용자 인터페이스(for 오류 정보 표시)
+	private TrayIconManager trayIcon;
+	
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName = null; // 닉네임
 	private static int portNum; // 서버와 통신할 포트번호
-	private Vector<String> otherClients = new Vector<String>(); //같은 그룹 접속자들의 닉네임
-	
+	private Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
+
+	private String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
+	private String secondShortcutForSend = "Q"; // 전송 두번째 단축키
+	private String firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
+	private String secondShortcutForReceive = "Q"; // 수신 두번째 단축키
+
 	private static String fileName = null; // 전송받을 파일이름
 
 	private static History history = new History(); // 히스토리
-	private static Contents latestContents; // 최신데이터
+	private static Contents latestContents = null; // 최신데이터
 
-	//Past_UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
-	UserInterfacePage1 screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
 
 	private static File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
 	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
-	
-	/**  LinKlipboardClient 생성자 */
-	public LinKlipboardClient() {
+
+	/** LinKlipboardClient 생성자 */
+	public LinKlipboardClient(UserInterfaceManager main) {
 		System.out.println("<디폴트 클라이언트 생성>");
 
 		createFileReceiveFolder(); // LinKlipboard folder 생성
 
+		this.main = main;
 		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
 		receiveContentsThread.start(); // 스레드 start
 	}
@@ -61,18 +72,17 @@ public class LinKlipboardClient {
 		receiveContentsThread.start(); // 스레드 start
 	}
 
-	
 	/** 사용자가 입력한 그룹정보를 세팅 */
-	public void setGroupInfo(String groupName, String groupPassword){
+	public void setGroupInfo(String groupName, String groupPassword) {
 		System.out.println("[LinKlipboardClient] 그룹정보 세팅 메소드 호출");
 		this.groupName = groupName;
 		this.password = groupPassword;
 	}
-	
+
 	/** 오류코드를 입력할 인터페이스 설정 */
-	public void setScreen(){
+	public void setScreen(UserInterfacePage1 screen) {
 		System.out.println("[LinKlipboardClient] 오류코드 입력 인터페이스 세팅 메소드 호출");
-		this.screen = screen;
+		this.screen1 = screen;
 	}
 
 	/** 전송받은 파일을 저장할 폴더(LinKlipboard) 생성 */
@@ -119,7 +129,7 @@ public class LinKlipboardClient {
 
 	/** 사용자 인터페이스에 오류 정보 표시 */
 	public void updateErrorState(String response) {
-		this.screen.updateErrorState(response);
+		this.screen1.updateErrorState(response);
 	}
 
 	/** 클라이언트가 입력한 그룹이름 반환 */
@@ -151,10 +161,50 @@ public class LinKlipboardClient {
 	public History getHistory() {
 		return history;
 	}
-	
+
 	/** 서버와 통신할 포트번호 반환 */
-	public static int getPortNum(){
+	public static int getPortNum() {
 		return LinKlipboardClient.portNum;
+	}
+
+	/** 전송 첫번째 단축키 세팅 */
+	public void setFirstShortcutForSend(String firstShortcutForSend) {
+		this.firstShortcutForSend = firstShortcutForSend;
+	}
+
+	/** 전송 두번째 단축키 세팅 */
+	public void setSecondShortcutForSend(String secondShortcutForSend) {
+		this.secondShortcutForSend = secondShortcutForSend;
+	}
+
+	/** 수신 첫번째 단축키 세팅 */
+	public void setFirstShortcutForReceive(String firstShortcutForReceive) {
+		this.firstShortcutForReceive = firstShortcutForReceive;
+	}
+
+	/** 수신 두번째 단축키 세팅 */
+	public void setSecondShortcutForReceive(String secondShortcutForReceive) {
+		this.secondShortcutForReceive = secondShortcutForReceive;
+	}
+
+	/** 전송 첫번째 단축키 반환 */
+	public String getFirstShortcutForSend() {
+		return firstShortcutForSend;
+	}
+
+	/** 전송 두번째 단축키 반환 */
+	public String getSecondShortcutForSend() {
+		return secondShortcutForSend;
+	}
+
+	/** 수신 첫번째 단축키 반환 */
+	public String getFirstShortcutForReceive() {
+		return firstShortcutForReceive;
+	}
+
+	/** 수신 두번째 단축키 반환 */
+	public String getSecondShortcutForReceive() {
+		return secondShortcutForReceive;
 	}
 
 	/** 클라이언트의 닉네임을 세팅 */
@@ -166,9 +216,9 @@ public class LinKlipboardClient {
 	public void setFileName(String fileName) {
 		LinKlipboardClient.fileName = fileName;
 	}
-	
+
 	/** 서버와 통신할 포트번호를 세팅 */
-	public void setPortNum(int portNum){
+	public void setPortNum(int portNum) {
 		LinKlipboardClient.portNum = portNum;
 	}
 
@@ -193,17 +243,16 @@ public class LinKlipboardClient {
 		history.setHistory(updateHistory);
 	}
 
-
 	/** 같은 그룹 접속자들의 닉네임 세팅 */
 	public void setOtherClients(Vector<String> clients) {
 		this.otherClients = new Vector<String>(clients);
 	}
-	
+
 	/** 같은 그룹 접속자들의 닉네임을 반환 */
 	public Vector<String> getOtherClients() {
 		return this.otherClients;
 	}
-	
+
 	/**
 	 * 서버가 전송하는 Contents를 받는 클래스 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다.
 	 */
@@ -240,7 +289,19 @@ public class LinKlipboardClient {
 				try {
 					latestContents = (Contents) in.readObject(); // Contents 객체수신
 					history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
-					// (알림 띄우기 추가)
+					
+					int latestContentsType = latestContents.getType();
+
+					if (latestContentsType == LinKlipboard.FILE_TYPE) {
+						main.getTrayIcon().showMsg("Shared <File> Contents");
+					} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+						main.getTrayIcon().showMsg("Shared <Text> Contents");
+					} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+						main.getTrayIcon().showMsg("Shared <Image> Contents");
+					} else {
+						System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+					}
+					
 				} catch (ClassNotFoundException e) {
 					this.start();
 				} catch (IOException e) {
