@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import contents.Contents;
@@ -15,13 +16,12 @@ import user_interface.TrayIconManager;
 import user_interface.UserInterfaceManager;
 //import user_interface.Past_UserInterface;
 import user_interface.UserInterfacePage1;
-import user_interface.UserInterfacePage2;
 
 public class LinKlipboardClient {
 	private UserInterfaceManager main;
 	private UserInterfacePage1 screen1; // 사용자 인터페이스(for 오류 정보 표시)
 	private TrayIconManager trayIcon;
-	
+
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName = null; // 닉네임
@@ -288,20 +288,43 @@ public class LinKlipboardClient {
 				setConnection();
 				try {
 					latestContents = (Contents) in.readObject(); // Contents 객체수신
-					history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
-					
-					int latestContentsType = latestContents.getType();
+					int latestContentsType = latestContents.getType(); // Contents 객체의 타입
 
-					if (latestContentsType == LinKlipboard.FILE_TYPE) {
-						main.getTrayIcon().showMsg("Shared <File> Contents");
-					} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
-						main.getTrayIcon().showMsg("Shared <Text> Contents");
-					} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
-						main.getTrayIcon().showMsg("Shared <Image> Contents");
+					if (latestContentsType == LinKlipboard.NULL) {
+						// sharer을 확인
+						StringTokenizer tokens = new StringTokenizer(latestContents.getSharer(),
+								LinKlipboard.RESPONSE_DELIMITER);
+						String inoutClientInfo = tokens.nextToken();
+
+						// join이면 Vector otherClients에 추가
+						if (inoutClientInfo.equals("join")) {
+							String inClientNickname = tokens.nextToken();
+							otherClients.add(inClientNickname);
+						}
+						// exit이면 join이면 Vector otherClients에서 제거
+						if (inoutClientInfo.equals("exit")) {
+							String outClientNickname = tokens.nextToken();
+							for (int i = 0; i < otherClients.size(); i++) {
+								if (otherClients.get(i).equals(outClientNickname)) {
+									otherClients.remove(i);
+									return;
+								}
+							}
+						}
 					} else {
-						System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+						history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
+
+						if (latestContentsType == LinKlipboard.FILE_TYPE) {
+							main.getTrayIcon().showMsg("Shared <File> Contents");
+						} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+							main.getTrayIcon().showMsg("Shared <Text> Contents");
+						} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+							main.getTrayIcon().showMsg("Shared <Image> Contents");
+						} else {
+							System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+						}
 					}
-					
+
 				} catch (ClassNotFoundException e) {
 					this.start();
 				} catch (IOException e) {
