@@ -16,6 +16,8 @@ public class History {
 
 	/** History »ý¼ºÀÚ */
 	public History() {
+		sharedContents = new Vector<Contents>();
+		resizingImgContents = new Vector<ImageIcon>();
 	}
 
 	/**

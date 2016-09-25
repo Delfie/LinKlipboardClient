@@ -1,6 +1,5 @@
 package user_interface;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,6 +13,9 @@ import javax.swing.SwingConstants;
 import client_manager.LinKlipboardClient;
 
 public class UserInterfacePage1 extends BasePanel {
+	private UserInterfaceManager main;
+	private UserInterfacePage2 page2;
+	
 	private JLabel mainImgLabel = new JLabel(); // 메인 이미지
 	private JLabel groupNameLabel = new JLabel();
 	private JLabel groupPWLabel = new JLabel();
@@ -22,22 +24,20 @@ public class UserInterfacePage1 extends BasePanel {
 	private JButton createButton = new JButton(); // 생성버튼
 	private JButton joinButton = new JButton(); // 접속버튼
 	private JLabel responseState = new JLabel(); // 오류확인 Label
-	//private JDialog inputNickName = new JDialog(); //사용자가 원하는 닉네임 입력 다이얼로그
 
 	private String groupName; // 사용자가 입력한 그룹이름
 	private String groupPW; // 사용자가 입력한 그룹패스워드
 	
-	private static boolean ACCESS = false; //접속 성공 여부
-
-	public UserInterfacePage1(LinKlipboardClient client) {
+	public UserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
 		super(client);
 
+		this.main = main;
+		
 		setLayout(null);
 		setSize(320, 400);
 		
 		initField();
 		client.setScreen(this);
-		ACCESS = false;
 
 		initComponents();
 	}
@@ -135,7 +135,12 @@ public class UserInterfacePage1 extends BasePanel {
 			// 3. 입력창 초기화
 			initField();
 			
-			ACCESS = true; 
+			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
+			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
+			page2 = new UserInterfacePage2(client, trayIcon, main);
+			System.out.println("[page1] " + client.getOtherClients().size());
+			main.setContentPane(page2);
+			
 		}
 	}
 
@@ -151,14 +156,10 @@ public class UserInterfacePage1 extends BasePanel {
 			// 3. 입력창 초기화
 			initField();
 			
-			ACCESS = true; 
+			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
+			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
+			main.setContentPane(page2);
 		}
-	}
-	
-	/** 클라이언트가 접속 됐는지 확인
-	 * @return ACCESS */
-	public boolean getACCESS(){
-		return ACCESS;
 	}
 }
 

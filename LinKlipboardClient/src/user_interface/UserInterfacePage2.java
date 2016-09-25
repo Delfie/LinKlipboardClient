@@ -26,7 +26,7 @@ public class UserInterfacePage2 extends BasePanel {
 		super(client, trayIcon, main);
 
 		connectionPanel = new ConnectionPanel(client);
-		// historyPanel = new HistoryPanel(client);
+		historyPanel = new HistoryPanel(client);
 		settingPanel = new SettingPanel(client, trayIcon, main);
 
 		setLayout(null);

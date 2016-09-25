@@ -27,12 +27,12 @@ import transfer_manager.CommunicatingWithServer;
  */
 
 public class UserInterfaceManager extends JFrame {
-	private LinKlipboardClient client;
+	private LinKlipboardClient client = new LinKlipboardClient(this);
 	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 	private TrayIconManager trayIcon = new TrayIconManager();
 
-	private UserInterfacePage1 page1;
-	private UserInterfacePage2 page2;
+	//private UserInterfacePage2 page2 = new UserInterfacePage2(client, trayIcon, this);
+	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this);
 
 	private NicknameDialog inputNickNameDialog; // 사용자가 원하는 닉네임 입력 다이얼로그
 
@@ -65,10 +65,10 @@ public class UserInterfaceManager extends JFrame {
 		setUserInterfacePage1(client, this);
 		this.client = page1.getClient();
 
-		if (page1.getACCESS() == true) {
-			setUserInterfacePage2(client, trayIcon, this);
-			dealInputnickName(this.client.getNickName()); // 닉네임 설정
-		}
+//		if (page1.getACCESS() == true) {
+//			setUserInterfacePage2(client, trayIcon, this);
+//			dealInputnickName(this.client.getNickName()); // 닉네임 설정
+//		}
 
 		setVisible(true);
 		setResizable(false);
@@ -78,17 +78,17 @@ public class UserInterfaceManager extends JFrame {
 	public void setUserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
 		// page1 패널 생성
 		client = new LinKlipboardClient(main);
-		page1 = new UserInterfacePage1(client);
-
+			
+		//page1 = new UserInterfacePage1(client, this, page2);
 		main.setContentPane(page1);
 	}
 
 	/** UserInterfacePage2 생성 및 배치 */
 	public void setUserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
 		// page2 패널 생성
-		page2 = new UserInterfacePage2(client, trayIcon, main);
+		//page2 = new UserInterfacePage2(client, trayIcon, main);
 
-		main.setContentPane(page2);
+		//main.setContentPane(page2);
 	}
 
 	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */

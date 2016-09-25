@@ -51,6 +51,7 @@ public class ConnectionPanel extends BasePanel {
 		// accessGroupNameLabel.setOpaque(true);
 		add(accessGroupNameLabel);
 
+		System.out.println("[Connect] " + client.getOtherClients().size() );
 		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
 		accessCountLabel.setBounds(187, 20, 104, 20);
 		// accessCountLabel.setBackground(Color.GRAY);
@@ -80,8 +81,8 @@ public class ConnectionPanel extends BasePanel {
 		
 		// 최신 공유된 Contents가 없으면
 		if (client.getLatestContents() == null) {
-			sharedTimeLabel.setText("");
-			sharedContentsInfoLabel.setText("");
+			sharedTimeLabel.setText("-------------------");
+			sharedContentsInfoLabel.setText("최신 공유된 데이터가 없습니다.");
 		} else {
 			Contents latestContents = client.getLatestContents();
 			String sharer = latestContents.getSharer();

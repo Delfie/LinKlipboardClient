@@ -16,6 +16,11 @@ public abstract class BasePanel extends JPanel {
 		this.client = client;
 	}
 	
+	public BasePanel(LinKlipboardClient client, UserInterfaceManager main) {
+		this.client = client;
+		this.main = main;
+	}
+	
 	public BasePanel(LinKlipboardClient client, TrayIconManager trayIcon) {
 		this.client = client;
 		this.trayIcon = trayIcon;
