@@ -36,8 +36,8 @@ public class UserInterfaceManager extends JFrame {
 		//contentPane.setLayout(null);
 		//contentPane.setLayout(new GroupLayout(this));
 
-		contentPane.add(page1);
-		//contentPane.add(page2);
+		//contentPane.add(page1);
+		contentPane.add(page2);
 
 		setVisible(true);
 		setResizable(false);

@@ -38,7 +38,7 @@ public class ConnectionPanel extends JPanel {
 //		accessGroupNameLabel.setOpaque(true);
 		add(accessGroupNameLabel);
 
-		accessCountLabel.setText("현재 10명 접속 중");
+//		accessCountLabel.setText("현재 " + accessPersonList.getModel().getSize() + "명 접속 중");
 		accessCountLabel.setBounds(187, 20, 104, 20);
 //		accessCountLabel.setBackground(Color.GRAY);
 //		accessCountLabel.setOpaque(true);
@@ -58,6 +58,8 @@ public class ConnectionPanel extends JPanel {
 		accessPersonScrollPane.setViewportView(accessPersonList);
 		accessPersonScrollPane.setBounds(24, 50, 270, 150);
 		add(accessPersonScrollPane);
+		
+		accessCountLabel.setText("현재 " + accessPersonList.getModel().getSize() + "명 접속 중");
 
 		sharedIcon.setText("IC");
 		sharedIcon.setBounds(24, 220, 20, 20);

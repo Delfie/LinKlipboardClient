@@ -15,6 +15,8 @@ public class History {
 
 	/** History 생성자 */
 	public History() {
+		sharedContents = new Vector<Contents>(); //도연 UI 임시
+		resizingImgContents = new Vector<ImageIcon>(); //도연 UI 임시
 	}
 
 	/**

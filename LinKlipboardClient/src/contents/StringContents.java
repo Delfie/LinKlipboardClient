@@ -19,7 +19,7 @@ public class StringContents extends Contents implements Serializable {
 	}
 
 	public StringContents(String sharer, String data) {
-		this(sharer);
+		super(sharer);
 		type = LinKlipboard.STRING_TYPE;
 		this.stringData = data;
 	}

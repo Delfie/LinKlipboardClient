@@ -28,6 +28,13 @@ public class FileContents extends Contents implements Serializable {
 		fileSize = file.length();
 		type = LinKlipboard.FILE_TYPE;
 	}
+	
+	public FileContents(String sharer, File file) {
+		super(sharer);
+		fileName = file.getName();
+		fileSize = file.length();
+		type = LinKlipboard.FILE_TYPE;
+	}
 
 	public FileContents(String sharer, String path) {
 		this(sharer);
