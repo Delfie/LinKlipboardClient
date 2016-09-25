@@ -12,6 +12,7 @@ import contents.Contents;
 import datamanage.History;
 import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
+import user_interface.SettingPanel;
 import user_interface.TrayIconManager;
 import user_interface.UserInterfaceManager;
 //import user_interface.Past_UserInterface;
@@ -314,14 +315,16 @@ public class LinKlipboardClient {
 					} else {
 						history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
 
-						if (latestContentsType == LinKlipboard.FILE_TYPE) {
-							main.getTrayIcon().showMsg("Shared <File> Contents");
-						} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
-							main.getTrayIcon().showMsg("Shared <Text> Contents");
-						} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
-							main.getTrayIcon().showMsg("Shared <Image> Contents");
-						} else {
-							System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+						if (SettingPanel.notification) {// 도연 추가
+							if (latestContentsType == LinKlipboard.FILE_TYPE) {
+								main.getTrayIcon().showMsg("Shared <File> Contents");
+							} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+								main.getTrayIcon().showMsg("Shared <Text> Contents");
+							} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+								main.getTrayIcon().showMsg("Shared <Image> Contents");
+							} else {
+								System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+							}
 						}
 					}
 

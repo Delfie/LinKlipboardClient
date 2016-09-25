@@ -1,35 +1,39 @@
 package user_interface;
 
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.LayoutStyle;
 
 import client_manager.LinKlipboardClient;
+import datamanage.History;
 
 public class SettingPanel extends BasePanel {
-	private ShowNicknamePanel showNicknamePanel;
+	private SetHistorySizePanel setHistorySizePanel;
 	private ShortcutSetPanel shortcutSetPanel;
 
+	private JLabel showNickname = new JLabel("Your Nickname: ");
+	private JLabel userNickname = new JLabel();
+
 	private JCheckBox setNotification = new JCheckBox();
+
+	public static boolean notification = true; // 도연 추가
 
 	private JButton exitButton = new JButton();
 
 	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
 		super(client, trayIcon, main);
 		
-		showNicknamePanel = new ShowNicknamePanel(client);
+		userNickname.setText(client.getNickName());
+		setHistorySizePanel = new SetHistorySizePanel(client);
 		shortcutSetPanel = new ShortcutSetPanel(client);
-		
+
 		setLayout(null);
 		setSize(320, 360);
 
@@ -37,19 +41,37 @@ public class SettingPanel extends BasePanel {
 	}
 
 	private void initComponents() {
-		showNicknamePanel.setBounds(15, 20, 280, 70);
-		add(showNicknamePanel);
+		showNickname.setBounds(20, 30, 95, 20);
+		// showNickname.setBackground(Color.yellow);
+		// showNickname.setOpaque(true);
+		add(showNickname);
 
-		shortcutSetPanel.setBounds(15, 115, 280, 70);
+		userNickname.setBounds(115, 30, 180, 20);
+		// userNickname.setBackground(Color.yellow);
+		// userNickname.setOpaque(true);
+		add(userNickname);
+
+		setHistorySizePanel.setBounds(15, 70, 280, 70);
+		add(setHistorySizePanel);
+
+		shortcutSetPanel.setBounds(15, 150, 280, 95);
 		add(shortcutSetPanel);
 
 		setNotification.setText("Turn off the notification (Always recieved)");
-		setNotification.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				setNotificationActionPerformed(evt);
+		// 도연 추가
+		setNotification.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (setNotification.isSelected()) {
+					notification = false;
+				} else {
+					notification = true;
+				}
+
+				System.out.println("notification = " + notification);
 			}
 		});
-		setNotification.setBounds(20, 210, 280, 20);
+		setNotification.setBounds(20, 260, 280, 20);
 		add(setNotification);
 
 		exitButton.setText("Exit");
@@ -71,52 +93,64 @@ public class SettingPanel extends BasePanel {
 	}
 
 	private void exitButtonActionPerformed(ActionEvent evt) {
-		//contentPane을 page1으로 돌아가도록 
-		//돌아가기전에 client정보 초기화 or 새로 생성??
+		// contentPane을 page1으로 돌아가도록
+		// 돌아가기전에 client정보 초기화 or 새로 생성??
 	}
 }
 
-class ShowNicknamePanel extends BasePanel{
-	private JLabel userNicknameLabel = new JLabel();
+class SetHistorySizePanel extends BasePanel {
+	private String[] posibleSize = { "10", "20", "30", "40" };
+	private JComboBox setHistorySize = new JComboBox(posibleSize);
 
-	public ShowNicknamePanel(LinKlipboardClient client) {
+	public SetHistorySizePanel(LinKlipboardClient client) {
 		super(client);
+		setHistorySize.setSelectedItem("10");
 		setSize(320, 360);
-
 		initComponents();
 	}
 
 	private void initComponents() {
-		this.setBorder(BorderFactory.createTitledBorder("Your Nickname"));
+		this.setBorder(BorderFactory.createTitledBorder("Set My History Size"));
 
-		userNicknameLabel.setText("jLabel1");
-		userNicknameLabel.setBounds(50, 50, 100, 20);
-		add(userNicknameLabel);
-
-		GroupLayout showNicknamePanelLayout = new GroupLayout(this);
-		this.setLayout(showNicknamePanelLayout);
-		showNicknamePanelLayout
-				.setHorizontalGroup(showNicknamePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(showNicknamePanelLayout
-								.createSequentialGroup().addGap(64, 64, 64).addComponent(userNicknameLabel,
-										GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(75, Short.MAX_VALUE)));
-		showNicknamePanelLayout
-				.setVerticalGroup(showNicknamePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(showNicknamePanelLayout.createSequentialGroup().addContainerGap()
-								.addComponent(userNicknameLabel, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-								.addContainerGap()));
+		setHistorySize.setBounds(50, 50, 50, 30);
+		add(setHistorySize);
+		
+		setHistorySize.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String item = (String) setHistorySize.getSelectedItem();
+				int historySize = Integer.parseInt(item);
+				System.out.println("historySize: " + historySize);
+				
+				History.setHistorySize(historySize);
+				ListPanel.setMaxNumOfContents(historySize);
+			}
+		});
 	}
 }
 
 class ShortcutSetPanel extends BasePanel {
-	private JComboBox<String> firstShortcut = new JComboBox<>();
-	private JLabel label = new JLabel();
-	private JComboBox<String> secondShortcut = new JComboBox<>();
+	private JLabel sendLabel = new JLabel("send shortcut");
+	private String[] firstString = new String[] { "Ctrl", "Alt" };
+	private JComboBox firstShortcutForSend = new JComboBox(firstString);
+	private JLabel label1 = new JLabel("+");
+	private String[] secondStringForSend = new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+			"N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" };
+	private JComboBox secondShortcut = new JComboBox(secondStringForSend);
+
+	private JLabel receiveLabel = new JLabel("receive shortcut");
+	private JComboBox firstShortcutForReceive = new JComboBox(firstString);
+	private JLabel label2 = new JLabel("+");
+	private JComboBox secondShortcutForReceive = new JComboBox(secondStringForSend);
 
 	public ShortcutSetPanel(LinKlipboardClient client) {
 		super(client);
 		
+		firstShortcutForSend.setSelectedItem("Ctrl");
+		secondShortcut.setSelectedItem("Q");
+		firstShortcutForReceive.setSelectedItem("Alt");
+		secondShortcutForReceive.setSelectedItem("Q");
+
 		setLayout(null);
 		setSize(320, 360);
 
@@ -124,46 +158,31 @@ class ShortcutSetPanel extends BasePanel {
 	}
 
 	private void initComponents() {
-
 		this.setBorder(BorderFactory.createTitledBorder("Shortcut Setting"));
-		secondShortcut.setModel(new DefaultComboBoxModel<>(new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J",
-				"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" }));
-		secondShortcut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				secondShortcutActionPerformed(evt);
-			}
-		});
 
-		label.setText("+");
+		sendLabel.setBounds(25, 20, 100, 30);
+		add(sendLabel);
 
-		firstShortcut.setModel(new DefaultComboBoxModel<>(new String[] { "Ctrl", "Alt" }));
-		firstShortcut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				firstShortcutActionPerformed(evt);
-			}
-		});
+		firstShortcutForSend.setBounds(10, 50, 50, 30);
+		add(firstShortcutForSend);
 
-		GroupLayout shortcutSetPanelLayout = new GroupLayout(this);
-		this.setLayout(shortcutSetPanelLayout);
-		shortcutSetPanelLayout.setHorizontalGroup(shortcutSetPanelLayout
-				.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(shortcutSetPanelLayout.createSequentialGroup().addGap(66, 66, 66)
-						.addComponent(firstShortcut, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(label)
-						.addGap(18, 18, 18)
-						.addComponent(secondShortcut, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		shortcutSetPanelLayout
-				.setVerticalGroup(shortcutSetPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(shortcutSetPanelLayout.createSequentialGroup().addContainerGap()
-								.addGroup(shortcutSetPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-										.addComponent(firstShortcut, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(label).addComponent(secondShortcut, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		label1.setBounds(65, 50, 50, 30);
+		add(label1);
+
+		secondShortcut.setBounds(80, 50, 50, 30);
+		add(secondShortcut);
+
+		receiveLabel.setBounds(165, 20, 100, 30);
+		add(receiveLabel);
+
+		firstShortcutForReceive.setBounds(150, 50, 50, 30);
+		add(firstShortcutForReceive);
+
+		label2.setBounds(205, 50, 50, 30);
+		add(label2);
+
+		secondShortcutForReceive.setBounds(220, 50, 50, 30);
+		add(secondShortcutForReceive);
 	}
 
 	private void secondShortcutActionPerformed(ActionEvent evt) {

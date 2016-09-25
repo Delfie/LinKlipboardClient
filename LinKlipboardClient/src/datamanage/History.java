@@ -12,7 +12,7 @@ import user_interface.UserInterfaceManager;
 public class History {
 	private Vector<Contents> sharedContents;
 	private Vector<ImageIcon> resizingImgContents;
-	private int historySize = LinKlipboard.HISTORY_DEFAULT;; // 사용자가 원하는 히스토리 크기
+	private static int historySize = LinKlipboard.HISTORY_DEFAULT;; // 사용자가 원하는 히스토리 크기 // 도연 수정
 
 	/** History 생성자 */
 	public History() {
@@ -35,7 +35,7 @@ public class History {
 	/** 히스토리의 데이터가 historySize만큼 차면 데이터 하나 삭제 */
 	public void removeContents() {
 		System.out.println("[History] 들어가기 전 sharedContents의 크기: " + this.sharedContents.size());
-		if (this.sharedContents.size() == this.historySize) {
+		if (this.sharedContents.size() == History.historySize) { // 도연 수정
 			this.sharedContents.remove(0);
 		}
 	}
@@ -74,8 +74,8 @@ public class History {
 	}
 
 	/** 사용자가 원하는 히스토리의 크기 세팅 */
-	public void setHistorySize(int historySize) {
-		this.historySize = historySize;
+	public static void setHistorySize(int historySize) { // 도연 수정
+		History.historySize = historySize;
 	}
 
 	// /** Vector<Contents>와 Vector<ImageIcon>를 세팅 */
@@ -114,7 +114,7 @@ public class History {
 
 	/** 사용자에게 보여지는 히스토리 크기 반환 */
 	public int getHistorySize() {
-		return this.historySize;
+		return History.historySize; // 도연 수정
 	}
 
 	/** 사용자의 실제 히스토리에 들어있는 Contents 크기 반환 */
