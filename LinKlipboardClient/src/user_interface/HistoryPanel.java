@@ -5,9 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
@@ -18,53 +19,71 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 
+import client_manager.LinKlipboardClient;
 import contents.Contents;
 import contents.FileContents;
 import contents.ImageContents;
 import contents.StringContents;
 import datamanage.History;
+import datamanage.ReceivePreviousData;
 import server_manager.LinKlipboard;
 
-public class HistoryPanel extends JPanel {
+public class HistoryPanel extends BasePanel {
 	private ListPanel listPanel;
-	private JButton receiveButton;
+	private JButton receiveButton = new JButton();
+	private ReceivePreviousData receiveData = new ReceivePreviousData();
 	
-	public HistoryPanel() {
+	public HistoryPanel(LinKlipboardClient client) {
+		super(client);
+		
 		setLayout(null);
 		setSize(320, 360);
 		
-		initComponents();
+		listPanel = new ListPanel(client);
+		
+		initComponent();
 	}
 	
-	private void initComponents() {
-		listPanel = new ListPanel();
+	private void initComponent() {
 		listPanel.setLocation(25, 15);
 		add(listPanel);
 		
-		receiveButton = new JButton("Receive");
+		receiveButton.setText("Receive");
 		receiveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = listPanel.getSelectedListIndex();
 				System.out.println(index);
+				
+				receiveData.ReceiveData(client, listPanel.getSelcetedList());
 			}
 		});
 		receiveButton.setBounds(215, 290, 80, 23);
 		add(receiveButton);
-		
 	}
 }
 
-class ListPanel extends Panel {
+class ListPanel extends JPanel {
 	private History history;
+	private DefaultListModel<Contents> model;
 	private JList<Contents> listContents;
 	private JScrollPane scrollPane;
+	private String listToolTipString;
+	private static int maxNumOfContents = 10;
 	
-	public ListPanel() {
+	public ListPanel(LinKlipboardClient client) {
+		this.history = client.getHistory(); //
+		
 		setLayout(new BorderLayout());
 		setSize(270, 260);
 		
+		//addContentsInHistory(); // »©¾ßµÊ
+		
+		UIManager.put("ToolTip.background", new Color(254, 239, 229));
 		initComponents();
 	}
 	
@@ -74,19 +93,57 @@ class ListPanel extends Panel {
 		add(scrollPane, BorderLayout.CENTER);
 	}
 	
+//	// »©¾ßµÊ
+//	private void addContentsInHistory() {
+//    	history = new History();
+//    	
+//    	history.addSharedContentsInHistory(new StringContents("Dooy", "LinKlipboard"));
+//    	
+//    	File file1 = new File("C:\\Users\\Administrator\\Desktop\\clipboard.hwp");
+//    	history.addSharedContentsInHistory(new FileContents("Delf", file1));
+//    	
+//    	ImageIcon image1 = new ImageIcon("image/LK.png");
+//    	history.addSharedContentsInHistory(new ImageContents("Hee", image1));
+//    	
+//    	File file2 = new File("C:\\Users\\Administrator\\Desktop\\LinKlipboard.txt");
+//    	history.addSharedContentsInHistory(new FileContents("Dooy", file2));
+//    	
+//    	ImageIcon image2 = new ImageIcon("image/3.png");
+//    	history.addSharedContentsInHistory(new ImageContents("Hee", image2));
+//    	
+//    	history.addSharedContentsInHistory(new StringContents("Dooy", "LinKlipboard"));
+//    	
+//    	history.addSharedContentsInHistory(new StringContents("Dooy", "sprout"));
+//    }
+	
 	private JList<Contents> createListContents() {
         // create List model
-        DefaultListModel<Contents> model = new DefaultListModel<>();
-        
-        System.out.println(history.getSharedContents().size());
+        model = new DefaultListModel<>();
         
         // add item to model
         for(int i=0; i<history.getSharedContents().size(); i++) {
-        	 model.add(0, history.getSharedContents().elementAt(i));
+        	addList(history.getSharedContents().elementAt(i));
         }
         
         // create JList with model
         JList<Contents> list = new JList<Contents>(model);
+        
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        
+        list.setSelectionBackground(new Color(255, 221, 197));
+        
+        list.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                JList l = (JList) e.getSource();
+                ListModel m = l.getModel();
+                int index = l.locationToIndex(e.getPoint());
+                if (index > -1) {
+                    l.setToolTipText(setListToolTipString((Contents)m.getElementAt(index)));
+                }
+            }
+        });
         
         // set cell renderer 
         list.setCellRenderer(new ContentsRenderer());
@@ -94,8 +151,49 @@ class ListPanel extends Panel {
         return list;
 	}
 	
+	public void addList(Contents contents) {
+		if(model.getSize() == maxNumOfContents) {
+			model.remove(maxNumOfContents - 1);
+		}
+		
+		model.add(0, contents);
+	}
+	
+	public String setListToolTipString(Contents contents) {
+		
+		switch(contents.getType()) {
+        case LinKlipboard.STRING_TYPE:
+        	StringContents stringContents = (StringContents)contents;
+        	if(stringContents.getString().length() > 200) {
+        		listToolTipString = "<html><p width=200>" + stringContents.getString().substring(0, 200) + "..." + "<br><br>Added: " +  stringContents.getDate() + "</p></html>";
+        	} 
+        	else {
+        		listToolTipString = "<html><p width=200>" + stringContents.getString() + "<br><br>Added: " +  stringContents.getDate() + "</p></html>";
+        	}
+        	break;
+        case LinKlipboard.IMAGE_TYPE:
+        	ImageContents imageContenst = (ImageContents)contents;
+        	listToolTipString = "<html><p width=200>" + "Image<br><br>Added: " +  imageContenst.getDate() + "</p></html>";
+        	break;
+        case LinKlipboard.FILE_TYPE:
+        	FileContents fileContenst = (FileContents)contents;
+        	listToolTipString = "<html><p width=200>" + fileContenst.getFileName() + "<br><br>size:  " + fileContenst.getFileSize() + "byte<br>Added: " + fileContenst.getDate() + "</p></html>";
+        	break;
+		}
+		
+		return listToolTipString;
+	}
+	
 	public int getSelectedListIndex() {
 		return history.getSizeOfContentsInHistory() - 1 -listContents.getSelectedIndex();
+	}
+	
+	public Contents getSelcetedList() {
+		return listContents.getSelectedValue();
+	}
+	
+	public static void setMaxNumOfContents(int num) {
+		maxNumOfContents = num;
 	}
 	
 	class ContentsRenderer extends JPanel implements ListCellRenderer<Contents> {
@@ -119,8 +217,8 @@ class ListPanel extends Panel {
 	    @Override
 	    public Component getListCellRendererComponent(JList<? extends Contents> list, Contents contents, int index, boolean isSelected, boolean cellHasFocus) {
 	 
-	    	Font font1 = new Font("helvitica", Font.BOLD, 15);
-	    	Font font2 = new Font("helvitica", Font.BOLD, 12);
+	    	Font font1 = new Font("¸¼Àº °íµñ", Font.BOLD, 15);
+	    	Font font2 = new Font("¸¼Àº °íµñ", Font.BOLD, 12);
 	    	
 	        lbSharer.setText(contents.getSharer());
 	        lbSharer.setFont(font1);

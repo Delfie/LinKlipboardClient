@@ -1,8 +1,7 @@
 package contents;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.Calendar;
 
 import server_manager.LinKlipboard;
 
@@ -16,6 +15,7 @@ public abstract class Contents implements Serializable {
 	protected String date;
 	protected String sharer;
 	protected int type;
+	
 
 	public Contents() {
 	}
@@ -32,6 +32,10 @@ public abstract class Contents implements Serializable {
 	public void setSerialNum(int serialNum) {
 		this.serialNum = serialNum;
 	}
+	
+	public void setDate() {
+		this.date = now();
+	}
 
 	public int getSerialNum() {
 		return serialNum;
@@ -44,9 +48,38 @@ public abstract class Contents implements Serializable {
 	public String getDate() {
 		return date;
 	}
-
+	
 	public int getType() {
 		return type;
+	}
+
+	/** @return YYYY-MM-DD HH:MM:SS 형식의 현재 시간 */
+	public static String now() {
+		Calendar cal = Calendar.getInstance();
+		String year = Integer.toString(cal.get(Calendar.YEAR));
+		String month = Integer.toString(cal.get(Calendar.MONTH));
+		String date = Integer.toString(cal.get(Calendar.DATE));
+		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+		if(Integer.parseInt(hour) < 10) {
+			hour = "0" + hour;
+		}
+		if(Integer.parseInt(hour) > 12) {
+			hour = "오후 " + Integer.toString(Integer.parseInt(hour)-12);
+		}
+		else {
+			hour = "오전 " + hour;
+		}
+		
+		String minute = Integer.toString(cal.get(Calendar.MINUTE));
+		if(Integer.parseInt(minute) < 10) {
+			minute = "0" + minute;
+		}
+		String sec = Integer.toString(cal.get(Calendar.SECOND));
+		if(Integer.parseInt(sec) < 10) {
+			sec = "0" + sec;
+		}
+
+		return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + sec;
 	}
 
 }

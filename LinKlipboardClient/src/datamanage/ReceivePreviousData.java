@@ -45,7 +45,7 @@ public class ReceivePreviousData {
 	 * @param listIndex
 	 *            history에서 받기를 원하는 Contents의 index값
 	 */
-	public ReceivePreviousData(LinKlipboardClient client, Contents previousData) {
+	public void ReceiveData(LinKlipboardClient client, Contents previousData) {
 		this.client = client;
 		this.previousData = previousData;
 		this.dataType = previousData.getType();

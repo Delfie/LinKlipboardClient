@@ -16,27 +16,32 @@ public class ImageContents extends Contents implements Serializable {
 	public ImageContents() {
 		super();
 		type = LinKlipboard.IMAGE_TYPE;
+		setDate();
 	}
 
 	public ImageContents(String sharer) {
 		this();
 		type = LinKlipboard.IMAGE_TYPE;
+		setDate();
 	}
 
 	public ImageContents(ImageIcon image) {
 		this();
 		this.imageData = image;
+		setDate();
 	}
 
 	public ImageContents(Image image) {
 		this();
 		this.imageData = new ImageIcon(image);
+		setDate();
 	}
 
 	public ImageContents(String sharer, ImageIcon data) {
 		super(sharer);
 		type = LinKlipboard.IMAGE_TYPE;
 		this.imageData = data;
+		setDate();
 	}
 
 	public ImageIcon getImage() {

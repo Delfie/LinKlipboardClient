@@ -11,17 +11,20 @@ public class StringContents extends Contents implements Serializable {
 	public StringContents() {
 		super();
 		type = LinKlipboard.STRING_TYPE;
+		setDate();
 	}
 
 	public StringContents(String data) {
 		this();
 		stringData = data;
+		setDate();
 	}
 
 	public StringContents(String sharer, String data) {
 		super(sharer);
 		type = LinKlipboard.STRING_TYPE;
 		this.stringData = data;
+		setDate();
 	}
 
 	public String getString() {

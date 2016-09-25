@@ -17,16 +17,19 @@ public class FileContents extends Contents implements Serializable {
 		super();
 		type = LinKlipboard.FILE_TYPE;
 		// createSendFile();
+		setDate();
 	}
 
 	public FileContents(String sharer) {
 		super(sharer);
+		setDate();
 	}
 	
 	public FileContents(File file) {
 		fileName = file.getName();
 		fileSize = file.length();
 		type = LinKlipboard.FILE_TYPE;
+		setDate();
 	}
 	
 	public FileContents(String sharer, File file) {
@@ -34,11 +37,13 @@ public class FileContents extends Contents implements Serializable {
 		fileName = file.getName();
 		fileSize = file.length();
 		type = LinKlipboard.FILE_TYPE;
+		setDate();
 	}
 
 	public FileContents(String sharer, String path) {
 		this(sharer);
 		type = LinKlipboard.FILE_TYPE;
+		setDate();
 	}
 
 

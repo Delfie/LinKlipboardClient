@@ -77,6 +77,7 @@ public class FileSendDataToServer extends Transfer {
 			// 히스토리에 추가할 Contents의 고유번호 세팅
 			fileContents.setSerialNum(serialNum);
 			
+			fileContents.setDate();
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(fileContents);
 
