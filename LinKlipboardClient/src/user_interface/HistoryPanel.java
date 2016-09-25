@@ -65,8 +65,6 @@ class ListPanel extends Panel {
 		setLayout(new BorderLayout());
 		setSize(270, 260);
 		
-		addContentsInHistory(); // 빼야됨
-		
 		initComponents();
 	}
 	
@@ -75,31 +73,6 @@ class ListPanel extends Panel {
 		scrollPane = new JScrollPane(listContents);
 		add(scrollPane, BorderLayout.CENTER);
 	}
-
-	private void addContentsInHistory() {
-    	history = new History();
-    	
-    	history.addSharedContentsInHistory(new StringContents("Dooy", "가나다라마바사아자차카타파"));
-    	
-    	
-    	ImageIcon image1 = new ImageIcon("image/1.png");
-    	history.addSharedContentsInHistory(new ImageContents("Hee", image1));
-    	
-    	File file1 = new File("C:\\Users\\Administrator\\Desktop\\d.hwp");
-    	history.addSharedContentsInHistory(new FileContents("Delf", file1));
-    	
-    	File file2 = new File("C:\\Users\\Administrator\\Desktop\\q.txt");
-    	history.addSharedContentsInHistory(new FileContents("Dooy", file2));
-    	
-    	ImageIcon image2 = new ImageIcon("image/3.png");
-    	history.addSharedContentsInHistory(new ImageContents("Hee", image2));
-    	
-    	history.addSharedContentsInHistory(new StringContents("Delf", "데르프"));
-    	
-    	history.addSharedContentsInHistory(new StringContents("Dooy", "두이"));
-    	
-    	history.addSharedContentsInHistory(new StringContents("Hee", "히히"));
-    }
 	
 	private JList<Contents> createListContents() {
         // create List model

@@ -8,17 +8,18 @@ import java.util.Vector;
 
 import client_manager.LinKlipboardClient;
 import contents.Contents;
+import datamanage.ClientInitData;
 import server_manager.LinKlipboard;
 import transfer_manager.Transfer;
 
-public class GetTotalHistoryFromServer extends Transfer {
+public class GetInitDataFromServer extends Transfer {
 
 	private ObjectInputStream in;
 
-	private Vector<Contents> historyInServer; // 서버로부터 받을 Vector<Contents>
+	private ClientInitData initData;
 
 	/** GetTotalHistoryFromServer 생성자 */
-	public GetTotalHistoryFromServer(LinKlipboardClient client) {
+	public GetInitDataFromServer(LinKlipboardClient client) {
 		super(client);
 		this.start();
 	}
@@ -57,12 +58,16 @@ public class GetTotalHistoryFromServer extends Transfer {
 		// 서버로부터 Vector<Contents>를 받아온다.
 		try {
 			System.out.println("[GetTotalHistoryFromServer] Vector<Contents> 수신 전");
-			historyInServer = (Vector<Contents>) in.readObject();
+			initData = (ClientInitData) in.readObject();
 			System.out.println("[GetTotalHistoryFromServer] Vector<Contents> 수신 후");
-			System.out.println("[GetTotalHistoryFromServer]" + historyInServer.get(0).getType());
+			//System.out.println("[GetTotalHistoryFromServer]" + historyInServer.get(0).getType());
 
 			// 클라이언트 히스토리에 세팅해준다.
-			LinKlipboardClient.setHistory(historyInServer);
+			Vector<String> otherClientsInfo = initData.getClients(); 
+			Vector<Contents> history = initData.getHistory(); 
+			
+			LinKlipboardClient.setHistory(history);
+			client.setOtherClients(otherClientsInfo); 
 
 			closeSocket();
 

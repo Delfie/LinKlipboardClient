@@ -99,7 +99,7 @@ public class StartToProgram {
 					
 				} else if (orderMsg.equals("join")) {
 					// 서버에 있는 Vector<Contents>를 받는다.
-					new GetTotalHistoryFromServer(client);
+					new GetInitDataFromServer(client);
 				}
 			}
 

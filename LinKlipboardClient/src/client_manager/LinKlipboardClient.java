@@ -11,24 +11,37 @@ import contents.Contents;
 import datamanage.History;
 import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
-import user_interface.Past_UserInterface;
+//import user_interface.Past_UserInterface;
+import user_interface.UserInterfacePage1;
 
 public class LinKlipboardClient {
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String nickName = null; // 닉네임
 	private static int portNum; // 서버와 통신할 포트번호
+	private Vector<String> otherClients = new Vector<String>(); //같은 그룹 접속자들의 닉네임
 	
 	private static String fileName = null; // 전송받을 파일이름
 
 	private static History history = new History(); // 히스토리
 	private static Contents latestContents; // 최신데이터
 
-	Past_UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
+	//Past_UserInterface screen; // 사용자 인터페이스(for 오류 정보 표시)
+	UserInterfacePage1 screen; // 사용자 인터페이스(for 오류 정보 표시)
 	StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
 
 	private static File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
 	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
+	
+	/**  LinKlipboardClient 생성자 */
+	public LinKlipboardClient() {
+		System.out.println("<디폴트 클라이언트 생성>");
+
+		createFileReceiveFolder(); // LinKlipboard folder 생성
+
+		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
+		receiveContentsThread.start(); // 스레드 start
+	}
 
 	/**
 	 * LinKlipboardClient 생성자
@@ -48,26 +61,18 @@ public class LinKlipboardClient {
 		receiveContentsThread.start(); // 스레드 start
 	}
 
-	/**
-	 * LinKlipboardClient 생성자
-	 * 
-	 * @param groupName
-	 * @param groupPassword
-	 * @param screen
-	 */
-	public LinKlipboardClient(String groupName, String groupPassword, Past_UserInterface screen) {
-		System.out.println("<클라이언트 생성> groupName: " + groupName + " groupPassword: " + groupPassword);
-
+	
+	/** 사용자가 입력한 그룹정보를 세팅 */
+	public void setGroupInfo(String groupName, String groupPassword){
+		System.out.println("[LinKlipboardClient] 그룹정보 세팅 메소드 호출");
 		this.groupName = groupName;
 		this.password = groupPassword;
+	}
+	
+	/** 오류코드를 입력할 인터페이스 설정 */
+	public void setScreen(){
+		System.out.println("[LinKlipboardClient] 오류코드 입력 인터페이스 세팅 메소드 호출");
 		this.screen = screen;
-
-		this.history = new History();
-
-		createFileReceiveFolder(); // LinKlipboard folder 생성
-
-		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
-		receiveContentsThread.start(); // 스레드 start
 	}
 
 	/** 전송받은 파일을 저장할 폴더(LinKlipboard) 생성 */
@@ -188,6 +193,17 @@ public class LinKlipboardClient {
 		history.setHistory(updateHistory);
 	}
 
+
+	/** 같은 그룹 접속자들의 닉네임 세팅 */
+	public void setOtherClients(Vector<String> clients) {
+		this.otherClients = new Vector<String>(clients);
+	}
+	
+	/** 같은 그룹 접속자들의 닉네임을 반환 */
+	public Vector<String> getOtherClients() {
+		return this.otherClients;
+	}
+	
 	/**
 	 * 서버가 전송하는 Contents를 받는 클래스 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다.
 	 */
