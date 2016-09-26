@@ -34,7 +34,7 @@ public class History {
 		this.sharedContents.add(latestContents);
 		setResizingImgContents(latestContents);
 		
-		//historyPanel.update();
+		historyPanel.update();
 	}
 	
 	public void setHistoryPanel(HistoryPanel historyPanel) {
@@ -47,6 +47,11 @@ public class History {
 		if (this.sharedContents.size() == History.historySize) { // 도연 수정
 			this.sharedContents.remove(0);
 		}
+	}
+	
+	public void removeAllHistory() {
+		sharedContents.removeAllElements();
+		resizingImgContents.removeAllElements();
 	}
 
 	/** 전달받은 Contents가 어떤 타입인지에 따라서 resizingImgContents를 세팅 */

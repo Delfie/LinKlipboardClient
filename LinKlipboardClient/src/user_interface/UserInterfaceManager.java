@@ -3,6 +3,8 @@ package user_interface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -67,6 +69,13 @@ public class UserInterfaceManager extends JFrame {
 
 	public void setting() {
 		client.setting(this.getHistoryPanel(), this.getConnectionPanel());
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) { // 윈도우 창의 X(닫기)를 누르면
+				trayIcon.showRunningMsg("LinKlipboard is running.");
+				setVisible(false); // frame을 보이지 않게 함
+			}
+		});
 	}
 
 	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
@@ -159,7 +168,7 @@ public class UserInterfaceManager extends JFrame {
 	/** 다이얼로그에서 입력받은 닉네임을 처리 */
 	public void dealInputnickName(String defaulNickname, UserInterfacePage2 page2) {
 		this.page2 = page2;
-		inputNickNameDialog = new NicknameDialog(this, "Set Nickname", defaulNickname, client, page2);
+		inputNickNameDialog = new NicknameDialog(this, "Set Nickname", defaulNickname, client, page1, page2);
 		inputNickNameDialog.setSize(250, 130);
 		inputNickNameDialog.setVisible(true);
 
@@ -197,7 +206,7 @@ class NicknameDialog extends JDialog {
 	// static boolean permit = false;
 
 	public NicknameDialog(JFrame jf, String title, String defaulNickname, LinKlipboardClient client,
-			UserInterfacePage2 page2) {
+			UserInterfacePage1 page1, UserInterfacePage2 page2) {
 		super(jf, title, true);
 
 		setLayout(null);
@@ -239,6 +248,7 @@ class NicknameDialog extends JDialog {
 					page2.getConnectionPanel().update();
 					jf.setContentPane(page2);
 					setVisible(false);
+					page1.initField();
 				}
 			}
 		});

@@ -79,6 +79,7 @@ public class FileSendDataToServer extends Transfer {
 			Contents.setSerialNum(serialNum);
 			
 			fileContents.setDate();
+			fileContents.setSharer(client.getNickName());
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(fileContents);
 

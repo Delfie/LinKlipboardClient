@@ -265,33 +265,24 @@ public class LinKlipboardClient {
 	
 	/** 클라이언트의 모든 정보를 초기화 */
 	public void initAllInfo() {
+		//UserInterfaceManager main;
 
-		UserInterfaceManager main;
-		UserInterfacePage1 screen1; // 사용자 인터페이스(for 오류 정보 표시)
-		TrayIconManager trayIcon;
+		otherClients.removeAllElements(); ; // 같은 그룹 접속자들의 닉네임 초기화
 
-		String groupName; // 그룹이름
-		String password; // 패스워드
-		String nickName = null; // 닉네임
-		int portNum; // 서버와 통신할 포트번호
-		Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
+		firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
+		secondShortcutForSend = "Q"; // 전송 두번째 단축키
+		firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
+		secondShortcutForReceive = "Q"; // 수신 두번째 단축키
 
-		String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
-		String secondShortcutForSend = "Q"; // 전송 두번째 단축키
-		String firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
-		String secondShortcutForReceive = "Q"; // 수신 두번째 단축키
+		fileName = null; // 전송받을 파일이름
 
-		String fileName = null; // 전송받을 파일이름
+		history.removeAllHistory(); // 히스토리 초기화
+		
+		latestContents = null; // 최신데이터
 
-		History history = new History(); // 히스토리
-		Contents latestContents = null; // 최신데이터
-
-		ConnectionPanel connectionPanel;
-
-		StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
-
-		File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
-		ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
+		receiveContentsThread.interrupt(); // 기존의 스레드 죽이고
+		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 다시 생성
+		receiveContentsThread.start(); // 스레드 start
 	}
 
 	/**

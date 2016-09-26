@@ -65,10 +65,8 @@ public class HistoryPanel extends BasePanel {
 	}
 	 
 	public void update() {
-		remove(listPanel);
+		remove(listPanel.getScrollPane());
 		listPanel.initComponents();
-		listPanel.repaint();
-		add(listPanel);
 	}
 	
 }
@@ -95,10 +93,14 @@ class ListPanel extends JPanel {
 
 	public void initComponents() {
 		listContents = createListContents();
-		listContents.repaint();
 		scrollPane = new JScrollPane(listContents);
-		scrollPane.repaint();
 		add(scrollPane, BorderLayout.CENTER);
+		
+		scrollPane.repaint();
+	}
+	
+	public JScrollPane getScrollPane() {
+		return scrollPane;
 	}
 	
 

@@ -123,6 +123,8 @@ public class UserInterfacePage1 extends BasePanel {
 	public void initField() {
 		groupNameField.setText("");
 		groupPassWordField.setText("");
+		responseState.setText("");
+		
 	}
 
 	// 가운데 정렬(외부에서 사용?) -> LinKlipboardClient에 이 Panel을 넘겨주고 오류코드찍어야함
@@ -140,8 +142,6 @@ public class UserInterfacePage1 extends BasePanel {
 			client.setGroupInfo(groupName, groupPW);
 			// 2. 그룹생성을 요청
 			client.createGroup();
-			// 3. 입력창 초기화
-			initField();
 			
 			if(ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT)
 				main.dealInputnickName(this.client.getNickName(), page2); // 닉네임 설정
@@ -157,8 +157,6 @@ public class UserInterfacePage1 extends BasePanel {
 			client.setGroupInfo(groupName, groupPW);
 			// 2. 그룹접속을 요청
 			client.joinGroup();
-			// 3. 입력창 초기화
-			initField();
 			
 			if(ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT)
 				main.dealInputnickName(this.client.getNickName(), page2); // 닉네임 설정

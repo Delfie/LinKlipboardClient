@@ -60,7 +60,7 @@ public class SettingPanel extends BasePanel {
 		shortcutSetPanel.setBounds(15, 150, 280, 95);
 		add(shortcutSetPanel);
 
-		setNotification.setText("Turn off the notification (Always recieved)");
+		setNotification.setText("Turn off the notification");
 		// 도연 추가
 		setNotification.addItemListener(new ItemListener() {
 			@Override
@@ -80,6 +80,7 @@ public class SettingPanel extends BasePanel {
 		exitButton.setText("Exit");
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+				client.initAllInfo();
 				main.setContentPane(page1);
 				main.repaint();
 			}

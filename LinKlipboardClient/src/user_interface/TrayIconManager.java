@@ -104,4 +104,9 @@ public class TrayIconManager {
 	public void showMsg(String msg) {
 		trayIcon.displayMessage("** Arrived Shared Contents **", msg, TrayIcon.MessageType.INFO);
 	}
+	
+	/** 트레이아이콘 메시지 띄우기 */
+	public void showRunningMsg(String msg) {
+		trayIcon.displayMessage("** Notification **", msg, TrayIcon.MessageType.INFO);
+	}
 }
