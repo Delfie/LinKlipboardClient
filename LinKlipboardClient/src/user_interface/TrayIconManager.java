@@ -4,17 +4,27 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TrayIconManager {
+	UserInterfaceManager frame;
+	
 	private final SystemTray systemTray = SystemTray.getSystemTray(); // 시스템트레이 얻어옴
 
 	private Image trayIconImage; // 트레이아이콘 이미지
 	private PopupMenu trayIconMenu; // 트레이아이콘 우클릭 메뉴
 	private MenuItem menuItem; // 트레이아이콘 우클릭 메뉴 항목
+	private MouseListener mouseListener; // 트레이아이콘 마우스 리스너
 	private TrayIcon trayIcon; // 트레이아이콘
 
-	public TrayIconManager() {
+	public TrayIconManager(UserInterfaceManager userInterfaceManager) {
+		this.frame = userInterfaceManager;
 		trayIconImage = Toolkit.getDefaultToolkit().getImage("image/LK.png"); // 트레이아이콘 이미지
 		trayIconMenu = new PopupMenu();
 		trayIcon = new TrayIcon(trayIconImage, "LinKlipboard", trayIconMenu);
+	}
+
+	// frame 보여줌
+	public void displayMainApp() {
+		frame.setVisible(true);
+		frame.setExtendedState(Frame.NORMAL); // 윈도우 창 제일 위에 frame이 뜨게 함
 	}
 
 	/** 트레이아이콘을 시스템트레이에 추가 */
@@ -26,7 +36,7 @@ public class TrayIconManager {
 			try {
 				systemTray.add(trayIcon); // 시스템 트레이에 트레이 아이콘 추가
 				trayIcon.setImageAutoSize(true); // 트레이 아이콘 크기 자동 조절
-				// trayIcon.addMouseListener(mouseListener); // 트레이 아이콘에 마우스 리스너 추가
+				trayIcon.addMouseListener(mouseListener); // 트레이 아이콘에 마우스 리스너 추가
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}
@@ -38,14 +48,14 @@ public class TrayIconManager {
 
 	/** 트레이아이콘 마우스 이벤트 설정 */
 	public void setMouseEvent() {
-		// /* 트레이 아이콘 마우스 리스너 */
-		// MouseListener mouseListener = new MouseAdapter() {
-		// public void mousePressed(MouseEvent e) {
-		// if (e.getClickCount() == 2) { // 트레이 아이콘을 더블 클릭하면
-		// //displayMainApp(); // frame을 보여줌
-		// }
-		// }
-		// };
+		/* 트레이 아이콘 마우스 리스너 */
+		mouseListener = new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.getClickCount() == 2) { // 트레이 아이콘을 더블 클릭하면
+					displayMainApp(); // frame을 보여줌
+				}
+			}
+		};
 	}
 
 	/** 트레이아이콘 우클릭 메뉴 설정 */

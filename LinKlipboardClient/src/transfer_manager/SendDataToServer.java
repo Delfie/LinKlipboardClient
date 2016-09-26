@@ -64,6 +64,7 @@ public class SendDataToServer extends Transfer {
 			
 			//공유한 날짜, 시간 설정
 			sendContents.setDate();
+			sendContents.setSharer(client.getNickName());
 			
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(sendContents);

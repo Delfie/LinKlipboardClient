@@ -67,8 +67,8 @@ public class HistoryPanel extends BasePanel {
 	public void update() {
 		remove(listPanel);
 		listPanel.initComponents();
-		add(listPanel);
 		listPanel.repaint();
+		add(listPanel);
 	}
 	
 }
