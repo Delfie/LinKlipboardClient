@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
@@ -41,7 +42,7 @@ public class HistoryPanel extends BasePanel {
 		setLayout(null);
 		setSize(320, 360);
 
-		listPanel = new ListPanel(client);
+		listPanel = new ListPanel(client, receiveData);
 
 		initComponent();
 	}
@@ -66,7 +67,7 @@ public class HistoryPanel extends BasePanel {
 	 
 	public void update() {
 		remove(listPanel);
-		listPanel = new ListPanel(client);
+		listPanel = new ListPanel(client, receiveData);
 		listPanel.setLocation(25, 15);
 		add(listPanel);
 	}
@@ -75,15 +76,19 @@ public class HistoryPanel extends BasePanel {
 
 class ListPanel extends JPanel {
 	private History history;
+	private LinKlipboardClient client;
 	private DefaultListModel<Contents> model;
 	private JList<Contents> listContents;
 	private JScrollPane scrollPane;
 	private String listToolTipString;
 	private static int maxNumOfContents = 10;
+	private ReceivePreviousData receiveData;
 
-	public ListPanel(LinKlipboardClient client) {
+	public ListPanel(LinKlipboardClient client, ReceivePreviousData receiveData) {
+		this.client = client;
 		this.history = client.getHistory(); //
-
+		this.receiveData = receiveData;
+		
 		setLayout(new BorderLayout());
 		setSize(270, 260);
 
@@ -105,6 +110,7 @@ class ListPanel extends JPanel {
 		return scrollPane;
 	}
 	
+	// 더블클릭
 	public void ddddd() {
 		
 	}
@@ -158,6 +164,15 @@ class ListPanel extends JPanel {
 				int index = l.locationToIndex(e.getPoint());
 				if (index > -1) {
 					l.setToolTipText(setListToolTipString((Contents) m.getElementAt(index)));
+				}
+			}
+		});
+		
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					receiveData.ReceiveData(client, getSelcetedList());
 				}
 			}
 		});
