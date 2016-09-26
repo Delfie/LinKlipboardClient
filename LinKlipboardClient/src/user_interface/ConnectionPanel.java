@@ -27,8 +27,8 @@ public class ConnectionPanel extends BasePanel {
 	private JLabel accessGroupNameLabel; // 자신이 속한 그룹명
 	private JLabel accessCountLabel = new JLabel(); // 같은 그룹에 들어온 접속자 수
 
-	DefaultListModel<String> model = new DefaultListModel<>(); // client의 Vector<String>값을 저장
-	private JScrollPane accessPersonScrollPane = new JScrollPane();
+	DefaultListModel<String> model; // client의 Vector<String>값을 저장
+	private JScrollPane accessPersonScrollPane;
 	private JList<String> accessPersonList; // 접속자 리스트
 
 	private JLabel sharedIcon = new JLabel();
@@ -138,6 +138,7 @@ public class ConnectionPanel extends BasePanel {
 	}
 
 	public void initClientList() {
+		model = new DefaultListModel<>();
 		// add item to model
 		for (int i = 0; i < client.getOtherClients().size(); i++) {
 			model.add(0, client.getOtherClients().elementAt(i));
@@ -146,7 +147,7 @@ public class ConnectionPanel extends BasePanel {
 		// create JList with model
 		accessPersonList = new JList<String>(model);
 
-		accessPersonScrollPane.setViewportView(accessPersonList);
+		accessPersonScrollPane = new JScrollPane(accessPersonList);
 		accessPersonScrollPane.setBounds(24, 50, 270, 150);
 		add(accessPersonScrollPane);
 	}
@@ -160,6 +161,7 @@ public class ConnectionPanel extends BasePanel {
 
 		remove(accessPersonScrollPane);
 		initClientList();
+		add(accessPersonScrollPane);
 		accessPersonScrollPane.repaint();
 	}
 
@@ -199,6 +201,12 @@ public class ConnectionPanel extends BasePanel {
 
 		sharedContentsInfoLabel.setText(latestContents.getSharer() + "님이 " + dataInfo  + dataType + " 공유");
 	}
+	
+	public void updateSharedContents() {
+		LinKlipboardClient.getLatestContents();
+		sharedTimeLabel.setText("[" + now() + "]");
+		sharedContentsInfoLabel.setText("최신 공유된 Contents가 없습니다.");
+	}
 
 	/** 최신으로 공유된 Contents를 받아온다. */
 	private void receiveButtonActionPerformed(ActionEvent evt) {
@@ -224,15 +232,12 @@ public class ConnectionPanel extends BasePanel {
 		return dataInfo.substring(0, cutSize) + "..";
 	}
 
-	public void updateInfo() {
-
-	}
 
 	/** @return YYYY-MM-DD HH:MM:SS 형식의 현재 시간 */
 	public static String now() {
 		Calendar cal = Calendar.getInstance();
 		String year = Integer.toString(cal.get(Calendar.YEAR));
-		String month = Integer.toString(cal.get(Calendar.MONTH));
+		String month = Integer.toString(cal.get(Calendar.MONTH)+1);
 		String date = Integer.toString(cal.get(Calendar.DATE));
 		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
 		if (Integer.parseInt(hour) < 10) {

@@ -57,7 +57,8 @@ public abstract class Contents implements Serializable {
 	public static String now() {
 		Calendar cal = Calendar.getInstance();
 		String year = Integer.toString(cal.get(Calendar.YEAR));
-		String month = Integer.toString(cal.get(Calendar.MONTH));
+		String month = Integer.toString(cal.get(Calendar.MONTH)+1);
+		
 		String date = Integer.toString(cal.get(Calendar.DATE));
 		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
 		if(Integer.parseInt(hour) < 10) {

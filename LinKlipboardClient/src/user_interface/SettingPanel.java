@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -16,6 +17,7 @@ import datamanage.History;
 
 public class SettingPanel extends BasePanel {
 	private UserInterfacePage1 page1;
+	private UserInterfacePage2 page2;
 	
 	private SetHistorySizePanel setHistorySizePanel;
 	private ShortcutSetPanel shortcutSetPanel;
@@ -29,9 +31,10 @@ public class SettingPanel extends BasePanel {
 
 	private JButton exitButton = new JButton();
 
-	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main, UserInterfacePage1 page1) {
+	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main, UserInterfacePage1 page1, UserInterfacePage2 page2) {
 		super(client, trayIcon, main);
 		this.page1 = page1;
+		this.page2 = page2;
 		
 		userNickname.setText(client.getNickName());
 		setHistorySizePanel = new SetHistorySizePanel(client);
@@ -81,8 +84,19 @@ public class SettingPanel extends BasePanel {
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				client.initAllInfo();
+				
 				main.setContentPane(page1);
 				main.repaint();
+				
+				page1.repaint();
+				
+				page2.getTableTabbedPane().setSelectedIndex(0);
+				page2.getTableTabbedPane().setIconAt(0, page2.resizeConnectionImageIcon(new ImageIcon("image/selectedConnection.png")));
+				page2.getTableTabbedPane().setIconAt(1, page2.resizeConnectionImageIcon(new ImageIcon("image/history.png")));
+				page2.getTableTabbedPane().setIconAt(2, page2.resizeConnectionImageIcon(new ImageIcon("image/setting.png")));
+
+				page2.getConnectionPanel().updateSharedContents();
+				page2.repaint();
 			}
 		});
 		exitButton.setBounds(215, 290, 80, 23);

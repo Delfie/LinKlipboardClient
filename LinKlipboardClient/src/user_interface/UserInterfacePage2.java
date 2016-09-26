@@ -30,7 +30,7 @@ public class UserInterfacePage2 extends BasePanel {
 
 		connectionPanel = new ConnectionPanel(client);
 		historyPanel = new HistoryPanel(client);
-		settingPanel = new SettingPanel(client, trayIcon, main, page1);
+		settingPanel = new SettingPanel(client, trayIcon, main, page1, this);
 
 		setLayout(null);
 		setSize(320, 400);
@@ -115,5 +115,9 @@ public class UserInterfacePage2 extends BasePanel {
 	
 	public HistoryPanel getHistoryPanel() {
 		return (HistoryPanel) historyPanel;
+	}
+	
+	public JTabbedPane getTableTabbedPane() {
+		return this.tableTabbedPane;
 	}
 }

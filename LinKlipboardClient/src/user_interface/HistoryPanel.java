@@ -105,6 +105,10 @@ class ListPanel extends JPanel {
 		return scrollPane;
 	}
 	
+	public void ddddd() {
+		
+	}
+	
 
 	// // »©¾ßµÊ
 	// private void addContentsInHistory() {
