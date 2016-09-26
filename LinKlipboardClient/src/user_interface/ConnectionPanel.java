@@ -35,7 +35,6 @@ public class ConnectionPanel extends BasePanel {
 	private JLabel sharedTimeLabel = new JLabel();// 최신 공유한 시간 정보
 	private JLabel sharedContentsInfoLabel = new JLabel(); // 최신 공유 Content정보
 
-	private JButton sendButton = new JButton();
 	private JButton receiveButton = new JButton();
 
 	private SendDataToServer sendStrImg;
@@ -93,14 +92,15 @@ public class ConnectionPanel extends BasePanel {
 				FileContents fc = new FileContents();
 				fc = (FileContents) latestContents;
 				dataType = "파일";
-				dataInfo = fc.getFileName();
+				dataInfo = "<" + fc.getFileName() + ">";
 			} else if (latestContents.getType() == LinKlipboard.STRING_TYPE) {
 				StringContents sc = new StringContents();
 				sc = (StringContents) latestContents;
 				dataType = "텍스트";
-				dataInfo = sc.getString();
+				dataInfo = "<" + sc.getString() + ">";
 			} else if (latestContents.getType() == LinKlipboard.IMAGE_TYPE) {
 				dataType = "이미지";
+				dataInfo = "";
 			} else {
 				dataInfo = "지원하지 않는 컨텐츠";
 			}
@@ -113,7 +113,7 @@ public class ConnectionPanel extends BasePanel {
 			}
 
 			sharedContentsInfoLabel
-					.setText(LinKlipboardClient.getLatestContents().getSharer() + "님이 \\" + dataInfo + "\\ " + dataType + " 공유");
+					.setText(LinKlipboardClient.getLatestContents().getSharer() + "님이 " + dataInfo  + dataType + " 공유");
 		}
 
 		sharedTimeLabel.setBounds(50, 220, 150, 20);
@@ -126,26 +126,6 @@ public class ConnectionPanel extends BasePanel {
 		// sharedContentsInfoLabel.setBackground(Color.GRAY);
 		// sharedContentsInfoLabel.setOpaque(true);
 		add(sharedContentsInfoLabel);
-
-		sendButton.setText("Send");
-		sendButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				sendButtonActionPerformed(evt);
-			}
-
-			private void sendButtonActionPerformed(ActionEvent evt) {
-				// 전송한다.
-				if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-					sendFile = new FileSendDataToServer(client);
-					sendFile.requestSendFileData();
-				} else {
-					sendStrImg = new SendDataToServer(client);
-					sendStrImg.requestSendExpFileData();
-				}
-			}
-		});
-		sendButton.setBounds(110, 290, 80, 23);
-		add(sendButton);
 
 		receiveButton.setText("Receive");
 		receiveButton.addActionListener(new ActionListener() {
@@ -197,14 +177,15 @@ public class ConnectionPanel extends BasePanel {
 			FileContents fc = new FileContents();
 			fc = (FileContents) latestContents;
 			dataType = "파일";
-			dataInfo = fc.getFileName();
+			dataInfo = "<" + fc.getFileName() + ">";
 		} else if (latestContents.getType() == LinKlipboard.STRING_TYPE) {
 			StringContents sc = new StringContents();
 			sc = (StringContents) latestContents;
 			dataType = "텍스트";
-			dataInfo = sc.getString();
+			dataInfo = "<" + sc.getString()+ ">";
 		} else if (latestContents.getType() == LinKlipboard.IMAGE_TYPE) {
 			dataType = "이미지";
+			dataInfo = "";
 		} else {
 			dataInfo = "지원하지 않는 컨텐츠";
 		}
@@ -216,7 +197,7 @@ public class ConnectionPanel extends BasePanel {
 			dataInfo = dealLengthOfDataInfo(dataInfo, 16);
 		}
 
-		sharedContentsInfoLabel.setText(latestContents.getSharer() + "님이 <" + dataInfo + "> " + dataType + " 공유");
+		sharedContentsInfoLabel.setText(latestContents.getSharer() + "님이 " + dataInfo  + dataType + " 공유");
 	}
 
 	/** 최신으로 공유된 Contents를 받아온다. */

@@ -39,7 +39,7 @@ public class FileSendDataToServer extends Thread {
 	private static File sendFile; // static-> FileSendDataToServer에서 사용
 
 	// 자신의 히스토리에 저장할 FileContents
-	private FileContents fileContents = new FileContents(getSendFile());
+	private FileContents fileContents;
 
 	/** FileSendDataToServer 생성자 */
 	public FileSendDataToServer(LinKlipboardClient client) {
@@ -60,7 +60,9 @@ public class FileSendDataToServer extends Thread {
 			String groupName = "groupName=" + LinKlipboardClient.getGroupName();
 
 			sendFile = new File(getFilePathInSystemClipboard());
+			fileContents = new FileContents(getSendFile());
 			String fileName = "fileName=" + sendFile.getName();
+			
 
 			String header = groupName + "&" + fileName;
 			System.out.println("[requestSendFileData] 보낼 전체 데이터 확인" + header);
@@ -161,6 +163,7 @@ public class FileSendDataToServer extends Thread {
 			Contents.setSerialNum(serialNum);
 
 			fileContents.setDate();
+			fileContents.setSharer(client.getNickName());
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(fileContents);
 			client.settLatestContents();
@@ -198,5 +201,10 @@ public class FileSendDataToServer extends Thread {
 	/** 클라이언트가 서버에 보낼 실제 파일을 리턴 */
 	public static File getSendFile() {
 		return sendFile;
+	}
+	
+	/** 클라이언트가 서버에 보낼 실제 파일의 이름을 리턴 */
+	public static String getSendFileName() {
+		return sendFile.getName();
 	}
 }

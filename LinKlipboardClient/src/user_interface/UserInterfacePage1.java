@@ -81,6 +81,7 @@ public class UserInterfacePage1 extends BasePanel {
 				switch (keyCode) {
 				case KeyEvent.VK_ENTER:
 					if (checkAllInputData() == true) {
+						responseState.setText("");
 						groupName = groupNameField.getText();
 						groupPW = new String(groupPassWordField.getPassword());
 
@@ -160,6 +161,7 @@ public class UserInterfacePage1 extends BasePanel {
 
 	private void createButtonActionPerformed(ActionEvent evt) {
 		if (checkAllInputData() == true) {
+			responseState.setText("");
 			groupName = groupNameField.getText();
 			groupPW = new String(groupPassWordField.getPassword());
 
@@ -175,6 +177,7 @@ public class UserInterfacePage1 extends BasePanel {
 
 	protected void joinButtonActionPerformed(ActionEvent evt) {
 		if (checkAllInputData() == true) {
+			responseState.setText("");
 			groupName = groupNameField.getText();
 			groupPW = new String(groupPassWordField.getPassword());
 
