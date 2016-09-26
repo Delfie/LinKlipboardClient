@@ -27,7 +27,7 @@ public class LinKlipboardClient {
 
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
-	private String nickName = "doy"; // 닉네임
+	private static String nickName = null; // 닉네임
 	private static int portNum; // 서버와 통신할 포트번호
 	private Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
 
@@ -198,28 +198,28 @@ public class LinKlipboardClient {
 	}
 
 	/** 전송 첫번째 단축키 반환 */
-	public String getFirstShortcutForSend() {
+	public static String getFirstShortcutForSend() {
 		return firstShortcutForSend;
 	}
 
 	/** 전송 두번째 단축키 반환 */
-	public String getSecondShortcutForSend() {
+	public static String getSecondShortcutForSend() {
 		return secondShortcutForSend;
 	}
 
 	/** 수신 첫번째 단축키 반환 */
-	public String getFirstShortcutForReceive() {
+	public static String getFirstShortcutForReceive() {
 		return firstShortcutForReceive;
 	}
 
 	/** 수신 두번째 단축키 반환 */
-	public String getSecondShortcutForReceive() {
+	public static String getSecondShortcutForReceive() {
 		return secondShortcutForReceive;
 	}
 
 	/** 클라이언트의 닉네임을 세팅 */
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public static void setNickName(String nickName) {
+		LinKlipboardClient.nickName = nickName;
 	}
 
 	/** 클라이언트가 전송받을 파일 이름을 세팅 */

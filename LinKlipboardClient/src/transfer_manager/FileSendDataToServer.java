@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import client_manager.LinKlipboardClient;
+import contents.Contents;
 import contents.FileContents;
 import server_manager.LinKlipboard;
 
@@ -75,7 +76,7 @@ public class FileSendDataToServer extends Transfer {
 			}
 			
 			// 히스토리에 추가할 Contents의 고유번호 세팅
-			fileContents.setSerialNum(serialNum);
+			Contents.setSerialNum(serialNum);
 			
 			fileContents.setDate();
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가

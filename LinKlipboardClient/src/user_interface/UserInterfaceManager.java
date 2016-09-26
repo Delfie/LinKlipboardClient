@@ -33,7 +33,8 @@ public class UserInterfaceManager extends JFrame {
 	private TrayIconManager trayIcon = new TrayIconManager();
 
 	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this, trayIcon);
-
+	private UserInterfacePage2 page2;
+	
 	private NicknameDialog inputNickNameDialog; // 사용자가 원하는 닉네임 입력 다이얼로그
 
 	// private Container contentPane;
@@ -56,7 +57,7 @@ public class UserInterfaceManager extends JFrame {
 		setting();
 
 		trayIcon.addTrayIconInSystemTray();
-		setHooker();
+		setHooker(client);
 
 		// setLayout(null);
 
@@ -99,95 +100,99 @@ public class UserInterfaceManager extends JFrame {
 		//main.setContentPane(page2);
 	}
 
-	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
-	public void setHooker() {
-		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
+	   /** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
+	   public static void setHooker(LinKlipboardClient client) {
+	      GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
+	      CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
-		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
-			@Override
-			public void keyPressed(GlobalKeyEvent event) {
-				char secondShortcutForSend = client.getSecondShortcutForSend().charAt(0);
-				int getKeyCodeForSend = (int) secondShortcutForSend; // int keyCode를 얻어와 event,VK_ 꼴로 만들어야함
+	      keyboardHook.addKeyListener(new GlobalKeyAdapter() {
+	         @Override
+	         public void keyPressed(GlobalKeyEvent event) {
+	            char secondShortcutForSend = LinKlipboardClient.getSecondShortcutForSend().charAt(0);
+	            int getKeyCodeForSend = (int) secondShortcutForSend; // int keyCode를 얻어와 event,VK_ 꼴로 만들어야함
 
-				char secondShortcutForReceive = client.getSecondShortcutForReceive().charAt(0);
-				int getKeyCodeForReceive = (int) secondShortcutForReceive;
+	            char secondShortcutForReceive = LinKlipboardClient.getSecondShortcutForReceive().charAt(0);
+	            int getKeyCodeForReceive = (int) secondShortcutForReceive;
 
-				if (client.getFirstShortcutForSend().equals("Ctrl")) {
-					if (event.isControlPressed()) {
-						if (event.getVirtualKeyCode() == getKeyCodeForSend) {
-							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
-							// 전송한다.
-							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-								communicatingWithServer.requestSendFileData();
-							} else {
-								communicatingWithServer.requestSendExpFileData();
-							}
-						}
-					}
-				} else if (client.getFirstShortcutForSend().equals("Alt")) {
-					if (event.isMenuPressed()) {
-						if (event.getVirtualKeyCode() == getKeyCodeForSend) {
-							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
-							// 전송한다.
-							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-								communicatingWithServer.requestSendFileData();
-							} else {
-								communicatingWithServer.requestSendExpFileData();
-							}
-						}
-					}
-				} else {
-					System.out.println("[setHookerForSend] 단축키 오류");
-				}
+	            if (LinKlipboardClient.getFirstShortcutForSend().equals("Ctrl")) {
+	               if (event.isControlPressed()) {
+	                  if (event.getVirtualKeyCode() == getKeyCodeForSend) {
+	                     System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
+	                     // 전송한다.
+	                     if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
+	                        communicatingWithServer.requestSendFileData();
+	                     } else {
+	                        communicatingWithServer.requestSendExpFileData();
+	                     }
+	                  }
+	               }
+	            } else if (LinKlipboardClient.getFirstShortcutForSend().equals("Alt")) {
+	               if (event.isMenuPressed()) {
+	                  if (event.getVirtualKeyCode() == getKeyCodeForSend) {
+	                     System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
+	                     // 전송한다.
+	                     if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
+	                        communicatingWithServer.requestSendFileData();
+	                     } else {
+	                        communicatingWithServer.requestSendExpFileData();
+	                     }
+	                  }
+	               }
+	            } else {
+	               System.out.println("[setHookerForSend] 단축키 오류");
+	            }
 
-				if (client.getFirstShortcutForReceive().equals("Ctrl")) {
-					if (event.isControlPressed()) {
-						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
-							System.out.println("[Ctrl + " + secondShortcutForReceive + "] is detected.");
-							receiveData();
-						}
-					}
-				} else if (client.getFirstShortcutForReceive().equals("Alt")) {
-					if (event.isMenuPressed()) {
-						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
-							System.out.println("[Alt + " + secondShortcutForReceive + "] is detected.");
-							receiveData();
-						}
-					}
-				} else {
-					System.out.println("[setHookerForReceive] 단축키 오류");
-				}
-			}
-		});
-	}
+	            if (LinKlipboardClient.getFirstShortcutForReceive().equals("Ctrl")) {
+	               if (event.isControlPressed()) {
+	                  if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
+	                     System.out.println("[Ctrl + " + secondShortcutForReceive + "] is detected.");
+	                     receiveData(client);
+	                  }
+	               }
+	            } else if (LinKlipboardClient.getFirstShortcutForReceive().equals("Alt")) {
+	               if (event.isMenuPressed()) {
+	                  if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
+	                     System.out.println("[Alt + " + secondShortcutForReceive + "] is detected.");
+	                     receiveData(client);
+	                  }
+	               }
+	            } else {
+	               System.out.println("[setHookerForReceive] 단축키 오류");
+	            }
+	         }
+	      });
+	   }
 
 
-	/** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
-	public void receiveData() {
-		client.settLatestContents();
+	   /** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
+	   public static void receiveData(LinKlipboardClient client) {
+	      client.settLatestContents();
+	      CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
-		Contents latestContentsFromServer = client.getLatestContents();
-		int latestContentsType = client.getLatestContents().getType();
+	      Contents latestContentsFromServer = client.getLatestContents();
+	      int latestContentsType = client.getLatestContents().getType();
 
-		if (latestContentsType == LinKlipboard.FILE_TYPE) {
-			communicatingWithServer.requestReceiveFileData();
-		} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
-			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
-		} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
-			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
-		} else {
-			System.out.println("[ConnectionPanel] File, String, Image 어디에도 속하지 않음");
-		}
-	}
+	      if (latestContentsType == LinKlipboard.FILE_TYPE) {
+	         communicatingWithServer.requestReceiveFileData();
+	      } else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+	         ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+	      } else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+	         ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
+	      } else {
+	         System.out.println("[ConnectionPanel] File, String, Image 어디에도 속하지 않음");
+	      }
+	   }
 
 	/** 다이얼로그에서 입력받은 닉네임을 처리 */
-	public void dealInputnickName(String defaulNickname) {
-		inputNickNameDialog = new NicknameDialog(this, "Set Nickname", defaulNickname);
+	public void dealInputnickName(String defaulNickname, UserInterfacePage2 page2) {
+		this.page2 = page2;
+		inputNickNameDialog = new NicknameDialog(this, "Set Nickname", defaulNickname, client, page2);
 		inputNickNameDialog.setSize(250, 130);
 		inputNickNameDialog.setVisible(true);
 
-		String nickname = inputNickNameDialog.getInput();
-		client.setNickName(nickname);
+		//String nickname = inputNickNameDialog.getInput();
+		//client.setNickName(nickname);
+		
 		//new StartToProgram(client).requestChangeInfoToServer(nickname);
 
 		// page2로 넘어간 후에 다이얼로그 띄우기
@@ -216,8 +221,9 @@ class NicknameDialog extends JDialog {
 	JLabel errorLabel = new JLabel();
 	JTextField inputNicknameField = new JTextField();
 	JButton okButton = new JButton("OK");
+	//static boolean permit = false;
 
-	public NicknameDialog(JFrame jf, String title, String defaulNickname) {
+	public NicknameDialog(JFrame jf, String title, String defaulNickname, LinKlipboardClient client, UserInterfacePage2 page2) {
 		super(jf, title, true);
 
 		setLayout(null);
@@ -237,9 +243,25 @@ class NicknameDialog extends JDialog {
 
 		okButton.setBounds(150, 70, 80, 23);
 		okButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
-				if (inputNicknameField.getText().length() != 0) {
+				
+				System.out.println("nickname = " + inputNicknameField.getText() + inputNicknameField.getText().length());
+				System.out.println("getInput" + getInput());
+				
+				if (getInput().length() == 0) {
 					errorLabel.setText("닉네임 필수 입력");
+				}
+				else {
+					//new StartToProgram(client).requestChangeInfoToServer(getInput()); // 닉네임 중복처리
+					
+					// 승인되면
+					LinKlipboardClient.setNickName(getInput());
+					
+					client.getOtherClients().add(getInput()); // 자신도 추가
+					System.out.println("[page1] " + client.getOtherClients().size());
+					page2.getConnectionPanel().update();
+					jf.setContentPane(page2);
 					setVisible(false);
 				}
 			}
@@ -251,10 +273,10 @@ class NicknameDialog extends JDialog {
 
 	/** 사용자가 입력한 닉네임 반환 */
 	String getInput() {
-		if (inputNicknameField.getText().length() == 0) {
-			return null;
-		} else {
+//		if (inputNicknameField.getText().length() == 0) {
+//			return null;
+//		} else {
 			return inputNicknameField.getText();
-		}
+//		}
 	}
 }

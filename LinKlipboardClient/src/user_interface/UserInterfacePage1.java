@@ -11,6 +11,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import client_manager.LinKlipboardClient;
+import server_manager.LinKlipboard;
+import transfer_manager.ResponseHandler;
 
 public class UserInterfacePage1 extends BasePanel {
 	private UserInterfacePage2 page2;
@@ -71,8 +73,6 @@ public class UserInterfacePage1 extends BasePanel {
 		groupPassWordField.setBounds(135, 305, 150, 20);
 		add(groupPassWordField);
 		
-		
-
 		responseState.setText("");
 		responseState.setBounds(87, 335, 150, 20);
 		responseState.setHorizontalAlignment(JLabel.CENTER);
@@ -143,16 +143,9 @@ public class UserInterfacePage1 extends BasePanel {
 			// 3. 입력창 초기화
 			initField();
 			
-			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
-			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
-			
-			System.out.println("[page1] " + client.getOtherClients().size());
-			
-			page2.getConnectionPanel().update();
-			
-			main.setContentPane(page2);
-			
-		}
+			if(ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT)
+				main.dealInputnickName(this.client.getNickName(), page2); // 닉네임 설정
+			}
 	}
 
 	protected void joinButtonActionPerformed(ActionEvent evt) {
@@ -167,12 +160,9 @@ public class UserInterfacePage1 extends BasePanel {
 			// 3. 입력창 초기화
 			initField();
 			
-			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
-			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
-			
-			page2.getConnectionPanel().update();
-			main.setContentPane(page2);
-		}
+			if(ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT)
+				main.dealInputnickName(this.client.getNickName(), page2); // 닉네임 설정
+			}
 	}
 }
 

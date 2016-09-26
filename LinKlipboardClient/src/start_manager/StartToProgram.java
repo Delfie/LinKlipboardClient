@@ -88,7 +88,20 @@ public class StartToProgram {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
+			
+//			// 상훈 TEST 시작
+//			// 서버에 보낼 데이터(그룹정보)
+//			String message = "doy";
+//
+//			// server에 그룹이름과 패스워드 전송(servlet이 받는 구분자: &)
+//			bout.write(message);
+//			bout.flush();
+//			bout.close();
+			// 상훈 TEST 끝
+			
 			bin.close();
+			
+			
 
 			exceptionHandling(this.response);
 			System.out.println("[sendGroupInfoToServer] " + responseHandler.getErrorCodeNum());
@@ -147,7 +160,7 @@ public class StartToProgram {
 
 			if (responseHandler.getErrorCodeNum() == LinKlipboard.COMPLETE_APPLY) {
 				// 나의 닉네임을 변경한다.
-				client.setNickName(nickName);
+				LinKlipboardClient.setNickName(nickName);
 			}
 
 		} catch (MalformedURLException ex) {

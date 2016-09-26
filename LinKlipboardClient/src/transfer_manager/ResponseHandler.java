@@ -11,7 +11,7 @@ public class ResponseHandler {
 
 	private String responseWholeMsg; // 서버에게서 응답받은 전체메세지
 
-	private int errorCodeNum; // 에러코드
+	private static int errorCodeNum; // 에러코드
 	private String errorMsg = null; // 에러코드에 대한 정보
 
 	private int resontentsSerialNum = LinKlipboard.NULL; // Contents의 고유번호
@@ -57,6 +57,7 @@ public class ResponseHandler {
 		}
 		System.out.println("[ResponseHandler] resNickName/resFileName/resontentsSerialNum : " + resNickName + "/"
 				+ resFileName + "/" + resontentsSerialNum);
+		System.out.println("[ResponseHandler] errorCodeNum/errorMsg" + errorCodeNum + "/" + errorMsg);
 	}
 
 	/** errorCodeNum와 일치하는 메세지를 set하는 메소드 */
@@ -152,7 +153,7 @@ public class ResponseHandler {
 
 	/** 클라이언트의 디폴트 닉네임을 세팅 */
 	public void setDefaultNickName(String nickName) {
-		client.setNickName(nickName);
+		LinKlipboardClient.setNickName(nickName);
 	}
 
 	/** 전송받을 파일의 이름을 세팅 */
@@ -171,7 +172,7 @@ public class ResponseHandler {
 	}
 
 	/** 에러코드를 반환 */
-	public int getErrorCodeNum() {
+	public static int getErrorCodeNum() {
 		return errorCodeNum;
 	}
 

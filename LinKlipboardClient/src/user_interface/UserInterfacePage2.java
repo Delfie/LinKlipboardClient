@@ -86,6 +86,8 @@ public class UserInterfacePage2 extends BasePanel {
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(1, historyImage);
 					tableTabbedPane.setIconAt(index, selectedSettingImage);
+					
+					((SettingPanel)settingPanel).updateNicnameLable();
 				}
 			}
 		});

@@ -59,7 +59,7 @@ public class SendDataToServer extends Transfer {
 			sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
 			
 			// 히스토리에 추가할 Contents의 고유번호 세팅
-			sendContents.setSerialNum(serialNum);
+			Contents.setSerialNum(serialNum);
 
 			
 			//공유한 날짜, 시간 설정

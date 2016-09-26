@@ -10,7 +10,7 @@ public abstract class Contents implements Serializable {
 
 	private static final long serialVersionUID = 4131370422438049456L;
 
-	private int serialNum = LinKlipboard.NULL;
+	private static int serialNum = LinKlipboard.NULL;
 
 	protected String date;
 	protected String sharer;
@@ -29,8 +29,8 @@ public abstract class Contents implements Serializable {
 		this.sharer = sharer;
 	}
 
-	public void setSerialNum(int serialNum) {
-		this.serialNum = serialNum;
+	public static void setSerialNum(int serialNum) {
+		Contents.serialNum = serialNum;
 	}
 	
 	public void setDate() {
