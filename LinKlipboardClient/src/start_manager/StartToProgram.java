@@ -99,8 +99,7 @@ public class StartToProgram {
 			// 상훈 TEST 끝
 			
 			bin.close();
-			
-			
+					
 
 			exceptionHandling(this.response);
 			System.out.println("[sendGroupInfoToServer] " + ResponseHandler.getErrorCodeNum());
@@ -111,6 +110,7 @@ public class StartToProgram {
 					
 				} else if (orderMsg.equals("join")) {
 					// 서버에 있는 Vector<Contents>를 받는다.
+					LinKlipboardClient.setHistory();
 					new GetInitDataFromServer(client);
 				}
 			}

@@ -64,9 +64,9 @@ public class GetInitDataFromServer extends Transfer {
 
 			// 클라이언트 히스토리에 세팅해준다.
 			Vector<String> otherClientsInfo = initData.getClients(); 
-			Vector<Contents> history = initData.getHistory(); 
+			//Vector<Contents> history = initData.getHistory(); 
 			
-			LinKlipboardClient.setHistory(history);
+			//LinKlipboardClient.setHistory(history);
 			client.setOtherClients(otherClientsInfo); 
 
 			closeSocket();
