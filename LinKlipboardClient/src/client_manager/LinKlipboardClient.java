@@ -262,6 +262,37 @@ public class LinKlipboardClient {
 	public Vector<String> getOtherClients() {
 		return this.otherClients;
 	}
+	
+	/** 클라이언트의 모든 정보를 초기화 */
+	public void initAllInfo() {
+
+		UserInterfaceManager main;
+		UserInterfacePage1 screen1; // 사용자 인터페이스(for 오류 정보 표시)
+		TrayIconManager trayIcon;
+
+		String groupName; // 그룹이름
+		String password; // 패스워드
+		String nickName = null; // 닉네임
+		int portNum; // 서버와 통신할 포트번호
+		Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
+
+		String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
+		String secondShortcutForSend = "Q"; // 전송 두번째 단축키
+		String firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
+		String secondShortcutForReceive = "Q"; // 수신 두번째 단축키
+
+		String fileName = null; // 전송받을 파일이름
+
+		History history = new History(); // 히스토리
+		Contents latestContents = null; // 최신데이터
+
+		ConnectionPanel connectionPanel;
+
+		StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
+
+		File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
+		ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
+	}
 
 	/**
 	 * 서버가 전송하는 Contents를 받는 클래스 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다.
@@ -290,6 +321,8 @@ public class LinKlipboardClient {
 			}
 			System.out.println("[ReceiveContents] 연결 설정 끝");
 		}
+
+
 
 		@Override
 		public void run() {
