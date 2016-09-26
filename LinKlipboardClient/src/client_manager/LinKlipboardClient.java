@@ -322,6 +322,8 @@ public class LinKlipboardClient {
 					latestContents = (Contents) in.readObject(); // Contents 객체수신
 					int latestContentsType = latestContents.getType(); // Contents 객체의 타입
 
+					System.out.println("최근에 받은 컨텐츠의 타입:" + latestContentsType);
+					
 					if (latestContentsType == LinKlipboard.NULL) {
 						// sharer을 확인
 						StringTokenizer tokens = new StringTokenizer(latestContents.getSharer(),
@@ -331,6 +333,9 @@ public class LinKlipboardClient {
 						// join이면 Vector otherClients에 추가
 						if (inoutClientInfo.equals("join")) {
 							String inClientNickname = tokens.nextToken();
+							
+							System.out.println("join한 클라이언트의 닉네임:" + inClientNickname);
+							
 							otherClients.add(inClientNickname);
 							connectionPanel.updateAccessGroup();
 						}
