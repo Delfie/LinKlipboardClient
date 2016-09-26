@@ -15,15 +15,12 @@ import start_manager.StartToProgram;
 import user_interface.ConnectionPanel;
 import user_interface.HistoryPanel;
 import user_interface.SettingPanel;
-import user_interface.TrayIconManager;
 import user_interface.UserInterfaceManager;
-//import user_interface.Past_UserInterface;
 import user_interface.UserInterfacePage1;
 
 public class LinKlipboardClient {
 	private UserInterfaceManager main;
 	private UserInterfacePage1 screen1; // 사용자 인터페이스(for 오류 정보 표시)
-	private TrayIconManager trayIcon;
 
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
@@ -68,7 +65,7 @@ public class LinKlipboardClient {
 	public LinKlipboardClient(String groupName, String groupPassword) {
 		System.out.println("<클라이언트 생성> groupName: " + groupName + " groupPassword: " + groupPassword);
 
-		this.groupName = groupName;
+		LinKlipboardClient.groupName = groupName;
 		this.password = groupPassword;
 
 		createFileReceiveFolder(); // LinKlipboard folder 생성
@@ -85,7 +82,7 @@ public class LinKlipboardClient {
 	/** 사용자가 입력한 그룹정보를 세팅 */
 	public void setGroupInfo(String groupName, String groupPassword) {
 		System.out.println("[LinKlipboardClient] 그룹정보 세팅 메소드 호출");
-		this.groupName = groupName;
+		LinKlipboardClient.groupName = groupName;
 		this.password = groupPassword;
 	}
 
@@ -133,7 +130,7 @@ public class LinKlipboardClient {
 
 	/** 그룹 정보를 초기화 */
 	public void initGroupInfo() {
-		this.groupName = null;
+		LinKlipboardClient.groupName = null;
 		this.password = null;
 	}
 

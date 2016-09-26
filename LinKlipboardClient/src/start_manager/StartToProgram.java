@@ -24,7 +24,6 @@ public class StartToProgram {
 	private String groupName; // 그룹이름
 	private String password; // 패스워드
 	private String orderMsg; // 사용자가 원하는 명령(create/join)
-	private String nickName; // 사용자가 입력한 닉네임
 
 	/**
 	 * StartToProgram 생성자
@@ -104,9 +103,9 @@ public class StartToProgram {
 			
 
 			exceptionHandling(this.response);
-			System.out.println("[sendGroupInfoToServer] " + responseHandler.getErrorCodeNum());
+			System.out.println("[sendGroupInfoToServer] " + ResponseHandler.getErrorCodeNum());
 
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT) {
+			if (ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT) {
 				if (orderMsg.equals("create")) {
 					LinKlipboardClient.setHistory();
 					
@@ -156,9 +155,9 @@ public class StartToProgram {
 			bin.close();
 
 			exceptionHandling(this.response);
-			System.out.println("[requestChangeInfoToServer] " + responseHandler.getErrorCodeNum());
+			System.out.println("[requestChangeInfoToServer] " + ResponseHandler.getErrorCodeNum());
 
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.COMPLETE_APPLY) {
+			if (ResponseHandler.getErrorCodeNum() == LinKlipboard.COMPLETE_APPLY) {
 				// 나의 닉네임을 변경한다.
 				LinKlipboardClient.setNickName(nickName);
 			}
@@ -171,12 +170,6 @@ public class StartToProgram {
 		this.response = response;
 	}
 	
-
-	private String String(byte[] bytes, String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * 예외 처리
 	 * 

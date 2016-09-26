@@ -42,15 +42,8 @@ public class UserInterfaceManager extends JFrame {
 
 	// private Container contentPane;
 
-	private static final int startXOfFrame = 0;
-	private static final int startYOfFrame = 0;
 	private static final int endXOfFrame = 326;
 	private static final int endYOfFrame = 430;
-	private static final int endXOfPanel = 320;
-	private static final int endYOfPanel = 400;
-
-	private static final int buttonWidth = 80;
-	private static final int buttonHeight = 23;
 
 	public UserInterfaceManager() {
 		setTitle("LinKlipboard");

@@ -102,7 +102,7 @@ public class ReceivePreviousData {
 
 			exceptionHandling(this.response);
 
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
+			if (ResponseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[ReceivePreviousData] 소켓 연결");
 				fileReceive.start();
 			}
