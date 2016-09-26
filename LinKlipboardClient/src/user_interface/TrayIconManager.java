@@ -15,12 +15,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import client_manager.LinKlipboardClient;
-import transfer_manager.CommunicatingWithServer;
+import transfer_manager.NotifyLogoutToServer;
 
 public class TrayIconManager {
 	UserInterfaceManager frame;
 	LinKlipboardClient client;
-	CommunicatingWithServer communicatingWithServer;
 	
 	private final SystemTray systemTray = SystemTray.getSystemTray(); // 시스템트레이 얻어옴
 
@@ -89,8 +88,7 @@ public class TrayIconManager {
 		menuItem = new MenuItem("Close"); // 프로그램 종료
 		menuItem.addActionListener(new ActionListener() { // Close 메뉴에 대한 액션 리스너
 			public void actionPerformed(ActionEvent e) {
-				communicatingWithServer = new CommunicatingWithServer(client);
-				communicatingWithServer.requestReportExit(); // 종료보고 서블릿 호출
+				new NotifyLogoutToServer(client).requestReportExit();
 				
 				systemTray.remove(trayIcon); // 시스템트레이에서 트레이아이콘 제거
 				System.exit(0); // 프로그램 종료

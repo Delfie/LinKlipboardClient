@@ -1,3 +1,4 @@
+package trash_package;
 //package user_interface;
 //
 //import java.awt.Color;

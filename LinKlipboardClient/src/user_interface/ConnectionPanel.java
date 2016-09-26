@@ -19,7 +19,9 @@ import contents.Contents;
 import contents.FileContents;
 import contents.StringContents;
 import server_manager.LinKlipboard;
-import transfer_manager.CommunicatingWithServer;
+import transfer_manager.FileReceiveDataToServer;
+import transfer_manager.FileSendDataToServer;
+import transfer_manager.SendDataToServer;
 
 public class ConnectionPanel extends BasePanel {
 	private JLabel accessGroupNameLabel; // 자신이 속한 그룹명
@@ -36,11 +38,12 @@ public class ConnectionPanel extends BasePanel {
 	private JButton sendButton = new JButton();
 	private JButton receiveButton = new JButton();
 
+	private SendDataToServer sendStrImg;
+	private FileSendDataToServer sendFile;
+	private FileReceiveDataToServer receiveFile;
+
 	public ConnectionPanel(LinKlipboardClient client) {
 		super(client);
-
-		// 서버와 응답을 처리하는 클래스
-		communicatingWithServer = new CommunicatingWithServer(client);
 
 		setLayout(null);
 		setSize(320, 360);
@@ -51,7 +54,7 @@ public class ConnectionPanel extends BasePanel {
 	private void initComponents() {
 		Font labelFont = UIManager.getFont("Label.font");
 		System.out.println("Label.font is " + labelFont);
-		
+
 		accessGroupNameLabel = new JLabel();
 		accessGroupNameLabel.setFont(new Font("Dialog", Font.BOLD, 16));
 		accessGroupNameLabel.setBounds(24, 20, 80, 20);
@@ -59,21 +62,21 @@ public class ConnectionPanel extends BasePanel {
 		// accessGroupNameLabel.setOpaque(true);
 		add(accessGroupNameLabel);
 
-		System.out.println("[Connect] " + client.getOtherClients().size() );
-		//accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
+		System.out.println("[Connect] " + client.getOtherClients().size());
+		// accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
 		accessCountLabel.setBounds(187, 20, 104, 20);
 		// accessCountLabel.setBackground(Color.GRAY);
 		// accessCountLabel.setOpaque(true);
 		add(accessCountLabel);
 
 		initClientList();
-		
+
 		sharedIcon.setIcon(new ImageIcon("image/sharedImage.png"));
 		sharedIcon.setBounds(24, 220, 20, 20);
 		// sharedIcon.setBackground(Color.GRAY);
 		// sharedIcon.setOpaque(true);
 		add(sharedIcon);
-		
+
 		// 최신 공유된 Contents가 없으면
 		if (client.getLatestContents() == null) {
 			sharedTimeLabel.setText("-------------------");
@@ -101,11 +104,11 @@ public class ConnectionPanel extends BasePanel {
 			} else {
 				dataInfo = "지원하지 않는 컨텐츠";
 			}
-			
-			if(sharer.length() > 7){
+
+			if (sharer.length() > 7) {
 				sharer = dealLengthOfDataInfo(sharer, 7);
 			}
-			if(dataInfo.length() > 16){
+			if (dataInfo.length() > 16) {
 				dataInfo = dealLengthOfDataInfo(dataInfo, 16);
 			}
 
@@ -114,16 +117,16 @@ public class ConnectionPanel extends BasePanel {
 		}
 
 		sharedTimeLabel.setBounds(50, 220, 150, 20);
-//		sharedTimeLabel.setBackground(Color.GRAY);
-//		sharedTimeLabel.setOpaque(true);
+		// sharedTimeLabel.setBackground(Color.GRAY);
+		// sharedTimeLabel.setOpaque(true);
 		add(sharedTimeLabel);
-		
+
 		sharedContentsInfoLabel.setBounds(24, 250, 270, 20);
 		sharedContentsInfoLabel.setHorizontalAlignment(JLabel.CENTER);
-//		sharedContentsInfoLabel.setBackground(Color.GRAY);
-//		sharedContentsInfoLabel.setOpaque(true);
+		// sharedContentsInfoLabel.setBackground(Color.GRAY);
+		// sharedContentsInfoLabel.setOpaque(true);
 		add(sharedContentsInfoLabel);
-		
+
 		sendButton.setText("Send");
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -133,15 +136,16 @@ public class ConnectionPanel extends BasePanel {
 			private void sendButtonActionPerformed(ActionEvent evt) {
 				// 전송한다.
 				if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-					communicatingWithServer.requestSendFileData();
+					sendFile = new FileSendDataToServer(client);
+					sendFile.requestSendFileData();
 				} else {
-					communicatingWithServer.requestSendExpFileData();
+					sendStrImg = new SendDataToServer(client);
+					sendStrImg.requestSendExpFileData();
 				}
 			}
 		});
 		sendButton.setBounds(110, 290, 80, 23);
 		add(sendButton);
-		
 
 		receiveButton.setText("Receive");
 		receiveButton.addActionListener(new ActionListener() {
@@ -166,16 +170,54 @@ public class ConnectionPanel extends BasePanel {
 		accessPersonScrollPane.setBounds(24, 50, 270, 150);
 		add(accessPersonScrollPane);
 	}
-	
-	public void update() {
-		accessGroupNameLabel.setText(client.getGroupName());
+
+	public void updateGroupName() {
+		accessGroupNameLabel.setText(LinKlipboardClient.getGroupName());
+	}
+
+	public void updateAccessGroup() {
 		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
-		
+
 		remove(accessPersonScrollPane);
 		initClientList();
 		accessPersonScrollPane.repaint();
-		
-		sharedTimeLabel.setText("[" + now() + "]");
+	}
+
+	public void updateSharedContents() {
+		sharedTimeLabel.setText("[" + client.getLatestContents().getDate() + "]");
+
+		Contents latestContents = client.getLatestContents();
+		String sharer = latestContents.getSharer();
+		String dataType = null;
+		String dataInfo = null;
+
+		sharedTimeLabel.setText("[" + latestContents.getDate() + "]");
+
+		if (latestContents.getType() == LinKlipboard.FILE_TYPE) {
+			FileContents fc = new FileContents();
+			fc = (FileContents) latestContents;
+			dataType = "파일";
+			dataInfo = fc.getFileName();
+		} else if (latestContents.getType() == LinKlipboard.STRING_TYPE) {
+			StringContents sc = new StringContents();
+			sc = (StringContents) latestContents;
+			dataType = "텍스트";
+			dataInfo = sc.getString();
+		} else if (latestContents.getType() == LinKlipboard.IMAGE_TYPE) {
+			dataType = "이미지";
+		} else {
+			dataInfo = "지원하지 않는 컨텐츠";
+		}
+
+		if (sharer.length() > 7) {
+			sharer = dealLengthOfDataInfo(sharer, 7);
+		}
+		if (dataInfo.length() > 16) {
+			dataInfo = dealLengthOfDataInfo(dataInfo, 16);
+		}
+
+		sharedContentsInfoLabel
+				.setText(client.getLatestContents().getSharer() + "님이 \\" + dataInfo + "\\ " + dataType + " 공유");
 	}
 
 	/** 최신으로 공유된 Contents를 받아온다. */
@@ -186,7 +228,8 @@ public class ConnectionPanel extends BasePanel {
 		int latestContentsType = client.getLatestContents().getType();
 
 		if (latestContentsType == LinKlipboard.FILE_TYPE) {
-			communicatingWithServer.requestReceiveFileData();
+			receiveFile = new FileReceiveDataToServer(client);
+			receiveFile.requestReceiveFileData();
 		} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
 			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
 		} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
@@ -198,13 +241,13 @@ public class ConnectionPanel extends BasePanel {
 
 	/** 레이블의 크기를 넘어가면 ...으로 처리 */
 	public String dealLengthOfDataInfo(String dataInfo, int cutSize) {
-		return dataInfo.substring(0, cutSize) + ".."; 
+		return dataInfo.substring(0, cutSize) + "..";
 	}
-	
+
 	public void updateInfo() {
-		
+
 	}
-	
+
 	/** @return YYYY-MM-DD HH:MM:SS 형식의 현재 시간 */
 	public static String now() {
 		Calendar cal = Calendar.getInstance();
@@ -212,22 +255,21 @@ public class ConnectionPanel extends BasePanel {
 		String month = Integer.toString(cal.get(Calendar.MONTH));
 		String date = Integer.toString(cal.get(Calendar.DATE));
 		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
-		if(Integer.parseInt(hour) < 10) {
+		if (Integer.parseInt(hour) < 10) {
 			hour = "0" + hour;
 		}
-		if(Integer.parseInt(hour) > 12) {
-			hour = "오후 " + Integer.toString(Integer.parseInt(hour)-12);
-		}
-		else {
+		if (Integer.parseInt(hour) > 12) {
+			hour = "오후 " + Integer.toString(Integer.parseInt(hour) - 12);
+		} else {
 			hour = "오전 " + hour;
 		}
-		
+
 		String minute = Integer.toString(cal.get(Calendar.MINUTE));
-		if(Integer.parseInt(minute) < 10) {
+		if (Integer.parseInt(minute) < 10) {
 			minute = "0" + minute;
 		}
 		String sec = Integer.toString(cal.get(Calendar.SECOND));
-		if(Integer.parseInt(sec) < 10) {
+		if (Integer.parseInt(sec) < 10) {
 			sec = "0" + sec;
 		}
 

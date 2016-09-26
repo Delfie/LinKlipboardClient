@@ -3,6 +3,8 @@ package user_interface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -10,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import client_manager.ClipboardManager;
@@ -20,8 +21,9 @@ import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import server_manager.LinKlipboard;
-import start_manager.StartToProgram;
-import transfer_manager.CommunicatingWithServer;
+import transfer_manager.FileReceiveDataToServer;
+import transfer_manager.FileSendDataToServer;
+import transfer_manager.SendDataToServer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,7 +33,6 @@ import transfer_manager.CommunicatingWithServer;
 
 public class UserInterfaceManager extends JFrame {
 	private LinKlipboardClient client = new LinKlipboardClient(this);
-	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 	private TrayIconManager trayIcon = new TrayIconManager(this, client);
 
 	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this, trayIcon);
@@ -69,7 +70,7 @@ public class UserInterfaceManager extends JFrame {
 
 	public void setting() {
 		client.setting(this.getHistoryPanel(), this.getConnectionPanel());
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) { // 윈도우 창의 X(닫기)를 누르면
 				trayIcon.showRunningMsg("LinKlipboard is running.");
@@ -81,7 +82,6 @@ public class UserInterfaceManager extends JFrame {
 	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
 	public static void setHooker(LinKlipboardClient client) {
 		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
-		CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 			@Override
@@ -103,9 +103,9 @@ public class UserInterfaceManager extends JFrame {
 							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
 							// 전송한다.
 							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-								communicatingWithServer.requestSendFileData();
+								new FileSendDataToServer(client).requestSendFileData();
 							} else {
-								communicatingWithServer.requestSendExpFileData();
+								new SendDataToServer(client).requestSendExpFileData();
 							}
 						}
 					}
@@ -115,9 +115,9 @@ public class UserInterfaceManager extends JFrame {
 							System.out.println("[Ctrl + " + secondShortcutForSend + "] is detected.");
 							// 전송한다.
 							if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-								communicatingWithServer.requestSendFileData();
+								new FileSendDataToServer(client).requestSendFileData();
 							} else {
-								communicatingWithServer.requestSendExpFileData();
+								new SendDataToServer(client).requestSendExpFileData();
 							}
 						}
 					}
@@ -149,13 +149,12 @@ public class UserInterfaceManager extends JFrame {
 	/** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
 	public static void receiveData(LinKlipboardClient client) {
 		client.settLatestContents();
-		CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
 		Contents latestContentsFromServer = client.getLatestContents();
 		int latestContentsType = client.getLatestContents().getType();
 
 		if (latestContentsType == LinKlipboard.FILE_TYPE) {
-			communicatingWithServer.requestReceiveFileData();
+			new FileReceiveDataToServer(client).requestReceiveFileData();
 		} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
 			ClipboardManager.writeClipboard(latestContentsFromServer, latestContentsType);
 		} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
@@ -222,6 +221,33 @@ class NicknameDialog extends JDialog {
 
 		inputNicknameField.setBounds(55, 40, 130, 25);
 		inputNicknameField.setText(defaulNickname);
+		inputNicknameField.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+
+				switch (keyCode) {
+				case KeyEvent.VK_ENTER:
+					if (getInput().length() == 0) {
+						errorLabel.setText("닉네임 필수 입력");
+					} else {
+						// new
+						// StartToProgram(client).requestChangeInfoToServer(getInput());
+						// // 닉네임 중복처리
+
+						// 승인되면
+						LinKlipboardClient.setNickName(getInput());
+
+						client.getOtherClients().add(getInput()); // 자신도 추가
+						System.out.println("[page1] " + client.getOtherClients().size());
+						page2.getConnectionPanel().updateGroupName();
+						page2.getConnectionPanel().updateAccessGroup();
+						jf.setContentPane(page2);
+						setVisible(false);
+						page1.initField();
+					}
+				}
+			}
+		});
 		add(inputNicknameField);
 
 		okButton.setBounds(150, 70, 80, 23);
@@ -245,7 +271,7 @@ class NicknameDialog extends JDialog {
 
 					client.getOtherClients().add(getInput()); // 자신도 추가
 					System.out.println("[page1] " + client.getOtherClients().size());
-					page2.getConnectionPanel().update();
+					page2.getConnectionPanel().updateAccessGroup();
 					jf.setContentPane(page2);
 					setVisible(false);
 					page1.initField();
