@@ -1,8 +1,9 @@
 package user_interface;
 
-import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 
 import client_manager.ClipboardManager;
 import client_manager.LinKlipboardClient;
@@ -20,11 +22,12 @@ import server_manager.LinKlipboard;
 import transfer_manager.CommunicatingWithServer;
 
 public class ConnectionPanel extends BasePanel {
-	private JLabel accessGroupNameLabel = new JLabel(); // 자신이 속한 그룹명
+	private JLabel accessGroupNameLabel; // 자신이 속한 그룹명
 	private JLabel accessCountLabel = new JLabel(); // 같은 그룹에 들어온 접속자 수
 
+	DefaultListModel<String> model = new DefaultListModel<>(); // client의 Vector<String>값을 저장
 	private JScrollPane accessPersonScrollPane = new JScrollPane();
-	private JList<String> accessPersonList = new JList<String>(); // 접속자 리스트
+	private JList<String> accessPersonList; // 접속자 리스트
 
 	private JLabel sharedIcon = new JLabel();
 	private JLabel sharedTimeLabel = new JLabel();// 최신 공유한 시간 정보
@@ -45,21 +48,22 @@ public class ConnectionPanel extends BasePanel {
 	}
 
 	private void initComponents() {
-		accessGroupNameLabel.setText(LinKlipboardClient.getGroupName());
+		Font labelFont = UIManager.getFont("Label.font");
+		System.out.println("Label.font is " + labelFont);
+		
+		accessGroupNameLabel = new JLabel();
+		accessGroupNameLabel.setFont(new Font("Dialog", Font.BOLD, 16));
 		accessGroupNameLabel.setBounds(24, 20, 80, 20);
 		// accessGroupNameLabel.setBackground(Color.GRAY);
 		// accessGroupNameLabel.setOpaque(true);
 		add(accessGroupNameLabel);
 
 		System.out.println("[Connect] " + client.getOtherClients().size() );
-		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
+		//accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
 		accessCountLabel.setBounds(187, 20, 104, 20);
 		// accessCountLabel.setBackground(Color.GRAY);
 		// accessCountLabel.setOpaque(true);
 		add(accessCountLabel);
-
-		// client의 Vector<String>값을 저장
-		DefaultListModel<String> model = new DefaultListModel<>();
 
 		// add item to model
 		for (int i = 0; i < client.getOtherClients().size(); i++) {
@@ -82,7 +86,7 @@ public class ConnectionPanel extends BasePanel {
 		// 최신 공유된 Contents가 없으면
 		if (client.getLatestContents() == null) {
 			sharedTimeLabel.setText("-------------------");
-			sharedContentsInfoLabel.setText("최신 공유된 데이터가 없습니다.");
+			sharedContentsInfoLabel.setText("공유된 Contents가 없습니다.");
 		} else {
 			Contents latestContents = client.getLatestContents();
 			String sharer = latestContents.getSharer();
@@ -160,5 +164,55 @@ public class ConnectionPanel extends BasePanel {
 	/** 레이블의 크기를 넘어가면 ...으로 처리 */
 	public String dealLengthOfDataInfo(String dataInfo, int cutSize) {
 		return dataInfo.substring(0, cutSize) + ".."; 
+	}
+	
+	public void updateInfo() {
+		accessGroupNameLabel.setText(client.getGroupName());
+		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
+
+		// add item to model
+		for (int i = 0; i < client.getOtherClients().size(); i++) {
+			model.add(0, client.getOtherClients().elementAt(i));
+		}
+
+		// create JList with model
+		accessPersonList = new JList<String>(model);
+
+		accessPersonScrollPane.setViewportView(accessPersonList);
+		accessPersonScrollPane.setBounds(24, 50, 270, 150);
+		add(accessPersonScrollPane);
+		
+		accessPersonScrollPane.repaint();
+		
+		sharedTimeLabel.setText("[" + now() + "]");
+	}
+	
+	/** @return YYYY-MM-DD HH:MM:SS 형식의 현재 시간 */
+	public static String now() {
+		Calendar cal = Calendar.getInstance();
+		String year = Integer.toString(cal.get(Calendar.YEAR));
+		String month = Integer.toString(cal.get(Calendar.MONTH));
+		String date = Integer.toString(cal.get(Calendar.DATE));
+		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+		if(Integer.parseInt(hour) < 10) {
+			hour = "0" + hour;
+		}
+		if(Integer.parseInt(hour) > 12) {
+			hour = "오후 " + Integer.toString(Integer.parseInt(hour)-12);
+		}
+		else {
+			hour = "오전 " + hour;
+		}
+		
+		String minute = Integer.toString(cal.get(Calendar.MINUTE));
+		if(Integer.parseInt(minute) < 10) {
+			minute = "0" + minute;
+		}
+		String sec = Integer.toString(cal.get(Calendar.SECOND));
+		if(Integer.parseInt(sec) < 10) {
+			sec = "0" + sec;
+		}
+
+		return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + sec;
 	}
 }

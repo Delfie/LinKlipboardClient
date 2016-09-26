@@ -15,6 +15,8 @@ import client_manager.LinKlipboardClient;
 import datamanage.History;
 
 public class SettingPanel extends BasePanel {
+	private UserInterfacePage1 page1;
+	
 	private SetHistorySizePanel setHistorySizePanel;
 	private ShortcutSetPanel shortcutSetPanel;
 
@@ -27,8 +29,9 @@ public class SettingPanel extends BasePanel {
 
 	private JButton exitButton = new JButton();
 
-	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+	public SettingPanel(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main, UserInterfacePage1 page1) {
 		super(client, trayIcon, main);
+		this.page1 = page1;
 		
 		userNickname.setText(client.getNickName());
 		setHistorySizePanel = new SetHistorySizePanel(client);
@@ -77,24 +80,12 @@ public class SettingPanel extends BasePanel {
 		exitButton.setText("Exit");
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				exitButtonActionPerformed(evt);
+				main.setContentPane(page1);
+				main.repaint();
 			}
 		});
 		exitButton.setBounds(215, 290, 80, 23);
 		add(exitButton);
-	}
-
-	private void setNotificationActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-
-	private void setReceiveContentsActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-
-	private void exitButtonActionPerformed(ActionEvent evt) {
-		// contentPane을 page1으로 돌아가도록
-		// 돌아가기전에 client정보 초기화 or 새로 생성??
 	}
 }
 
@@ -130,66 +121,93 @@ class SetHistorySizePanel extends BasePanel {
 }
 
 class ShortcutSetPanel extends BasePanel {
-	private JLabel sendLabel = new JLabel("send shortcut");
-	private String[] firstString = new String[] { "Ctrl", "Alt" };
-	private JComboBox firstShortcutForSend = new JComboBox(firstString);
-	private JLabel label1 = new JLabel("+");
-	private String[] secondStringForSend = new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-			"N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" };
-	private JComboBox secondShortcut = new JComboBox(secondStringForSend);
+	   private JLabel sendLabel = new JLabel("send shortcut");
+	   private String[] firstString = new String[] { "Ctrl", "Alt" };
+	   private JComboBox<String> firstShortcutForSend = new JComboBox<String>(firstString);
+	   private JLabel label1 = new JLabel("+");
+	   private String[] secondStringForSend = new String[] { "A", "B", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+	         "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" };
+	   private JComboBox<String> secondShortcutForSend = new JComboBox<String>(secondStringForSend);
 
-	private JLabel receiveLabel = new JLabel("receive shortcut");
-	private JComboBox firstShortcutForReceive = new JComboBox(firstString);
-	private JLabel label2 = new JLabel("+");
-	private JComboBox secondShortcutForReceive = new JComboBox(secondStringForSend);
+	      private JLabel receiveLabel = new JLabel("receive shortcut");
+	   private JComboBox<String> firstShortcutForReceive = new JComboBox<String>(firstString);
+	   private JLabel label2 = new JLabel("+");
+	   private JComboBox<String> secondShortcutForReceive = new JComboBox<String>(secondStringForSend);
+	   
+	   public ShortcutSetPanel(LinKlipboardClient client) {
+	      super(client);
 
-	public ShortcutSetPanel(LinKlipboardClient client) {
-		super(client);
-		
-		firstShortcutForSend.setSelectedItem("Ctrl");
-		secondShortcut.setSelectedItem("Q");
-		firstShortcutForReceive.setSelectedItem("Alt");
-		secondShortcutForReceive.setSelectedItem("Q");
+	      firstShortcutForSend.setSelectedItem("Ctrl");
+	      secondShortcutForSend.setSelectedItem("Q");
+	      
+	      firstShortcutForReceive.setSelectedItem("Alt");
+	      secondShortcutForReceive.setSelectedItem("Q");
 
-		setLayout(null);
-		setSize(320, 360);
+	      setLayout(null);
+	      setSize(320, 360);
 
-		initComponents();
+	      initComponents();
+	   }
+
+	   private void initComponents() {
+	      this.setBorder(BorderFactory.createTitledBorder("Shortcut Setting"));
+
+	      sendLabel.setBounds(25, 20, 100, 30);
+	      add(sendLabel);
+
+	      firstShortcutForSend.setBounds(10, 50, 50, 30);
+	      add(firstShortcutForSend);
+
+	      label1.setBounds(65, 50, 50, 30);
+	      add(label1);
+
+	      secondShortcutForSend.setBounds(80, 50, 50, 30);
+	      add(secondShortcutForSend);
+	      
+	      receiveLabel.setBounds(165, 20, 100, 30);
+	      add(receiveLabel);
+
+	      firstShortcutForReceive.setBounds(150, 50, 50, 30);
+	      add(firstShortcutForReceive);
+
+	      label2.setBounds(205, 50, 50, 30);
+	      add(label2);
+
+	      secondShortcutForReceive.setBounds(220, 50, 50, 30);
+	      add(secondShortcutForReceive);
+
+	      
+
+	      firstShortcutForSend.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent e) {
+	            String sendShortcut1 = (String) firstShortcutForSend.getSelectedItem();
+	            System.out.println("send 첫번째 단축키: " + sendShortcut1);
+	         }
+	      });
+
+	      secondShortcutForSend.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent e) {
+	            String sendShortcut2 = (String) secondShortcutForSend.getSelectedItem();
+	            System.out.println("send 두번째 단축키: " + sendShortcut2);
+	         }
+	      });
+	      
+	      firstShortcutForReceive.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent e) {
+	            String receiveShortcut1 = (String) firstShortcutForReceive.getSelectedItem();
+	            System.out.println("receive 첫번째 단축키: " + receiveShortcut1);
+	         }
+	      });
+
+	      secondShortcutForReceive.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent e) {
+	            String receiveShortcut2 = (String) secondShortcutForReceive.getSelectedItem();
+	            System.out.println("receive 두번째 단축키: " + receiveShortcut2);
+	         }
+	      });
+	   }
 	}
-
-	private void initComponents() {
-		this.setBorder(BorderFactory.createTitledBorder("Shortcut Setting"));
-
-		sendLabel.setBounds(25, 20, 100, 30);
-		add(sendLabel);
-
-		firstShortcutForSend.setBounds(10, 50, 50, 30);
-		add(firstShortcutForSend);
-
-		label1.setBounds(65, 50, 50, 30);
-		add(label1);
-
-		secondShortcut.setBounds(80, 50, 50, 30);
-		add(secondShortcut);
-
-		receiveLabel.setBounds(165, 20, 100, 30);
-		add(receiveLabel);
-
-		firstShortcutForReceive.setBounds(150, 50, 50, 30);
-		add(firstShortcutForReceive);
-
-		label2.setBounds(205, 50, 50, 30);
-		add(label2);
-
-		secondShortcutForReceive.setBounds(220, 50, 50, 30);
-		add(secondShortcutForReceive);
-	}
-
-	private void secondShortcutActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-
-	private void firstShortcutActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-}

@@ -25,7 +25,7 @@ public class LinKlipboardClient {
 
 	private static String groupName; // 그룹이름
 	private String password; // 패스워드
-	private String nickName = null; // 닉네임
+	private String nickName = "doy"; // 닉네임
 	private static int portNum; // 서버와 통신할 포트번호
 	private Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
 

@@ -13,7 +13,6 @@ import javax.swing.SwingConstants;
 import client_manager.LinKlipboardClient;
 
 public class UserInterfacePage1 extends BasePanel {
-	private UserInterfaceManager main;
 	private UserInterfacePage2 page2;
 	
 	private JLabel mainImgLabel = new JLabel(); // 메인 이미지
@@ -28,10 +27,10 @@ public class UserInterfacePage1 extends BasePanel {
 	private String groupName; // 사용자가 입력한 그룹이름
 	private String groupPW; // 사용자가 입력한 그룹패스워드
 	
-	public UserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
-		super(client);
+	public UserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main, TrayIconManager trayIcon) {
+		super(client, main);
 
-		this.main = main;
+		this.page2 = new UserInterfacePage2(client, trayIcon, main, this);
 		
 		setLayout(null);
 		setSize(320, 400);
@@ -137,8 +136,10 @@ public class UserInterfacePage1 extends BasePanel {
 			
 			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
 			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
-			page2 = new UserInterfacePage2(client, trayIcon, main);
+			
 			System.out.println("[page1] " + client.getOtherClients().size());
+			
+			page2.getConnectionPanel().updateInfo();
 			main.setContentPane(page2);
 			
 		}
@@ -158,8 +159,12 @@ public class UserInterfacePage1 extends BasePanel {
 			
 			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
 			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
+			
+			page2.getConnectionPanel().updateInfo();
 			main.setContentPane(page2);
 		}
 	}
 }
+
+
 

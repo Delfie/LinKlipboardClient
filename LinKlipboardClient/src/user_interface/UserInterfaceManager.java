@@ -31,8 +31,7 @@ public class UserInterfaceManager extends JFrame {
 	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 	private TrayIconManager trayIcon = new TrayIconManager();
 
-	//private UserInterfacePage2 page2 = new UserInterfacePage2(client, trayIcon, this);
-	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this);
+	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this, trayIcon);
 
 	private NicknameDialog inputNickNameDialog; // 사용자가 원하는 닉네임 입력 다이얼로그
 
@@ -62,26 +61,28 @@ public class UserInterfaceManager extends JFrame {
 //		 client = new LinKlipboardClient(this);
 //		 setUserInterfacePage2(client, trayIcon, this);
 //
-		setUserInterfacePage1(client, this);
-		this.client = page1.getClient();
+//		setUserInterfacePage1(client, this);
+//		this.client = page1.getClient();
 
 //		if (page1.getACCESS() == true) {
 //			setUserInterfacePage2(client, trayIcon, this);
 //			dealInputnickName(this.client.getNickName()); // 닉네임 설정
 //		}
+		
+		this.setContentPane(page1);
 
 		setVisible(true);
 		setResizable(false);
 	}
 
-	/** UserInterfacePage1, LinKlipboardClient를 생성하여 초기화 후 배치 */
-	public void setUserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
-		// page1 패널 생성
-		client = new LinKlipboardClient(main);
-			
-		//page1 = new UserInterfacePage1(client, this, page2);
-		main.setContentPane(page1);
-	}
+//	/** UserInterfacePage1, LinKlipboardClient를 생성하여 초기화 후 배치 */
+//	public void setUserInterfacePage1(LinKlipboardClient client, UserInterfaceManager main) {
+//		// page1 패널 생성
+//		client = new LinKlipboardClient(main);
+//			
+//		//page1 = new UserInterfacePage1(client, this, page2);
+//		main.setContentPane(page1);
+//	}
 
 	/** UserInterfacePage2 생성 및 배치 */
 	public void setUserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
@@ -92,7 +93,7 @@ public class UserInterfaceManager extends JFrame {
 	}
 
 	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
-	private void setHooker() {
+	public void setHooker() {
 		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
 
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
@@ -179,7 +180,8 @@ public class UserInterfaceManager extends JFrame {
 		inputNickNameDialog.setVisible(true);
 
 		String nickname = inputNickNameDialog.getInput();
-		new StartToProgram(client).requestChangeInfoToServer(nickname);
+		client.setNickName(nickname);
+		//new StartToProgram(client).requestChangeInfoToServer(nickname);
 
 		// page2로 넘어간 후에 다이얼로그 띄우기
 	}

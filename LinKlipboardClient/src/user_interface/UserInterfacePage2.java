@@ -14,6 +14,8 @@ import javax.swing.UIManager;
 import client_manager.LinKlipboardClient;
 
 public class UserInterfacePage2 extends BasePanel {
+	private UserInterfacePage1 page1;
+	
 	private JLabel tableLabel;
 	private JTabbedPane tableTabbedPane = new JTabbedPane();
 	private JPanel connectionPanel;
@@ -22,12 +24,13 @@ public class UserInterfacePage2 extends BasePanel {
 
 	private static boolean LOGOUT = false; // 그룹에서 나가기 설정
 
-	public UserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main) {
+	public UserInterfacePage2(LinKlipboardClient client, TrayIconManager trayIcon, UserInterfaceManager main, UserInterfacePage1 page1) {
 		super(client, trayIcon, main);
+		this.page1 = page1;
 
 		connectionPanel = new ConnectionPanel(client);
 		historyPanel = new HistoryPanel(client);
-		settingPanel = new SettingPanel(client, trayIcon, main);
+		settingPanel = new SettingPanel(client, trayIcon, main, page1);
 
 		setLayout(null);
 		setSize(320, 400);
@@ -101,5 +104,9 @@ public class UserInterfacePage2 extends BasePanel {
 		ImageIcon resizingImageIcon = new ImageIcon(resizingImage); // Image로 ImageIcon 생성
 
 		return resizingImageIcon;
+	}
+	
+	public ConnectionPanel getConnectionPanel() {
+		return (ConnectionPanel) this.connectionPanel;
 	}
 }
