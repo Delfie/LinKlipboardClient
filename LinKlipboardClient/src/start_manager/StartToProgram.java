@@ -11,12 +11,14 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import client_manager.LinKlipboardClient;
+import client_manager.RceiveContents;
 import server_manager.LinKlipboard;
 import transfer_manager.ResponseHandler;
 
 public class StartToProgram {
 
 	private LinKlipboardClient client;
+	private RceiveContents receiveContentsThread;
 
 	private String response; // 서버로부터 받은 응답 정보
 	private ResponseHandler responseHandler; // 응답에 대한 처리
@@ -31,12 +33,13 @@ public class StartToProgram {
 	 * @param client
 	 *            프로그램을 시작하는 사용자
 	 */
-	public StartToProgram(LinKlipboardClient client, String orderMsg) {
+	public StartToProgram(LinKlipboardClient client, String orderMsg, RceiveContents receiveContentsThread) {
 		this.client = client;
 		this.groupName = LinKlipboardClient.getGroupName();
 		this.password = client.getGroupPassword();
 		this.orderMsg = orderMsg;
 		this.response = null;
+		this.receiveContentsThread = receiveContentsThread;
 
 		startProgram();
 	}
@@ -87,17 +90,7 @@ public class StartToProgram {
 				// 서버에서 확인 후 클라이언트가 받은 결과 메세지
 				this.response = response;
 			}
-			
-//			// 상훈 TEST 시작
-//			// 서버에 보낼 데이터(그룹정보)
-//			String message = "doy";
-//
-//			// server에 그룹이름과 패스워드 전송(servlet이 받는 구분자: &)
-//			bout.write(message);
-//			bout.flush();
-//			bout.close();
-			// 상훈 TEST 끝
-			
+
 			bin.close();
 					
 
@@ -105,14 +98,16 @@ public class StartToProgram {
 			System.out.println("[sendGroupInfoToServer] " + ResponseHandler.getErrorCodeNum());
 
 			if (ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT) {
-				if (orderMsg.equals("create")) {
-					LinKlipboardClient.setHistory();
-					
-				} else if (orderMsg.equals("join")) {
-					// 서버에 있는 Vector<Contents>를 받는다.
-					LinKlipboardClient.setHistory();
-					new GetInitDataFromServer(client);
-				}
+				LinKlipboardClient.setHistory();
+				System.out.println("[Start_sendGroupInfoToServer] 클라이언트 히스토리 초기화 완료");
+//				
+//				if (orderMsg.equals("create")) {
+//					LinKlipboardClient.setHistory();
+//					
+//				} else if (orderMsg.equals("join")) {
+//					// 서버에 있는 Vector<Contents>를 받는다.
+//					LinKlipboardClient.setHistory();
+//				}
 			}
 
 		} catch (MalformedURLException ex) {

@@ -1,11 +1,6 @@
 package client_manager;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import contents.Contents;
@@ -14,7 +9,6 @@ import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
 import user_interface.ConnectionPanel;
 import user_interface.HistoryPanel;
-import user_interface.SettingPanel;
 import user_interface.UserInterfaceManager;
 import user_interface.UserInterfacePage1;
 
@@ -26,7 +20,7 @@ public class LinKlipboardClient {
 	private String password; // 패스워드
 	private static String nickName = null; // 닉네임
 	private static int portNum; // 서버와 통신할 포트번호
-	private Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
+	private static Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
 
 	private static String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
 	private static String secondShortcutForSend = "Q"; // 전송 두번째 단축키
@@ -36,14 +30,14 @@ public class LinKlipboardClient {
 	private static String fileName = null; // 전송받을 파일이름
 
 	private static History history = new History(); // 히스토리
-	private static Contents latestContents = null; // 최신데이터
-	
+	public static Contents latestContents = null; // 최신데이터
+
 	private ConnectionPanel connectionPanel;
 
 	StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
 
 	private static File fileReceiveFolder; // 받은 FileContents를 임시로 저장할 폴더
-	ReceiveContents receiveContentsThread; // 서버로부터 받을 Contents
+	RceiveContents receiveContentsThread; // 서버로부터 받을 Contents
 
 	/** LinKlipboardClient 생성자 */
 	public LinKlipboardClient(UserInterfaceManager main) {
@@ -52,10 +46,10 @@ public class LinKlipboardClient {
 		createFileReceiveFolder(); // LinKlipboard folder 생성
 
 		this.main = main;
-		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
-		receiveContentsThread.start(); // 스레드 start
+		this.receiveContentsThread = new RceiveContents(this); // Contents를 받는 스레드 생성
+		//receiveContentsThread.start(); // 스레드 start
 	}
-	
+
 	/**
 	 * LinKlipboardClient 생성자
 	 * 
@@ -70,10 +64,10 @@ public class LinKlipboardClient {
 
 		createFileReceiveFolder(); // LinKlipboard folder 생성
 
-		this.receiveContentsThread = new ReceiveContents(); // 최신 Contents를 받는 스레드 생성
-		receiveContentsThread.start(); // 스레드 start
+		this.receiveContentsThread = new RceiveContents(this); // 최신 Contents를 받는 스레드 생성
+		//receiveContentsThread.start(); // 스레드 start
 	}
-	
+
 	public void setting(HistoryPanel historyPanel, ConnectionPanel connectionPanel) {
 		history.setHistoryPanel(historyPanel);
 		history.setConnectionPanel(connectionPanel);
@@ -120,13 +114,13 @@ public class LinKlipboardClient {
 	// 생성버튼을 누르면 이 메소드가 실행
 	/** 그룹생성 메소드 */
 	public void createGroup() {
-		new StartToProgram(this, "create");
+		new StartToProgram(this, "create", receiveContentsThread);
 	}
 
 	// 접속버튼을 누르면 이 메소드가 실행
 	/** 그룹접속 메소드 */
 	public void joinGroup() {
-		new StartToProgram(this, "join");
+		new StartToProgram(this, "join", receiveContentsThread);
 	}
 
 	/** 그룹 정보를 초기화 */
@@ -173,6 +167,14 @@ public class LinKlipboardClient {
 	/** 서버와 통신할 포트번호 반환 */
 	public static int getPortNum() {
 		return LinKlipboardClient.portNum;
+	}
+	
+	public ConnectionPanel getConnectionPanel(){
+		return connectionPanel;
+	}
+	
+	public RceiveContents getRceiveContents() {
+		return this.receiveContentsThread;
 	}
 
 	/** 전송 첫번째 단축키 세팅 */
@@ -252,20 +254,25 @@ public class LinKlipboardClient {
 	}
 
 	/** 같은 그룹 접속자들의 닉네임 세팅 */
-	public void setOtherClients(Vector<String> clients) {
-		this.otherClients = new Vector<String>(clients);
+	public static void setOtherClients(Vector<String> clients) {
+		otherClients = new Vector<String>(clients);
 	}
 
 	/** 같은 그룹 접속자들의 닉네임을 반환 */
-	public Vector<String> getOtherClients() {
-		return this.otherClients;
+	public static Vector<String> getOtherClients() {
+		return otherClients;
 	}
 	
+	public UserInterfaceManager getMain() {
+		return main;
+	}
+
 	/** 클라이언트의 모든 정보를 초기화 */
 	public void initAllInfo() {
-		//UserInterfaceManager main;
+		// UserInterfaceManager main;
 
-		otherClients.removeAllElements(); ; // 같은 그룹 접속자들의 닉네임 초기화
+		otherClients.removeAllElements();
+		; // 같은 그룹 접속자들의 닉네임 초기화
 
 		firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
 		secondShortcutForSend = "Q"; // 전송 두번째 단축키
@@ -275,103 +282,105 @@ public class LinKlipboardClient {
 		fileName = null; // 전송받을 파일이름
 
 		history.removeAllHistory(); // 히스토리 초기화
-		
+
 		latestContents = null; // 최신데이터
-
-		receiveContentsThread.interrupt(); // 기존의 스레드 죽이고
-		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 다시 생성
-		receiveContentsThread.start(); // 스레드 start
 	}
-
-	/**
-	 * 서버가 전송하는 Contents를 받는 클래스 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다.
-	 */
-	class ReceiveContents extends Thread {
-		private ServerSocket listener;
-		private Socket socket;
-		private ObjectInputStream in; // Contents를 받기 위한 스트림
-
-		/** 서버의 연결을 기다리는 소켓 설정 */
-		public void waitToServer() {
-			try {
-				listener = new ServerSocket(LinKlipboardClient.portNum);
-				socket = listener.accept();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		/** 서버와의 연결을 위한 스트림 설정 */
-		public void setConnection() {
-			try {
-				in = new ObjectInputStream(socket.getInputStream()); // 스트림 설정
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println("[ReceiveContents] 연결 설정 끝");
-		}
-
-
-
-		@Override
-		public void run() {
-			while (true) {
-				waitToServer();
-				setConnection();
-				try {
-					latestContents = (Contents) in.readObject(); // Contents 객체수신
-					int latestContentsType = latestContents.getType(); // Contents 객체의 타입
-
-					System.out.println("최근에 받은 컨텐츠의 타입:" + latestContentsType);
-					
-					if (latestContentsType == LinKlipboard.NULL) {
-						// sharer을 확인
-						StringTokenizer tokens = new StringTokenizer(latestContents.getSharer(),
-								LinKlipboard.RESPONSE_DELIMITER);
-						String inoutClientInfo = tokens.nextToken();
-
-						// join이면 Vector otherClients에 추가
-						if (inoutClientInfo.equals("join")) {
-							String inClientNickname = tokens.nextToken();
-							
-							System.out.println("join한 클라이언트의 닉네임:" + inClientNickname);
-							
-							otherClients.add(inClientNickname);
-							connectionPanel.updateAccessGroup();
-						}
-						// exit이면 join이면 Vector otherClients에서 제거
-						if (inoutClientInfo.equals("exit")) {
-							String outClientNickname = tokens.nextToken();
-							for (int i = 0; i < otherClients.size(); i++) {
-								if (otherClients.get(i).equals(outClientNickname)) {
-									otherClients.remove(i);
-									connectionPanel.updateAccessGroup();
-									return;
-								}
-							}
-						}
-					} else {
-						history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
-
-						if (SettingPanel.notification) {// 도연 추가
-							if (latestContentsType == LinKlipboard.FILE_TYPE) {
-								main.getTrayIcon().showMsg("Shared <File> Contents");
-							} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
-								main.getTrayIcon().showMsg("Shared <Text> Contents");
-							} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
-								main.getTrayIcon().showMsg("Shared <Image> Contents");
-							} else {
-								System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
-							}
-						}
-					}
-
-				} catch (ClassNotFoundException e) {
-					this.start();
-				} catch (IOException e) {
-					this.start();
-				}
-			}
-		}
-	}
+	
+//	/**
+//	 * 서버가 전송하는 Contents를 받는 클래스 스레드를 상속받아 서버에서 전달해주는 메세지를 기다린다.
+//	 */
+//	class ReceiveContents extends Thread {
+//		private ServerSocket listener;
+//		private Socket socket;
+//		private ObjectInputStream in; // Contents를 받기 위한 스트림
+//		
+//		public ReceiveContents() {
+//			// TODO Auto-generated constructor stub
+//		}
+//
+//		/** 서버의 연결을 기다리는 소켓 설정 */
+//		public void waitToServer() {
+//			try {
+//				System.out.println("[ReceiveContents] port번호: " + LinKlipboardClient.portNum);
+//				
+//				listener = new ServerSocket(LinKlipboardClient.portNum);
+//				socket = listener.accept();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		/** 서버와의 연결을 위한 스트림 설정 */
+//		public void setConnection() {
+//			try {
+//				in = new ObjectInputStream(socket.getInputStream()); // 스트림 설정
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("[ReceiveContents] 연결 설정 끝");
+//		}
+//
+//		@Override
+//		public void run() {
+//			while (true) {
+//				waitToServer();
+//				setConnection();
+//				try {
+//					latestContents = (Contents) in.readObject(); // Contents 객체수신
+//					int latestContentsType = latestContents.getType(); // Contents 객체의 타입
+//
+//					System.out.println("최근에 받은 컨텐츠의 타입:" + latestContentsType);
+//
+//					if (latestContentsType == LinKlipboard.NULL) {
+//						// sharer을 확인
+//						StringTokenizer tokens = new StringTokenizer(latestContents.getSharer(),
+//								LinKlipboard.RESPONSE_DELIMITER);
+//						String inoutClientInfo = tokens.nextToken();
+//
+//						// join이면 Vector otherClients에 추가
+//						if (inoutClientInfo.equals("join")) {
+//							String inClientNickname = tokens.nextToken();
+//
+//							System.out.println("join한 클라이언트의 닉네임:" + inClientNickname);
+//
+//							otherClients.add(inClientNickname);
+//							connectionPanel.updateAccessGroup();
+//						}
+//						// exit이면 join이면 Vector otherClients에서 제거
+//						if (inoutClientInfo.equals("exit")) {
+//							String outClientNickname = tokens.nextToken();
+//							for (int i = 0; i < otherClients.size(); i++) {
+//								if (otherClients.get(i).equals(outClientNickname)) {
+//									otherClients.remove(i);
+//									connectionPanel.updateAccessGroup();
+//									return;
+//								}
+//							}
+//						}
+//					} else {
+//						history.addSharedContentsInHistory(latestContents); // 공유받은 최신Contents를 history에 추가
+//
+//						if (SettingPanel.notification) {// 도연 추가
+//							if (latestContentsType == LinKlipboard.FILE_TYPE) {
+//								main.getTrayIcon().showMsg("Shared <File> Contents");
+//							} else if (latestContentsType == LinKlipboard.STRING_TYPE) {
+//								main.getTrayIcon().showMsg("Shared <Text> Contents");
+//							} else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
+//								main.getTrayIcon().showMsg("Shared <Image> Contents");
+//							} else {
+//								System.out.println("[LinKlipboardClient_알림] File, String, Image 어디에도 속하지 않음");
+//							}
+//						}
+//					}
+//
+//				} catch (ClassNotFoundException e) {
+//					this.start();
+//				} catch (IOException e) {
+//					this.start();
+//				}
+//			}
+//		}
+//	}
 }
+
+

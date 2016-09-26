@@ -3,6 +3,7 @@ package transfer_manager;
 import java.util.StringTokenizer;
 
 import client_manager.LinKlipboardClient;
+import client_manager.RceiveContents;
 import server_manager.LinKlipboard;
 
 public class ResponseHandler {
@@ -123,6 +124,10 @@ public class ResponseHandler {
 		if (errorCodeNum == LinKlipboard.ACCESS_PERMIT) {
 			setDefaultNickName(resNickName);
 			setPortNum(resPortNum);
+			
+			//클라이언트 항상 대기 스레드 생성
+			client.getRceiveContents().run();
+			
 			System.out.println(
 					"[ResponseHandler] " + LinKlipboardClient.getGroupName() + "의 " + resNickName + "(닉네임)가  접속, 사용 포트번호: " + resPortNum);
 		}

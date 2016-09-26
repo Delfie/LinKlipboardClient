@@ -31,7 +31,7 @@ public class ReceivePreviousData {
 	private int serialNum;
 
 	private FileReceiveDataToServer fileReceive;
-
+	
 	/** ReceivePreviousData 생성자 */
 	public ReceivePreviousData() {
 		System.out.println("디폴트 ReceivePreviousData 생성자 호출");
