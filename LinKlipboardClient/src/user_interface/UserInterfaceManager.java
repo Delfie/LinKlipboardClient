@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import client_manager.ClipboardManager;
@@ -51,6 +52,8 @@ public class UserInterfaceManager extends JFrame {
 		setTitle("LinKlipboard");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(endXOfFrame, endYOfFrame);
+		
+		setting();
 
 		trayIcon.addTrayIconInSystemTray();
 		setHooker();
@@ -73,6 +76,10 @@ public class UserInterfaceManager extends JFrame {
 
 		setVisible(true);
 		setResizable(false);
+	}
+	
+	public void setting() {
+		client.setting(this.getHistoryPanel(), this.getConnectionPanel());
 	}
 
 //	/** UserInterfacePage1, LinKlipboardClient를 생성하여 초기화 후 배치 */
@@ -189,6 +196,14 @@ public class UserInterfaceManager extends JFrame {
 	/** TrayIcon을 반환 */
 	public TrayIconManager getTrayIcon(){
 		return this.trayIcon;
+	}
+	
+	public HistoryPanel getHistoryPanel() {
+		return page1.getHistoryPanel();
+	}
+	
+	public ConnectionPanel getConnectionPanel() {
+		return page1.getConnectionPanel();
 	}
 
 	public static void main(String[] args) {

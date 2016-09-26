@@ -98,6 +98,15 @@ public class UserInterfacePage1 extends BasePanel {
 		joinButton.setBounds(160 + 15, 365, 80, 23);
 		add(joinButton);
 	}
+	
+	public HistoryPanel getHistoryPanel() {
+		return page2.getHistoryPanel();
+	}
+	
+	public ConnectionPanel getConnectionPanel() {
+		return page2.getConnectionPanel();
+	}
+
 
 	/**
 	 * 그룹을 생성, 접속하기 위해 정보를 모두 입력했는지 확인. 모두 입력 했으면 return true;
@@ -139,7 +148,8 @@ public class UserInterfacePage1 extends BasePanel {
 			
 			System.out.println("[page1] " + client.getOtherClients().size());
 			
-			page2.getConnectionPanel().updateInfo();
+			page2.getConnectionPanel().update();
+			
 			main.setContentPane(page2);
 			
 		}
@@ -160,7 +170,7 @@ public class UserInterfacePage1 extends BasePanel {
 			main.dealInputnickName(this.client.getNickName()); // 닉네임 설정
 			client.getOtherClients().add(this.client.getNickName()); //자신도 추가
 			
-			page2.getConnectionPanel().updateInfo();
+			page2.getConnectionPanel().update();
 			main.setContentPane(page2);
 		}
 	}

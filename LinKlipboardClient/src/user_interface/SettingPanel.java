@@ -183,6 +183,8 @@ class ShortcutSetPanel extends BasePanel {
 	         public void actionPerformed(ActionEvent e) {
 	            String sendShortcut1 = (String) firstShortcutForSend.getSelectedItem();
 	            System.out.println("send 첫번째 단축키: " + sendShortcut1);
+	            LinKlipboardClient.setFirstShortcutForSend(sendShortcut1);
+	            main.setHooker();
 	         }
 	      });
 
@@ -191,6 +193,8 @@ class ShortcutSetPanel extends BasePanel {
 	         public void actionPerformed(ActionEvent e) {
 	            String sendShortcut2 = (String) secondShortcutForSend.getSelectedItem();
 	            System.out.println("send 두번째 단축키: " + sendShortcut2);
+	            LinKlipboardClient.setSecondShortcutForSend(sendShortcut2);
+	            main.setHooker();
 	         }
 	      });
 	      
@@ -199,6 +203,8 @@ class ShortcutSetPanel extends BasePanel {
 	         public void actionPerformed(ActionEvent e) {
 	            String receiveShortcut1 = (String) firstShortcutForReceive.getSelectedItem();
 	            System.out.println("receive 첫번째 단축키: " + receiveShortcut1);
+	            LinKlipboardClient.setFirstShortcutForSend(receiveShortcut1);
+	            main.setHooker();
 	         }
 	      });
 
@@ -207,6 +213,8 @@ class ShortcutSetPanel extends BasePanel {
 	         public void actionPerformed(ActionEvent e) {
 	            String receiveShortcut2 = (String) secondShortcutForReceive.getSelectedItem();
 	            System.out.println("receive 두번째 단축키: " + receiveShortcut2);
+	            LinKlipboardClient.setSecondShortcutForSend(receiveShortcut2);
+	            main.setHooker();
 	         }
 	      });
 	   }

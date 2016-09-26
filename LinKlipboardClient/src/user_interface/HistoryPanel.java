@@ -63,6 +63,13 @@ public class HistoryPanel extends BasePanel {
 		receiveButton.setBounds(215, 290, 80, 23);
 		add(receiveButton);
 	}
+	 
+	public void update() {
+		remove(listPanel);
+		listPanel.initComponents();
+		listPanel.repaint();
+	}
+	
 }
 
 class ListPanel extends JPanel {
@@ -85,11 +92,14 @@ class ListPanel extends JPanel {
 		initComponents();
 	}
 
-	private void initComponents() {
+	public void initComponents() {
 		listContents = createListContents();
+		listContents.repaint();
 		scrollPane = new JScrollPane(listContents);
+		scrollPane.repaint();
 		add(scrollPane, BorderLayout.CENTER);
 	}
+	
 
 	// // »©¾ßµÊ
 	// private void addContentsInHistory() {
@@ -115,13 +125,13 @@ class ListPanel extends JPanel {
 	// }
 
 	private JList<Contents> createListContents() {
-		// create List model
-		model = new DefaultListModel<>();
-
-		// add item to model
-		for (int i = 0; i < history.getSharedContents().size(); i++) {
-			addList(history.getSharedContents().elementAt(i));
-		}
+//		// create List model
+//		model = new DefaultListModel<>();
+//
+//		// add item to model
+//		for (int i = 0; i < history.getSharedContents().size(); i++) {
+//			addList(history.getSharedContents().elementAt(i));
+//		}
 
 		// create JList with model
 		JList<Contents> list = new JList<Contents>(model);

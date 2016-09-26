@@ -12,6 +12,8 @@ import contents.Contents;
 import datamanage.History;
 import server_manager.LinKlipboard;
 import start_manager.StartToProgram;
+import user_interface.ConnectionPanel;
+import user_interface.HistoryPanel;
 import user_interface.SettingPanel;
 import user_interface.TrayIconManager;
 import user_interface.UserInterfaceManager;
@@ -29,15 +31,17 @@ public class LinKlipboardClient {
 	private static int portNum; // 서버와 통신할 포트번호
 	private Vector<String> otherClients = new Vector<String>(); // 같은 그룹 접속자들의 닉네임
 
-	private String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
-	private String secondShortcutForSend = "Q"; // 전송 두번째 단축키
-	private String firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
-	private String secondShortcutForReceive = "Q"; // 수신 두번째 단축키
+	private static String firstShortcutForSend = "Ctrl"; // 전송 첫번째 단축키
+	private static String secondShortcutForSend = "Q"; // 전송 두번째 단축키
+	private static String firstShortcutForReceive = "Alt"; // 수신 첫번째 단축키
+	private static String secondShortcutForReceive = "Q"; // 수신 두번째 단축키
 
 	private static String fileName = null; // 전송받을 파일이름
 
 	private static History history = new History(); // 히스토리
 	private static Contents latestContents = null; // 최신데이터
+	
+	private ConnectionPanel connectionPanel;
 
 	StartToProgram startHandler; // 프로그램 시작에 대한 핸들러
 
@@ -54,7 +58,7 @@ public class LinKlipboardClient {
 		this.receiveContentsThread = new ReceiveContents(); // Contents를 받는 스레드 생성
 		receiveContentsThread.start(); // 스레드 start
 	}
-
+	
 	/**
 	 * LinKlipboardClient 생성자
 	 * 
@@ -71,6 +75,11 @@ public class LinKlipboardClient {
 
 		this.receiveContentsThread = new ReceiveContents(); // 최신 Contents를 받는 스레드 생성
 		receiveContentsThread.start(); // 스레드 start
+	}
+	
+	public void setting(HistoryPanel historyPanel, ConnectionPanel connectionPanel) {
+		history.setHistoryPanel(historyPanel);
+		this.connectionPanel = connectionPanel;
 	}
 
 	/** 사용자가 입력한 그룹정보를 세팅 */
@@ -169,23 +178,23 @@ public class LinKlipboardClient {
 	}
 
 	/** 전송 첫번째 단축키 세팅 */
-	public void setFirstShortcutForSend(String firstShortcutForSend) {
-		this.firstShortcutForSend = firstShortcutForSend;
+	public static void setFirstShortcutForSend(String firstShortcutForSend) {
+		LinKlipboardClient.firstShortcutForSend = firstShortcutForSend;
 	}
 
 	/** 전송 두번째 단축키 세팅 */
-	public void setSecondShortcutForSend(String secondShortcutForSend) {
-		this.secondShortcutForSend = secondShortcutForSend;
+	public static void setSecondShortcutForSend(String secondShortcutForSend) {
+		LinKlipboardClient.secondShortcutForSend = secondShortcutForSend;
 	}
 
 	/** 수신 첫번째 단축키 세팅 */
-	public void setFirstShortcutForReceive(String firstShortcutForReceive) {
-		this.firstShortcutForReceive = firstShortcutForReceive;
+	public static void setFirstShortcutForReceive(String firstShortcutForReceive) {
+		LinKlipboardClient.firstShortcutForReceive = firstShortcutForReceive;
 	}
 
 	/** 수신 두번째 단축키 세팅 */
-	public void setSecondShortcutForReceive(String secondShortcutForReceive) {
-		this.secondShortcutForReceive = secondShortcutForReceive;
+	public static void setSecondShortcutForReceive(String secondShortcutForReceive) {
+		LinKlipboardClient.secondShortcutForReceive = secondShortcutForReceive;
 	}
 
 	/** 전송 첫번째 단축키 반환 */
@@ -301,6 +310,7 @@ public class LinKlipboardClient {
 						if (inoutClientInfo.equals("join")) {
 							String inClientNickname = tokens.nextToken();
 							otherClients.add(inClientNickname);
+							connectionPanel.update();
 						}
 						// exit이면 join이면 Vector otherClients에서 제거
 						if (inoutClientInfo.equals("exit")) {
@@ -308,6 +318,7 @@ public class LinKlipboardClient {
 							for (int i = 0; i < otherClients.size(); i++) {
 								if (otherClients.get(i).equals(outClientNickname)) {
 									otherClients.remove(i);
+									connectionPanel.update();
 									return;
 								}
 							}

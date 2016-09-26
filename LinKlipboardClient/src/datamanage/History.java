@@ -7,13 +7,16 @@ import javax.swing.ImageIcon;
 import contents.Contents;
 import contents.ImageContents;
 import server_manager.LinKlipboard;
-import user_interface.UserInterfaceManager;
+import user_interface.HistoryPanel;
 
 public class History {
 	private Vector<Contents> sharedContents;
 	private Vector<ImageIcon> resizingImgContents;
 	private static int historySize = LinKlipboard.HISTORY_DEFAULT;; // 사용자가 원하는 히스토리 크기 // 도연 수정
-
+	
+	public HistoryPanel historyPanel;
+	
+	
 	/** History 생성자 */
 	public History() {
 		sharedContents = new Vector<Contents>();
@@ -30,6 +33,12 @@ public class History {
 		removeContents();
 		this.sharedContents.add(latestContents);
 		setResizingImgContents(latestContents);
+		
+		historyPanel.update();
+	}
+	
+	public void setHistoryPanel(HistoryPanel historyPanel) {
+		this.historyPanel = historyPanel;
 	}
 
 	/** 히스토리의 데이터가 historySize만큼 차면 데이터 하나 삭제 */

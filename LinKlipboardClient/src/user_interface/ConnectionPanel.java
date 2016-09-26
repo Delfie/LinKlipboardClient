@@ -65,18 +65,8 @@ public class ConnectionPanel extends BasePanel {
 		// accessCountLabel.setOpaque(true);
 		add(accessCountLabel);
 
-		// add item to model
-		for (int i = 0; i < client.getOtherClients().size(); i++) {
-			model.add(0, client.getOtherClients().elementAt(i));
-		}
-
-		// create JList with model
-		accessPersonList = new JList<String>(model);
-
-		accessPersonScrollPane.setViewportView(accessPersonList);
-		accessPersonScrollPane.setBounds(24, 50, 270, 150);
-		add(accessPersonScrollPane);
-
+		initClientList();
+		
 		sharedIcon.setIcon(new ImageIcon("image/sharedImage.png"));
 		sharedIcon.setBounds(24, 220, 20, 20);
 		// sharedIcon.setBackground(Color.GRAY);
@@ -143,6 +133,31 @@ public class ConnectionPanel extends BasePanel {
 		add(receiveButton);
 	}
 
+	public void initClientList() {
+		// add item to model
+		for (int i = 0; i < client.getOtherClients().size(); i++) {
+			model.add(0, client.getOtherClients().elementAt(i));
+		}
+
+		// create JList with model
+		accessPersonList = new JList<String>(model);
+
+		accessPersonScrollPane.setViewportView(accessPersonList);
+		accessPersonScrollPane.setBounds(24, 50, 270, 150);
+		add(accessPersonScrollPane);
+	}
+	
+	public void update() {
+		accessGroupNameLabel.setText(client.getGroupName());
+		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
+		
+		remove(accessPersonScrollPane);
+		initClientList();
+		accessPersonScrollPane.repaint();
+		
+		sharedTimeLabel.setText("[" + now() + "]");
+	}
+
 	/** 최신으로 공유된 Contents를 받아온다. */
 	private void receiveButtonActionPerformed(ActionEvent evt) {
 		client.settLatestContents();
@@ -167,24 +182,7 @@ public class ConnectionPanel extends BasePanel {
 	}
 	
 	public void updateInfo() {
-		accessGroupNameLabel.setText(client.getGroupName());
-		accessCountLabel.setText("현재 " + client.getOtherClients().size() + "명 접속 중");
-
-		// add item to model
-		for (int i = 0; i < client.getOtherClients().size(); i++) {
-			model.add(0, client.getOtherClients().elementAt(i));
-		}
-
-		// create JList with model
-		accessPersonList = new JList<String>(model);
-
-		accessPersonScrollPane.setViewportView(accessPersonList);
-		accessPersonScrollPane.setBounds(24, 50, 270, 150);
-		add(accessPersonScrollPane);
 		
-		accessPersonScrollPane.repaint();
-		
-		sharedTimeLabel.setText("[" + now() + "]");
 	}
 	
 	/** @return YYYY-MM-DD HH:MM:SS 형식의 현재 시간 */

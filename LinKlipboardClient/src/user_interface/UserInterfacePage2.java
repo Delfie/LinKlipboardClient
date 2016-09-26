@@ -76,11 +76,12 @@ public class UserInterfacePage2 extends BasePanel {
 					tableTabbedPane.setIconAt(1, historyImage);
 					tableTabbedPane.setIconAt(2, settingImage);
 				} else if (index == 1) {
-					tableTabbedPane.setComponentAt(index, new HistoryPanel(client));
-
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(index, selectedHistoryImage);
 					tableTabbedPane.setIconAt(2, settingImage);
+					
+					((HistoryPanel)historyPanel).update();
+					
 				} else {
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(1, historyImage);
@@ -108,5 +109,9 @@ public class UserInterfacePage2 extends BasePanel {
 	
 	public ConnectionPanel getConnectionPanel() {
 		return (ConnectionPanel) this.connectionPanel;
+	}
+	
+	public HistoryPanel getHistoryPanel() {
+		return (HistoryPanel) historyPanel;
 	}
 }
