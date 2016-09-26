@@ -30,7 +30,7 @@ public class UserInterfacePage2 extends BasePanel {
 
 		connectionPanel = new ConnectionPanel(client);
 		historyPanel = new HistoryPanel(client);
-		settingPanel = new SettingPanel(client, trayIcon, main, page1);
+		//settingPanel = new SettingPanel(client, trayIcon, main, page1);
 
 		setLayout(null);
 		setSize(320, 400);
@@ -80,14 +80,14 @@ public class UserInterfacePage2 extends BasePanel {
 					tableTabbedPane.setIconAt(index, selectedHistoryImage);
 					tableTabbedPane.setIconAt(2, settingImage);
 					
-					((HistoryPanel)historyPanel).update();
+					//((HistoryPanel)historyPanel).update();
 					
 				} else {
 					tableTabbedPane.setIconAt(0, connectionImage);
 					tableTabbedPane.setIconAt(1, historyImage);
 					tableTabbedPane.setIconAt(index, selectedSettingImage);
 					
-					((SettingPanel)settingPanel).updateNicnameLable();
+					//((SettingPanel)settingPanel).updateNicnameLable();
 				}
 			}
 		});

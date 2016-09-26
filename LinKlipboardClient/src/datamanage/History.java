@@ -34,7 +34,7 @@ public class History {
 		this.sharedContents.add(latestContents);
 		setResizingImgContents(latestContents);
 		
-		historyPanel.update();
+		//historyPanel.update();
 	}
 	
 	public void setHistoryPanel(HistoryPanel historyPanel) {

@@ -1,10 +1,26 @@
 package user_interface;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTException;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import client_manager.LinKlipboardClient;
+import transfer_manager.CommunicatingWithServer;
 
 public class TrayIconManager {
 	UserInterfaceManager frame;
+	LinKlipboardClient client;
+	CommunicatingWithServer communicatingWithServer;
 	
 	private final SystemTray systemTray = SystemTray.getSystemTray(); // 시스템트레이 얻어옴
 
@@ -14,8 +30,9 @@ public class TrayIconManager {
 	private MouseListener mouseListener; // 트레이아이콘 마우스 리스너
 	private TrayIcon trayIcon; // 트레이아이콘
 
-	public TrayIconManager(UserInterfaceManager userInterfaceManager) {
+	public TrayIconManager(UserInterfaceManager userInterfaceManager, LinKlipboardClient client) {
 		this.frame = userInterfaceManager;
+		this.client = client;
 		trayIconImage = Toolkit.getDefaultToolkit().getImage("image/LK.png"); // 트레이아이콘 이미지
 		trayIconMenu = new PopupMenu();
 		trayIcon = new TrayIcon(trayIconImage, "LinKlipboard", trayIconMenu);
@@ -72,6 +89,9 @@ public class TrayIconManager {
 		menuItem = new MenuItem("Close"); // 프로그램 종료
 		menuItem.addActionListener(new ActionListener() { // Close 메뉴에 대한 액션 리스너
 			public void actionPerformed(ActionEvent e) {
+				communicatingWithServer = new CommunicatingWithServer(client);
+				communicatingWithServer.requestReportExit(); // 종료보고 서블릿 호출
+				
 				systemTray.remove(trayIcon); // 시스템트레이에서 트레이아이콘 제거
 				System.exit(0); // 프로그램 종료
 			}

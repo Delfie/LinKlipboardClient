@@ -33,6 +33,7 @@ public class ConnectionPanel extends BasePanel {
 	private JLabel sharedTimeLabel = new JLabel();// 최신 공유한 시간 정보
 	private JLabel sharedContentsInfoLabel = new JLabel(); // 최신 공유 Content정보
 
+	private JButton sendButton = new JButton();
 	private JButton receiveButton = new JButton();
 
 	public ConnectionPanel(LinKlipboardClient client) {
@@ -122,6 +123,25 @@ public class ConnectionPanel extends BasePanel {
 //		sharedContentsInfoLabel.setBackground(Color.GRAY);
 //		sharedContentsInfoLabel.setOpaque(true);
 		add(sharedContentsInfoLabel);
+		
+		sendButton.setText("Send");
+		sendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				sendButtonActionPerformed(evt);
+			}
+
+			private void sendButtonActionPerformed(ActionEvent evt) {
+				// 전송한다.
+				if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
+					communicatingWithServer.requestSendFileData();
+				} else {
+					communicatingWithServer.requestSendExpFileData();
+				}
+			}
+		});
+		sendButton.setBounds(110, 290, 80, 23);
+		add(sendButton);
+		
 
 		receiveButton.setText("Receive");
 		receiveButton.addActionListener(new ActionListener() {

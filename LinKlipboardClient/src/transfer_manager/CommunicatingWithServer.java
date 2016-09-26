@@ -66,7 +66,7 @@ public class CommunicatingWithServer {
 
 			exceptionHandling(this.response);
 
-			if (responseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
+			if (ResponseHandler.getErrorCodeNum() == LinKlipboard.READY_TO_TRANSFER) {
 				System.out.println("[requestSendExpFileData] 소켓 연결");
 
 				new SendDataToServer(client, serialNum);
@@ -176,7 +176,7 @@ public class CommunicatingWithServer {
 		}
 	}
 	
-	/** 문자열, 이미지 데이터 전송 메소드 (ReportExit 서블릿 호출) */
+	/** 종료를 알리는 서블릿 (ReportExit 서블릿 호출) */
 	public void requestReportExit() {
 		try {
 			// 호출할 서블릿의 주소

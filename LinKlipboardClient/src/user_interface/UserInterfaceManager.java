@@ -30,7 +30,7 @@ import transfer_manager.CommunicatingWithServer;
 public class UserInterfaceManager extends JFrame {
 	private LinKlipboardClient client = new LinKlipboardClient(this);
 	private CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
-	private TrayIconManager trayIcon = new TrayIconManager(this);
+	private TrayIconManager trayIcon = new TrayIconManager(this, client);
 
 	private UserInterfacePage1 page1 = new UserInterfacePage1(client, this, trayIcon);
 	private UserInterfacePage2 page2;
@@ -56,8 +56,8 @@ public class UserInterfaceManager extends JFrame {
 		setting();
 
 		trayIcon.addTrayIconInSystemTray();
-		setHooker();
-		// setHooker(client);
+		setHooker(client);
+		// setHooker();
 
 		this.setContentPane(page1);
 
@@ -69,45 +69,21 @@ public class UserInterfaceManager extends JFrame {
 		client.setting(this.getHistoryPanel(), this.getConnectionPanel());
 	}
 
-	// 상훈TEST
 	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
-	public void setHooker() {
+	public static void setHooker(LinKlipboardClient client) {
 		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
-
-		System.out.println("Global keyboard hook successfully started, press [escape] key to shutdown.");
-
-		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
-			@Override
-			public void keyPressed(GlobalKeyEvent event) {
-				if (event.isControlPressed()) {
-					if (event.getVirtualKeyCode() == GlobalKeyEvent.VK_Q) {
-						System.out.println("[Ctrl + " + "Q" + "] is detected.");
-						// 전송한다.
-						if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE) {
-							communicatingWithServer.requestSendFileData();
-						} else {
-							communicatingWithServer.requestSendExpFileData();
-						}
-					}
-				}
-			}
-		});
-	}
-
-	/** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
-	public void setHooker2() {
-		GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
+		CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 			@Override
 			public void keyPressed(GlobalKeyEvent event) {
 				char secondShortcutForSend = LinKlipboardClient.getSecondShortcutForSend().charAt(0);
 				int getKeyCodeForSend = (int) secondShortcutForSend; // int
-																		// keyCode를
-																		// 얻어와
-																		// event,VK_
-																		// 꼴로
-																		// 만들어야함
+				// keyCode를
+				// 얻어와
+				// event,VK_
+				// 꼴로
+				// 만들어야함
 
 				char secondShortcutForReceive = LinKlipboardClient.getSecondShortcutForReceive().charAt(0);
 				int getKeyCodeForReceive = (int) secondShortcutForReceive;
@@ -144,14 +120,14 @@ public class UserInterfaceManager extends JFrame {
 					if (event.isControlPressed()) {
 						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
 							System.out.println("[Ctrl + " + secondShortcutForReceive + "] is detected.");
-							receiveData();
+							receiveData(client);
 						}
 					}
 				} else if (LinKlipboardClient.getFirstShortcutForReceive().equals("Alt")) {
 					if (event.isMenuPressed()) {
 						if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
 							System.out.println("[Alt + " + secondShortcutForReceive + "] is detected.");
-							receiveData();
+							receiveData(client);
 						}
 					}
 				} else {
@@ -162,8 +138,9 @@ public class UserInterfaceManager extends JFrame {
 	}
 
 	/** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
-	public void receiveData() {
+	public static void receiveData(LinKlipboardClient client) {
 		client.settLatestContents();
+		CommunicatingWithServer communicatingWithServer = new CommunicatingWithServer(client);
 
 		Contents latestContentsFromServer = client.getLatestContents();
 		int latestContentsType = client.getLatestContents().getType();
@@ -178,106 +155,6 @@ public class UserInterfaceManager extends JFrame {
 			System.out.println("[ConnectionPanel] File, String, Image 어디에도 속하지 않음");
 		}
 	}
-
-	// /** 단축키(초기값[Ctrl + Q] / [Alt + Q])를 누르면 서버에 데이터 전송, 최신 데이터 수신 */
-	// public static void setHooker(LinKlipboardClient client) {
-	// GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook();
-	// CommunicatingWithServer communicatingWithServer = new
-	// CommunicatingWithServer(client);
-	//
-	// keyboardHook.addKeyListener(new GlobalKeyAdapter() {
-	// @Override
-	// public void keyPressed(GlobalKeyEvent event) {
-	// char secondShortcutForSend =
-	// LinKlipboardClient.getSecondShortcutForSend().charAt(0);
-	// int getKeyCodeForSend = (int) secondShortcutForSend; // int
-	// // keyCode를
-	// // 얻어와
-	// // event,VK_
-	// // 꼴로
-	// // 만들어야함
-	//
-	// char secondShortcutForReceive =
-	// LinKlipboardClient.getSecondShortcutForReceive().charAt(0);
-	// int getKeyCodeForReceive = (int) secondShortcutForReceive;
-	//
-	// if (LinKlipboardClient.getFirstShortcutForSend().equals("Ctrl")) {
-	// if (event.isControlPressed()) {
-	// if (event.getVirtualKeyCode() == getKeyCodeForSend) {
-	// System.out.println("[Ctrl + " + secondShortcutForSend + "] is
-	// detected.");
-	// // 전송한다.
-	// if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE)
-	// {
-	// communicatingWithServer.requestSendFileData();
-	// } else {
-	// communicatingWithServer.requestSendExpFileData();
-	// }
-	// }
-	// }
-	// } else if (LinKlipboardClient.getFirstShortcutForSend().equals("Alt")) {
-	// if (event.isMenuPressed()) {
-	// if (event.getVirtualKeyCode() == getKeyCodeForSend) {
-	// System.out.println("[Ctrl + " + secondShortcutForSend + "] is
-	// detected.");
-	// // 전송한다.
-	// if (ClipboardManager.getClipboardDataTypeNow() == LinKlipboard.FILE_TYPE)
-	// {
-	// communicatingWithServer.requestSendFileData();
-	// } else {
-	// communicatingWithServer.requestSendExpFileData();
-	// }
-	// }
-	// }
-	// } else {
-	// System.out.println("[setHookerForSend] 단축키 오류");
-	// }
-	//
-	// if (LinKlipboardClient.getFirstShortcutForReceive().equals("Ctrl")) {
-	// if (event.isControlPressed()) {
-	// if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
-	// System.out.println("[Ctrl + " + secondShortcutForReceive + "] is
-	// detected.");
-	// receiveData(client);
-	// }
-	// }
-	// } else if (LinKlipboardClient.getFirstShortcutForReceive().equals("Alt"))
-	// {
-	// if (event.isMenuPressed()) {
-	// if (event.getVirtualKeyCode() == getKeyCodeForReceive) {
-	// System.out.println("[Alt + " + secondShortcutForReceive + "] is
-	// detected.");
-	// receiveData(client);
-	// }
-	// }
-	// } else {
-	// System.out.println("[setHookerForReceive] 단축키 오류");
-	// }
-	// }
-	// });
-	// }
-	//
-	// /** 최신으로 받은 Contents를 내 시스템 클립보드에 넣음 */
-	// public static void receiveData(LinKlipboardClient client) {
-	// client.settLatestContents();
-	// CommunicatingWithServer communicatingWithServer = new
-	// CommunicatingWithServer(client);
-	//
-	// Contents latestContentsFromServer = client.getLatestContents();
-	// int latestContentsType = client.getLatestContents().getType();
-	//
-	// if (latestContentsType == LinKlipboard.FILE_TYPE) {
-	// communicatingWithServer.requestReceiveFileData();
-	// } else if (latestContentsType == LinKlipboard.STRING_TYPE) {
-	// ClipboardManager.writeClipboard(latestContentsFromServer,
-	// latestContentsType);
-	// } else if (latestContentsType == LinKlipboard.IMAGE_TYPE) {
-	// ClipboardManager.writeClipboard(latestContentsFromServer,
-	// latestContentsType);
-	// } else {
-	// System.out.println("[ConnectionPanel] File, String, Image 어디에도 속하지 않음");
-	// }
-	// }
 
 	/** 다이얼로그에서 입력받은 닉네임을 처리 */
 	public void dealInputnickName(String defaulNickname, UserInterfacePage2 page2) {
