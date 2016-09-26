@@ -78,11 +78,11 @@ public class ConnectionPanel extends BasePanel {
 		add(sharedIcon);
 
 		// 최신 공유된 Contents가 없으면
-		if (client.getLatestContents() == null) {
-			sharedTimeLabel.setText("-------------------");
-			sharedContentsInfoLabel.setText("공유된 Contents가 없습니다.");
+		if (LinKlipboardClient.getLatestContents() == null) {
+			sharedTimeLabel.setText("[" + now() + "]");
+			sharedContentsInfoLabel.setText("최신 공유된 Contents가 없습니다.");
 		} else {
-			Contents latestContents = client.getLatestContents();
+			Contents latestContents = LinKlipboardClient.getLatestContents();
 			String sharer = latestContents.getSharer();
 			String dataType = null;
 			String dataInfo = null;
@@ -113,7 +113,7 @@ public class ConnectionPanel extends BasePanel {
 			}
 
 			sharedContentsInfoLabel
-					.setText(client.getLatestContents().getSharer() + "님이 \\" + dataInfo + "\\ " + dataType + " 공유");
+					.setText(LinKlipboardClient.getLatestContents().getSharer() + "님이 \\" + dataInfo + "\\ " + dataType + " 공유");
 		}
 
 		sharedTimeLabel.setBounds(50, 220, 150, 20);
@@ -183,10 +183,10 @@ public class ConnectionPanel extends BasePanel {
 		accessPersonScrollPane.repaint();
 	}
 
-	public void updateSharedContents() {
-		sharedTimeLabel.setText("[" + client.getLatestContents().getDate() + "]");
+	public void updateSharedContents(Contents latestContents) {
+		LinKlipboardClient.getLatestContents();
+		sharedTimeLabel.setText("[" + latestContents.getDate() + "]");
 
-		Contents latestContents = client.getLatestContents();
 		String sharer = latestContents.getSharer();
 		String dataType = null;
 		String dataInfo = null;
@@ -216,16 +216,15 @@ public class ConnectionPanel extends BasePanel {
 			dataInfo = dealLengthOfDataInfo(dataInfo, 16);
 		}
 
-		sharedContentsInfoLabel
-				.setText(client.getLatestContents().getSharer() + "님이 \\" + dataInfo + "\\ " + dataType + " 공유");
+		sharedContentsInfoLabel.setText(latestContents.getSharer() + "님이 <" + dataInfo + "> " + dataType + " 공유");
 	}
 
 	/** 최신으로 공유된 Contents를 받아온다. */
 	private void receiveButtonActionPerformed(ActionEvent evt) {
 		client.settLatestContents();
 
-		Contents latestContentsFromServer = client.getLatestContents();
-		int latestContentsType = client.getLatestContents().getType();
+		Contents latestContentsFromServer = LinKlipboardClient.getLatestContents();
+		int latestContentsType = LinKlipboardClient.getLatestContents().getType();
 
 		if (latestContentsType == LinKlipboard.FILE_TYPE) {
 			receiveFile = new FileReceiveDataToServer(client);

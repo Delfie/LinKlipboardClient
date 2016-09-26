@@ -30,7 +30,7 @@ public class UserInterfacePage2 extends BasePanel {
 
 		connectionPanel = new ConnectionPanel(client);
 		historyPanel = new HistoryPanel(client);
-		//settingPanel = new SettingPanel(client, trayIcon, main, page1);
+		settingPanel = new SettingPanel(client, trayIcon, main, page1);
 
 		setLayout(null);
 		setSize(320, 400);

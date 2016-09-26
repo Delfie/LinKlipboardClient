@@ -76,6 +76,7 @@ public class LinKlipboardClient {
 	
 	public void setting(HistoryPanel historyPanel, ConnectionPanel connectionPanel) {
 		history.setHistoryPanel(historyPanel);
+		history.setConnectionPanel(connectionPanel);
 		this.connectionPanel = connectionPanel;
 	}
 
@@ -160,7 +161,7 @@ public class LinKlipboardClient {
 	}
 
 	/** 클라이언트가 공유한 최근 Contents 반환 */
-	public Contents getLatestContents() {
+	public static Contents getLatestContents() {
 		return latestContents;
 	}
 

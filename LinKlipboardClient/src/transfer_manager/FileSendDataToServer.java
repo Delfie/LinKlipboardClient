@@ -163,6 +163,7 @@ public class FileSendDataToServer extends Thread {
 			fileContents.setDate();
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(fileContents);
+			client.settLatestContents();
 
 			closeSocket();
 

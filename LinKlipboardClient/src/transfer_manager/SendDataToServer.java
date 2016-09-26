@@ -134,16 +134,17 @@ public class SendDataToServer extends Thread {
 		setConnection();
 		try {
 			sendContents = ClipboardManager.readClipboard(); // 전송할 객체를 시스템 클립보드로부터 가져옴
-
+			
 			// 히스토리에 추가할 Contents의 고유번호 세팅
 			Contents.setSerialNum(serialNum);
-
+			
 			// 공유한 날짜, 시간 설정
 			sendContents.setDate();
 			sendContents.setSharer(client.getNickName());
 
 			// 자신이 서버에 공유한 Contents를 히스토리에 추가
 			client.getHistory().addSharedContentsInHistory(sendContents);
+			client.settLatestContents();
 
 			out.writeObject(sendContents); // Contents 객체 전송
 

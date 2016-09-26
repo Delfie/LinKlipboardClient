@@ -66,8 +66,10 @@ public class UserInterfaceManager extends JFrame {
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) { // 윈도우 창의 X(닫기)를 누르면
-				trayIcon.showRunningMsg("LinKlipboard is running.");
-				setVisible(false); // frame을 보이지 않게 함
+				if (SettingPanel.notification) {
+					trayIcon.showRunningMsg("LinKlipboard is running.");
+					setVisible(false); // frame을 보이지 않게 함
+				}
 			}
 		});
 	}

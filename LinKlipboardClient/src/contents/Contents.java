@@ -12,8 +12,8 @@ public abstract class Contents implements Serializable {
 
 	private static int serialNum = LinKlipboard.NULL;
 
-	protected String date;
-	protected String sharer;
+	protected  String date;
+	protected  String sharer;
 	protected int type;
 	
 
