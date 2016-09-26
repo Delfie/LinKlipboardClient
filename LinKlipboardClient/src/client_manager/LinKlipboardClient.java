@@ -334,7 +334,7 @@ public class LinKlipboardClient {
 						if (inoutClientInfo.equals("join")) {
 							String inClientNickname = tokens.nextToken();
 							otherClients.add(inClientNickname);
-							connectionPanel.update();
+							connectionPanel.updateAccessGroup();
 						}
 						// exit이면 join이면 Vector otherClients에서 제거
 						if (inoutClientInfo.equals("exit")) {
@@ -342,7 +342,7 @@ public class LinKlipboardClient {
 							for (int i = 0; i < otherClients.size(); i++) {
 								if (otherClients.get(i).equals(outClientNickname)) {
 									otherClients.remove(i);
-									connectionPanel.update();
+									connectionPanel.updateAccessGroup();
 									return;
 								}
 							}

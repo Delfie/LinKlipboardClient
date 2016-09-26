@@ -2,6 +2,8 @@ package user_interface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -71,6 +73,29 @@ public class UserInterfacePage1 extends BasePanel {
 
 		groupPassWordField.setText("");
 		groupPassWordField.setBounds(135, 305, 150, 20);
+		
+		groupPassWordField.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+
+				switch (keyCode) {
+				case KeyEvent.VK_ENTER:
+					if (checkAllInputData() == true) {
+						groupName = groupNameField.getText();
+						groupPW = new String(groupPassWordField.getPassword());
+
+						// 1. 그룹정보 세팅
+						client.setGroupInfo(groupName, groupPW);
+						// 2. 그룹생성을 요청
+						client.createGroup();
+
+						if (ResponseHandler.getErrorCodeNum() == LinKlipboard.ACCESS_PERMIT)
+							main.dealInputnickName(client.getNickName(), page2); // 닉네임 설정
+					}
+				}
+			}
+		});
+		
 		add(groupPassWordField);
 		
 		responseState.setText("");
