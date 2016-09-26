@@ -65,8 +65,10 @@ public class HistoryPanel extends BasePanel {
 	}
 	 
 	public void update() {
-		remove(listPanel.getScrollPane());
-		listPanel.initComponents();
+		remove(listPanel);
+		listPanel = new ListPanel(client);
+		listPanel.setLocation(25, 15);
+		add(listPanel);
 	}
 	
 }
